@@ -1,0 +1,111 @@
+import { useEffect, useRef, useState } from "react";
+import { MapFile } from "@war-room/content";
+import type { FloorId } from "@war-room/content";
+import charonJson from "../../content/maps/charon.json";
+import { FLOOR_KEYS } from "./greybox/plan";
+import type { FloorVisibility } from "./greybox/plan";
+import { createViewer } from "./viewer";
+import type { Viewer } from "./viewer";
+
+const map = MapFile.parse(charonJson);
+
+const FLOOR_LABELS: Record<FloorId, string> = {
+  grounds: "Grounds",
+  ground: "Ground floor",
+  upper: "Upper floor",
+  roof: "Roof",
+};
+
+/** [key, floor] pairs in key order, from the same table the keyboard handler uses. */
+const FLOOR_BUTTONS = Object.entries(FLOOR_KEYS) as [string, FloorId][];
+
+declare global {
+  interface Window {
+    /** Dev-only handle for debugging and screenshots. */
+    __warRoom?: Viewer;
+  }
+}
+
+export function App() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const viewerRef = useRef<Viewer | null>(null);
+  const [floors, setFloors] = useState<FloorVisibility>({ grounds: true, ground: true, upper: true, roof: true });
+  const [fps, setFps] = useState(0);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const viewer = createViewer(canvas, map, { onFloors: setFloors, onFps: setFps });
+    viewerRef.current = viewer;
+    if (import.meta.env.DEV) window.__warRoom = viewer;
+    return () => {
+      viewer.dispose();
+      viewerRef.current = null;
+      delete window.__warRoom;
+    };
+  }, []);
+
+  return (
+    <div style={{ position: "relative", width: "100%", height: "100%" }}>
+      <canvas ref={canvasRef} style={{ width: "100%", height: "100%", display: "block", outline: "none" }} />
+      <div style={panel}>
+        <div style={{ fontWeight: 700, letterSpacing: 1 }}>CHARON · greybox</div>
+        <div style={{ opacity: 0.7, marginBottom: 8 }}>
+          {map.id} v{map.version} · {Math.round(fps)} fps
+        </div>
+        {FLOOR_BUTTONS.map(([key, floor]) => (
+          <button
+            key={floor}
+            type="button"
+            onClick={() => viewerRef.current?.toggleFloor(floor)}
+            style={{ ...button, opacity: floors[floor] ? 1 : 0.4 }}
+            title={`Toggle ${FLOOR_LABELS[floor]} (key ${key})`}
+          >
+            <kbd style={kbd}>{key}</kbd> {FLOOR_LABELS[floor]}
+          </button>
+        ))}
+        <div style={{ opacity: 0.55, marginTop: 8, fontSize: 11, lineHeight: 1.4 }}>
+          Drag: orbit · Right-drag / Ctrl-drag: pan · Wheel: zoom
+        </div>
+      </div>
+    </div>
+  );
+}
+
+const panel: React.CSSProperties = {
+  position: "absolute",
+  top: 12,
+  left: 12,
+  padding: 12,
+  borderRadius: 8,
+  background: "rgba(10, 14, 20, 0.82)",
+  color: "#d7e0ea",
+  font: "13px/1.3 system-ui, sans-serif",
+  userSelect: "none",
+  minWidth: 190,
+};
+
+const button: React.CSSProperties = {
+  display: "block",
+  width: "100%",
+  textAlign: "left",
+  margin: "3px 0",
+  padding: "5px 8px",
+  borderRadius: 5,
+  border: "1px solid #2a3644",
+  background: "#16202c",
+  color: "inherit",
+  font: "inherit",
+  cursor: "pointer",
+};
+
+const kbd: React.CSSProperties = {
+  display: "inline-block",
+  minWidth: 16,
+  textAlign: "center",
+  marginRight: 6,
+  padding: "0 4px",
+  borderRadius: 3,
+  background: "#2a3644",
+  fontSize: 11,
+};
