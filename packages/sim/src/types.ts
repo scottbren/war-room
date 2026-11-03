@@ -1,4 +1,4 @@
-import type { FloorId, MapFile, Mission } from "@war-room/content";
+import type { FloorId, MapFile, Mission, Side } from "@war-room/content";
 
 export type { FloorId };
 
@@ -6,10 +6,15 @@ export type { FloorId };
 export type Tick = number;
 /** Stable and readable: "op.alpha.1", "def.vet.3", "fam.son". */
 export type EntityId = string;
-/** Meters. `x` east, `y` north. */
+/**
+ * Meters, `x` east, `y` north. Sim state quantizes x/y to 1 cm (see quantize.ts);
+ * every Pos in a Snapshot, SimEvent or Command is on that grid.
+ */
 export type Pos = { floor: FloorId; x: number; y: number };
 
 export type DoorState = "open" | "closed" | "locked";
+
+export type EntityState = "idle" | "moving" | "firing" | "down";
 
 export type Command =
   | { kind: "move"; tick: Tick; entity: EntityId; to: Pos } // week 1
@@ -20,23 +25,25 @@ export type Command =
 
 export interface EntitySnapshot {
   id: EntityId;
-  side: string;
+  side: Side;
   pos: Pos;
   /** Integer degrees 0-359, clockwise from north. */
   facing: number;
+  /** Integer. */
   health: number;
-  /** "idle" | "moving" | "firing" | "down" ... */
-  state: string;
+  state: EntityState;
 }
 
 export interface Snapshot {
   tick: Tick;
   /** Sorted by id. */
   entities: EntitySnapshot[];
-  doors: Record<string, string>;
+  /** Sorted by id. */
+  doors: { id: string; state: DoorState }[];
 }
 
 export interface SimEventBase {
+  /** Derived from tick plus a per-tick counter, e.g. "12.0". Never from clocks or randomness. */
   id: string;
   tick: Tick;
   type: string;
@@ -46,7 +53,7 @@ export interface SimEventBase {
 export type SimEvent =
   | (SimEventBase & { type: "moved"; entity: EntityId; to: Pos })
   | (SimEventBase & { type: "arrived"; entity: EntityId })
-  | (SimEventBase & { type: "door"; doorId: string; state: string })
+  | (SimEventBase & { type: "door"; doorId: string; state: DoorState })
   | (SimEventBase & { type: "contact"; observer: EntityId; target: EntityId })
   // Emitted when a command targets a tick that has already passed (see T3).
   | (SimEventBase & { type: "commandRejected"; command: Command["kind"]; reason: string });
@@ -68,6 +75,10 @@ export interface Plan {
 }
 
 export interface Sim {
+  /**
+   * Commands apply on their `tick`. Commands sharing a tick apply in enqueue order.
+   * A command for a tick that has already passed is rejected with a `commandRejected` event.
+   */
   enqueue(cmd: Command): void;
   /** Advances exactly one tick. */
   step(): { snapshot: Snapshot; events: SimEvent[] };

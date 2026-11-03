@@ -4,6 +4,9 @@ Record every decision that changes or clarifies the technical design. Newest fir
 
 Format: `YYYY-MM-DD — Decision — Why — Approved by`
 
+- 2026-11-02 — T1 contracts approved and frozen (content schemas; sim types). Changes from draft: stricter validation (rect order, integer angles, probability range, complicationsPerRun order, defaultOptionId must exist, positive dimensions); `commandRejected` event; `Sim.restore`; named `EventTrigger`/`DecisionOption`/`PlanTask`/`DoorState` — Scott
+- 2026-11-02 — Sim contract hardening from determinism review: same-tick commands apply in enqueue order; `Snapshot.doors` is an array sorted by id; positions documented as 1 cm quantized; `side`, entity `state` and door event `state` are unions; event ids derive from tick + per-tick counter — Scott
+
 - 2026-11-02 — TypeScript pinned to ~6.0 instead of latest 7.x — typescript-eslint 8.72 refuses to load on TS 7 (peer range <6.1), which breaks `pnpm lint`; revisit when typescript-eslint supports 7 — pending Scott (T0 tooling constraint)
 - 2026-11-02 — pnpm 12.16.1 (latest) is the project package manager; esbuild build script allowed via `allowBuilds` in pnpm-workspace.yaml (pnpm 12 blocks build scripts by default) — Scott (pnpm update); esbuild allowance pending Scott
 
