@@ -7617,7 +7617,7 @@
       "id": "m.smart.floodlight.6",
       "floor": "grounds",
       "kind": "poi",
-      "at": { "x": 89, "y": 14 },
+      "at": { "x": 89, "y": 15.2 },
       "tags": ["smart:floodlight", "feeds:g.soc", "circuit:c.perimeter", "vlan:security"]
     },
     {
@@ -7638,7 +7638,7 @@
       "id": "m.smart.motion.roof-deck",
       "floor": "roof",
       "kind": "poi",
-      "at": { "x": 45, "y": 46 },
+      "at": { "x": 45, "y": 45 },
       "tags": ["smart:motion", "feeds:g.soc", "covers:roof-deck", "circuit:c.roof", "vlan:security"]
     },
     {
