@@ -1,6 +1,6 @@
 {
   "id": "charon",
-  "version": 6,
+  "version": 7,
   "bounds": { "min": { "x": -40, "y": -40 }, "max": { "x": 140, "y": 94 } },
   "floors": [
     {
@@ -1046,6 +1046,358 @@
           "height": 0.8,
           "facing": "all",
           "destructible": true
+        },
+        {
+          "id": "cover.wall-pier.1",
+          "rect": { "min": { "x": -0.5, "y": 79.5 }, "max": { "x": 0.5, "y": 80.5 } },
+          "type": "heavy",
+          "height": 3.8,
+          "facing": "all",
+          "destructible": false
+        },
+        {
+          "id": "cover.wall-pier.2",
+          "rect": { "min": { "x": 15.5, "y": 79.5 }, "max": { "x": 16.5, "y": 80.5 } },
+          "type": "heavy",
+          "height": 3.8,
+          "facing": "all",
+          "destructible": false
+        },
+        {
+          "id": "cover.wall-pier.3",
+          "rect": { "min": { "x": 31.5, "y": 79.5 }, "max": { "x": 32.5, "y": 80.5 } },
+          "type": "heavy",
+          "height": 3.8,
+          "facing": "all",
+          "destructible": false
+        },
+        {
+          "id": "cover.wall-pier.4",
+          "rect": { "min": { "x": 47.5, "y": 79.5 }, "max": { "x": 48.5, "y": 80.5 } },
+          "type": "heavy",
+          "height": 3.8,
+          "facing": "all",
+          "destructible": false
+        },
+        {
+          "id": "cover.wall-pier.5",
+          "rect": { "min": { "x": 65, "y": 79.5 }, "max": { "x": 66, "y": 80.5 } },
+          "type": "heavy",
+          "height": 3.8,
+          "facing": "all",
+          "destructible": false
+        },
+        {
+          "id": "cover.wall-pier.6",
+          "rect": { "min": { "x": 72, "y": 79.5 }, "max": { "x": 73, "y": 80.5 } },
+          "type": "heavy",
+          "height": 3.8,
+          "facing": "all",
+          "destructible": false
+        },
+        {
+          "id": "cover.wall-pier.7",
+          "rect": { "min": { "x": 85.5, "y": 79.5 }, "max": { "x": 86.5, "y": 80.5 } },
+          "type": "heavy",
+          "height": 3.8,
+          "facing": "all",
+          "destructible": false
+        },
+        {
+          "id": "cover.wall-pier.8",
+          "rect": { "min": { "x": 99.5, "y": 79.5 }, "max": { "x": 100.5, "y": 80.5 } },
+          "type": "heavy",
+          "height": 3.8,
+          "facing": "all",
+          "destructible": false
+        },
+        {
+          "id": "cover.wall-pier.9",
+          "rect": { "min": { "x": 99.5, "y": 63.5 }, "max": { "x": 100.5, "y": 64.5 } },
+          "type": "heavy",
+          "height": 3.8,
+          "facing": "all",
+          "destructible": false
+        },
+        {
+          "id": "cover.wall-pier.10",
+          "rect": { "min": { "x": 99.5, "y": 47.5 }, "max": { "x": 100.5, "y": 48.5 } },
+          "type": "heavy",
+          "height": 3.8,
+          "facing": "all",
+          "destructible": false
+        },
+        {
+          "id": "cover.wall-pier.11",
+          "rect": { "min": { "x": 99.5, "y": 31.5 }, "max": { "x": 100.5, "y": 32.5 } },
+          "type": "heavy",
+          "height": 3.8,
+          "facing": "all",
+          "destructible": false
+        },
+        {
+          "id": "cover.wall-pier.12",
+          "rect": { "min": { "x": 99.5, "y": 15.5 }, "max": { "x": 100.5, "y": 16.5 } },
+          "type": "heavy",
+          "height": 3.8,
+          "facing": "all",
+          "destructible": false
+        },
+        {
+          "id": "cover.wall-pier.13",
+          "rect": { "min": { "x": -0.5, "y": 61.5 }, "max": { "x": 0.5, "y": 62.5 } },
+          "type": "heavy",
+          "height": 3.8,
+          "facing": "all",
+          "destructible": false
+        },
+        {
+          "id": "cover.wall-pier.14",
+          "rect": { "min": { "x": -0.5, "y": 47.5 }, "max": { "x": 0.5, "y": 48.5 } },
+          "type": "heavy",
+          "height": 3.8,
+          "facing": "all",
+          "destructible": false
+        },
+        {
+          "id": "cover.wall-pier.15",
+          "rect": { "min": { "x": -0.5, "y": 31.5 }, "max": { "x": 0.5, "y": 32.5 } },
+          "type": "heavy",
+          "height": 3.8,
+          "facing": "all",
+          "destructible": false
+        },
+        {
+          "id": "cover.wall-pier.16",
+          "rect": { "min": { "x": -0.5, "y": 15.5 }, "max": { "x": 0.5, "y": 16.5 } },
+          "type": "heavy",
+          "height": 3.8,
+          "facing": "all",
+          "destructible": false
+        },
+        {
+          "id": "cover.gate-barrier.1",
+          "rect": { "min": { "x": 66.4, "y": 72 }, "max": { "x": 68.2, "y": 73.2 } },
+          "type": "heavy",
+          "height": 1,
+          "facing": "all",
+          "destructible": false
+        },
+        {
+          "id": "cover.gate-barrier.2",
+          "rect": { "min": { "x": 69.8, "y": 72 }, "max": { "x": 71.6, "y": 73.2 } },
+          "type": "heavy",
+          "height": 1,
+          "facing": "all",
+          "destructible": false
+        },
+        {
+          "id": "cover.bollard.w1",
+          "rect": { "min": { "x": 65.25, "y": 59.85 }, "max": { "x": 65.55000000000001, "y": 60.15 } },
+          "type": "heavy",
+          "height": 1,
+          "facing": "all",
+          "destructible": false
+        },
+        {
+          "id": "cover.bollard.e1",
+          "rect": { "min": { "x": 72.44999999999999, "y": 59.85 }, "max": { "x": 72.75, "y": 60.15 } },
+          "type": "heavy",
+          "height": 1,
+          "facing": "all",
+          "destructible": false
+        },
+        {
+          "id": "cover.bollard.w2",
+          "rect": { "min": { "x": 65.25, "y": 62.85 }, "max": { "x": 65.55000000000001, "y": 63.15 } },
+          "type": "heavy",
+          "height": 1,
+          "facing": "all",
+          "destructible": false
+        },
+        {
+          "id": "cover.bollard.e2",
+          "rect": { "min": { "x": 72.44999999999999, "y": 62.85 }, "max": { "x": 72.75, "y": 63.15 } },
+          "type": "heavy",
+          "height": 1,
+          "facing": "all",
+          "destructible": false
+        },
+        {
+          "id": "cover.bollard.w3",
+          "rect": { "min": { "x": 65.25, "y": 65.85 }, "max": { "x": 65.55000000000001, "y": 66.15 } },
+          "type": "heavy",
+          "height": 1,
+          "facing": "all",
+          "destructible": false
+        },
+        {
+          "id": "cover.bollard.e3",
+          "rect": { "min": { "x": 72.44999999999999, "y": 65.85 }, "max": { "x": 72.75, "y": 66.15 } },
+          "type": "heavy",
+          "height": 1,
+          "facing": "all",
+          "destructible": false
+        },
+        {
+          "id": "cover.bollard.w4",
+          "rect": { "min": { "x": 65.25, "y": 68.85 }, "max": { "x": 65.55000000000001, "y": 69.15 } },
+          "type": "heavy",
+          "height": 1,
+          "facing": "all",
+          "destructible": false
+        },
+        {
+          "id": "cover.bollard.e4",
+          "rect": { "min": { "x": 72.44999999999999, "y": 68.85 }, "max": { "x": 72.75, "y": 69.15 } },
+          "type": "heavy",
+          "height": 1,
+          "facing": "all",
+          "destructible": false
+        },
+        {
+          "id": "cover.floodlight-post.4",
+          "rect": { "min": { "x": 2.8, "y": 15.8 }, "max": { "x": 3.2, "y": 16.2 } },
+          "type": "heavy",
+          "height": 5,
+          "facing": "all",
+          "destructible": false
+        },
+        {
+          "id": "cover.floodlight-post.5",
+          "rect": { "min": { "x": 2.8, "y": 47.8 }, "max": { "x": 3.2, "y": 48.2 } },
+          "type": "heavy",
+          "height": 5,
+          "facing": "all",
+          "destructible": false
+        },
+        {
+          "id": "cover.floodlight-post.6",
+          "rect": { "min": { "x": 96.8, "y": 15.8 }, "max": { "x": 97.2, "y": 16.2 } },
+          "type": "heavy",
+          "height": 5,
+          "facing": "all",
+          "destructible": false
+        },
+        {
+          "id": "cover.floodlight-post.7",
+          "rect": { "min": { "x": 96.8, "y": 47.8 }, "max": { "x": 97.2, "y": 48.2 } },
+          "type": "heavy",
+          "height": 5,
+          "facing": "all",
+          "destructible": false
+        },
+        {
+          "id": "cover.floodlight-post.8",
+          "rect": { "min": { "x": 29.8, "y": 76.8 }, "max": { "x": 30.2, "y": 77.2 } },
+          "type": "heavy",
+          "height": 5,
+          "facing": "all",
+          "destructible": false
+        },
+        {
+          "id": "cover.floodlight-post.9",
+          "rect": { "min": { "x": 87.8, "y": 76.8 }, "max": { "x": 88.2, "y": 77.2 } },
+          "type": "heavy",
+          "height": 5,
+          "facing": "all",
+          "destructible": false
+        },
+        {
+          "id": "cover.berm.west.1",
+          "rect": { "min": { "x": 3, "y": 18 }, "max": { "x": 5, "y": 30 } },
+          "type": "heavy",
+          "height": 1.2,
+          "facing": "all",
+          "destructible": false
+        },
+        {
+          "id": "cover.berm.west.2",
+          "rect": { "min": { "x": 3, "y": 52 }, "max": { "x": 5, "y": 60 } },
+          "type": "heavy",
+          "height": 1.2,
+          "facing": "all",
+          "destructible": false
+        },
+        {
+          "id": "cover.berm.east.1",
+          "rect": { "min": { "x": 96, "y": 54 }, "max": { "x": 98, "y": 66 } },
+          "type": "heavy",
+          "height": 1.2,
+          "facing": "all",
+          "destructible": false
+        },
+        {
+          "id": "cover.berm.east.2",
+          "rect": { "min": { "x": 96, "y": 20 }, "max": { "x": 98, "y": 30 } },
+          "type": "heavy",
+          "height": 1.2,
+          "facing": "all",
+          "destructible": false
+        },
+        {
+          "id": "cover.rock.1",
+          "rect": { "min": { "x": 30, "y": 1 }, "max": { "x": 32.5, "y": 3 } },
+          "type": "heavy",
+          "height": 1.4,
+          "facing": "all",
+          "destructible": false
+        },
+        {
+          "id": "cover.rock.2",
+          "rect": { "min": { "x": 36, "y": 2 }, "max": { "x": 38, "y": 3.8 } },
+          "type": "heavy",
+          "height": 1.4,
+          "facing": "all",
+          "destructible": false
+        },
+        {
+          "id": "cover.rock.3",
+          "rect": { "min": { "x": 44, "y": 1 }, "max": { "x": 47, "y": 3 } },
+          "type": "heavy",
+          "height": 1.4,
+          "facing": "all",
+          "destructible": false
+        },
+        {
+          "id": "cover.rock.4",
+          "rect": { "min": { "x": 52, "y": 1.5 }, "max": { "x": 54.5, "y": 3.5 } },
+          "type": "heavy",
+          "height": 1.4,
+          "facing": "all",
+          "destructible": false
+        },
+        {
+          "id": "cover.rock.5",
+          "rect": { "min": { "x": 60, "y": 1 }, "max": { "x": 63, "y": 2.8 } },
+          "type": "heavy",
+          "height": 1.4,
+          "facing": "all",
+          "destructible": false
+        },
+        {
+          "id": "cover.rock.6",
+          "rect": { "min": { "x": 66, "y": 2 }, "max": { "x": 68.5, "y": 4 } },
+          "type": "heavy",
+          "height": 1.4,
+          "facing": "all",
+          "destructible": false
+        },
+        {
+          "id": "cover.retaining-wall.1",
+          "rect": { "min": { "x": 14, "y": 36 }, "max": { "x": 22, "y": 36.5 } },
+          "type": "heavy",
+          "height": 0.8,
+          "facing": "all",
+          "destructible": false
+        },
+        {
+          "id": "cover.retaining-wall.2",
+          "rect": { "min": { "x": 26, "y": 30 }, "max": { "x": 33, "y": 30.5 } },
+          "type": "heavy",
+          "height": 0.8,
+          "facing": "all",
+          "destructible": false
         }
       ]
     },
@@ -4167,11 +4519,11 @@
           "tags": ["roof", "deck"]
         },
         {
-          "id": "r.deck.a.n2",
-          "name": "North deck (east)",
+          "id": "r.pavilion",
+          "name": "Roof pavilion",
           "rect": { "min": { "x": 42, "y": 50 }, "max": { "x": 54, "y": 56 } },
-          "ceiling": 10,
-          "tags": ["roof", "deck"]
+          "ceiling": 4,
+          "tags": ["roof", "structure", "pavilion"]
         },
         {
           "id": "r.deck.a",
@@ -4438,6 +4790,24 @@
           "destructible": false
         },
         {
+          "id": "w.roof.y50:42-45",
+          "a": { "x": 42, "y": 50 },
+          "b": { "x": 45, "y": 50 },
+          "thickness": 0.3,
+          "height": 4,
+          "material": "stone",
+          "destructible": true
+        },
+        {
+          "id": "w.roof.y50:51-54",
+          "a": { "x": 51, "y": 50 },
+          "b": { "x": 54, "y": 50 },
+          "thickness": 0.3,
+          "height": 4,
+          "material": "stone",
+          "destructible": true
+        },
+        {
           "id": "w.roof.y50:54-56.4",
           "a": { "x": 54, "y": 50 },
           "b": { "x": 56.4, "y": 50 },
@@ -4481,6 +4851,15 @@
           "height": 7,
           "material": "reinforced",
           "destructible": false
+        },
+        {
+          "id": "w.roof.y56:42-54",
+          "a": { "x": 42, "y": 56 },
+          "b": { "x": 54, "y": 56 },
+          "thickness": 0.3,
+          "height": 4,
+          "material": "stone",
+          "destructible": true
         },
         {
           "id": "w.roof.y56:54-60",
@@ -4533,7 +4912,7 @@
           "id": "d.r.tower-n2",
           "at": { "x": 42, "y": 53 },
           "width": 1.2,
-          "between": ["r.radar-tower", "r.deck.a.n2"],
+          "between": ["r.radar-tower", "r.pavilion"],
           "kind": "standard",
           "state": "open",
           "breach": []
@@ -4560,7 +4939,7 @@
           "id": "d.r.n2-deck",
           "at": { "x": 48, "y": 50 },
           "width": 6,
-          "between": ["r.deck.a.n2", "r.deck.a"],
+          "between": ["r.pavilion", "r.deck.a"],
           "kind": "standard",
           "state": "open",
           "breach": []
@@ -4569,7 +4948,7 @@
           "id": "d.r.ne-n2",
           "at": { "x": 54, "y": 53 },
           "width": 1.2,
-          "between": ["r.bastion.ne", "r.deck.a.n2"],
+          "between": ["r.bastion.ne", "r.pavilion"],
           "kind": "standard",
           "state": "open",
           "breach": []
@@ -4726,6 +5105,22 @@
           "width": 0.4,
           "between": ["r.radar-tower", "outside"],
           "shutter": false,
+          "blastRated": true
+        },
+        {
+          "id": "win.r.pavilion.n1",
+          "at": { "x": 45, "y": 56 },
+          "width": 1.8,
+          "between": ["r.pavilion", "outside"],
+          "shutter": true,
+          "blastRated": true
+        },
+        {
+          "id": "win.r.pavilion.n2",
+          "at": { "x": 51, "y": 56 },
+          "width": 1.8,
+          "between": ["r.pavilion", "outside"],
+          "shutter": true,
           "blastRated": true
         }
       ],
@@ -5024,6 +5419,30 @@
           "rect": { "min": { "x": 37, "y": 54.4 }, "max": { "x": 41, "y": 55.2 } },
           "type": "heavy",
           "height": 1,
+          "facing": "all",
+          "destructible": true
+        },
+        {
+          "id": "cover.roof-garden.1",
+          "rect": { "min": { "x": 25, "y": 47.5 }, "max": { "x": 33, "y": 48.7 } },
+          "type": "concealment",
+          "height": 1.2,
+          "facing": "all",
+          "destructible": true
+        },
+        {
+          "id": "cover.roof-garden.2",
+          "rect": { "min": { "x": 26, "y": 43.2 }, "max": { "x": 32, "y": 44.4 } },
+          "type": "concealment",
+          "height": 1.2,
+          "facing": "all",
+          "destructible": true
+        },
+        {
+          "id": "cover.roof-garden.3",
+          "rect": { "min": { "x": 52, "y": 47 }, "max": { "x": 58, "y": 48.2 } },
+          "type": "concealment",
+          "height": 1.2,
           "facing": "all",
           "destructible": true
         }
@@ -7084,6 +7503,48 @@
       "kind": "poi",
       "at": { "x": 62, "y": 37 },
       "tags": ["smart:motion", "feeds:g.soc", "covers:core"]
+    },
+    {
+      "id": "m.smart.floodlight.7",
+      "floor": "grounds",
+      "kind": "poi",
+      "at": { "x": 3.6, "y": 16 },
+      "tags": ["smart:floodlight", "feeds:g.soc"]
+    },
+    {
+      "id": "m.smart.floodlight.8",
+      "floor": "grounds",
+      "kind": "poi",
+      "at": { "x": 3.6, "y": 48 },
+      "tags": ["smart:floodlight", "feeds:g.soc"]
+    },
+    {
+      "id": "m.smart.floodlight.9",
+      "floor": "grounds",
+      "kind": "poi",
+      "at": { "x": 97.6, "y": 16 },
+      "tags": ["smart:floodlight", "feeds:g.soc"]
+    },
+    {
+      "id": "m.smart.floodlight.10",
+      "floor": "grounds",
+      "kind": "poi",
+      "at": { "x": 97.6, "y": 48 },
+      "tags": ["smart:floodlight", "feeds:g.soc"]
+    },
+    {
+      "id": "m.smart.floodlight.11",
+      "floor": "grounds",
+      "kind": "poi",
+      "at": { "x": 30.6, "y": 77 },
+      "tags": ["smart:floodlight", "feeds:g.soc"]
+    },
+    {
+      "id": "m.smart.floodlight.12",
+      "floor": "grounds",
+      "kind": "poi",
+      "at": { "x": 88.6, "y": 77 },
+      "tags": ["smart:floodlight", "feeds:g.soc"]
     }
   ]
 }

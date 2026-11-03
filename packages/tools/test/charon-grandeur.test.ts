@@ -285,3 +285,85 @@ describe("charon.json v6: resort extras", () => {
     expect(floor("shore").doors.some((d) => d.between.includes("grounds.dock-lounge"))).toBe(true);
   });
 });
+
+describe("charon.json v7: roof pavilion and roof garden", () => {
+  it("has a roof pavilion beside the radar tower: a walled structure with glass, not an open deck", () => {
+    const pavilion = room("roof", "r.pavilion");
+    expect(pavilion.tags).toEqual(expect.arrayContaining(["structure", "pavilion"]));
+    expect(overlaps(pavilion.rect, BAR_A)).toBe(true);
+    expect(floor("roof").windows.some((w) => w.between.includes("r.pavilion") && w.width > 1)).toBe(true);
+    expect(floor("roof").doors.filter((d) => d.between.includes("r.pavilion")).length).toBeGreaterThanOrEqual(2);
+    expect(floor("roof").rooms.some((r) => r.id === "r.deck.a.n2")).toBe(false);
+  });
+
+  it("plants a roof garden of concealment beds on the main deck", () => {
+    const beds = cover("roof", "cover.roof-garden");
+    expect(beds.length).toBeGreaterThanOrEqual(3);
+    for (const b of beds) {
+      expect(b.type).toBe("concealment");
+      expect(overlapArea(b.rect, room("roof", "r.deck.a").rect)).toBe(area(b.rect));
+    }
+  });
+});
+
+describe("charon.json v7: the fortified perimeter (no towers, sea side left open)", () => {
+  const piers = () => cover("grounds", "cover.wall-pier");
+  it("has reinforced wall piers along the west, north and east walls, and none on the sea side", () => {
+    expect(piers().length).toBeGreaterThanOrEqual(14);
+    for (const p of piers()) {
+      expect(p.type, p.id).toBe("heavy");
+      expect(p.destructible, p.id).toBe(false);
+      expect(p.rect.min.y, p.id).toBeGreaterThan(10); // nothing along the cliff
+    }
+  });
+
+  it("flanks the main gate with piers and narrows the drive behind it with a chicane", () => {
+    const gate = floor("grounds").doors.find((d) => d.kind === "gate" && d.at.x === 69)!;
+    const flank = piers().filter((p) => Math.abs((p.rect.min.y + p.rect.max.y) / 2 - gate.at.y) < 1 && Math.abs((p.rect.min.x + p.rect.max.x) / 2 - gate.at.x) < gate.width / 2 + 2);
+    expect(flank.length).toBeGreaterThanOrEqual(2);
+    const barrier = cover("grounds", "cover.gate-barrier");
+    expect(barrier).toHaveLength(2);
+    const gap = Math.max(...barrier.map((b) => b.rect.min.x)) - Math.min(...barrier.map((b) => b.rect.max.x));
+    expect(gap).toBeGreaterThanOrEqual(1.4); // a car still gets through
+    expect(gap).toBeLessThanOrEqual(2.2);
+  });
+
+  it("lines the drive with bollards", () => {
+    expect(cover("grounds", "cover.bollard").length).toBeGreaterThanOrEqual(8);
+  });
+
+  it("lights the wall: extra floodlight posts, each with a smart floodlight feeding the SOC", () => {
+    const posts = cover("grounds", "cover.floodlight-post");
+    expect(posts.length).toBeGreaterThanOrEqual(9);
+    const lights = map.markers.filter((m) => m.tags.includes("smart:floodlight"));
+    expect(lights.length).toBeGreaterThanOrEqual(12);
+    for (const m of lights) expect(m.tags, m.id).toContain("feeds:g.soc");
+  });
+
+  it("keeps the west staff gate and the sea side as they were", () => {
+    expect(floor("grounds").doors.find((d) => d.id === "d.staff-gate")).toMatchObject({ kind: "gate", at: { x: 0, y: 64 } });
+    expect(floor("grounds").walls.filter((w) => w.material === "perimeter").every((w) => Math.min(w.a.y, w.b.y) >= 0 && !(w.a.y === 0 && w.b.y === 0))).toBe(true);
+  });
+});
+
+describe("charon.json v7: terrain features", () => {
+  it("has earth berms inside the west and east walls as heavy, indestructible cover", () => {
+    const berms = cover("grounds", "cover.berm");
+    expect(berms.length).toBeGreaterThanOrEqual(4);
+    expect(berms.some((b) => b.rect.max.x < 20)).toBe(true);
+    expect(berms.some((b) => b.rect.min.x > 80)).toBe(true);
+    for (const b of berms) {
+      expect(b.type).toBe("heavy");
+      expect(b.destructible).toBe(false);
+    }
+  });
+
+  it("scatters rock outcrops along the cliff edge and a retaining wall in the garden notch", () => {
+    const rocks = cover("grounds", "cover.rock");
+    expect(rocks.length).toBeGreaterThanOrEqual(5);
+    for (const r of rocks) expect(r.rect.max.y, r.id).toBeLessThan(8);
+    const walls = cover("grounds", "cover.retaining-wall");
+    expect(walls.length).toBeGreaterThanOrEqual(2);
+    for (const w of walls) expect(overlapArea(w.rect, rectOf(12, 26, 40, 41)), w.id).toBe(area(w.rect));
+  });
+});

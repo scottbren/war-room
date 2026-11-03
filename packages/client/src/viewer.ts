@@ -3,11 +3,12 @@ import { Engine } from "@babylonjs/core/Engines/engine";
 import { DirectionalLight } from "@babylonjs/core/Lights/directionalLight";
 import { HemisphericLight } from "@babylonjs/core/Lights/hemisphericLight";
 import { Color4 } from "@babylonjs/core/Maths/math.color";
-import { Vector3 } from "@babylonjs/core/Maths/math.vector";
+import { Matrix, Vector3 } from "@babylonjs/core/Maths/math.vector";
 import { Scene } from "@babylonjs/core/scene";
 import type { FloorId, MapFile } from "@war-room/content";
 import { buildGreybox } from "./greybox/build";
 import type { Greybox } from "./greybox/build";
+import { planLabels } from "./greybox/labels";
 import { FLOOR_KEYS } from "./greybox/plan";
 import type { FloorVisibility } from "./greybox/plan";
 
@@ -17,6 +18,8 @@ export interface Viewer {
   camera: ArcRotateCamera;
   engine: Engine;
   toggleFloor(floor: FloorId): void;
+  /** Room name labels (key L). */
+  toggleLabels(): boolean;
   dispose(): void;
 }
 
@@ -53,8 +56,42 @@ export function createViewer(canvas: HTMLCanvasElement, map: MapFile, callbacks:
   const toggleFloor = (floor: FloorId): void => {
     callbacks.onFloors({ ...greybox.toggleFloor(floor) });
   };
+  // Room labels: DOM overlay, projected each frame; only for visible floors, only in front of the camera.
+  const labelLayer = document.createElement("div");
+  labelLayer.style.cssText = "position:absolute;inset:0;pointer-events:none;overflow:hidden;font:11px/1.1 system-ui,sans-serif;color:#fff;text-shadow:0 0 3px #000,0 0 3px #000";
+  canvas.parentElement?.appendChild(labelLayer);
+  const labels = planLabels(map).map((label) => {
+    const el = document.createElement("div");
+    el.textContent = label.text;
+    el.style.cssText = "position:absolute;transform:translate(-50%,-50%);white-space:nowrap;display:none";
+    labelLayer.appendChild(el);
+    return { label, el, at: new Vector3(...label.position) };
+  });
+  let labelsOn = true;
+  const toggleLabels = (): boolean => {
+    labelsOn = !labelsOn;
+    return labelsOn;
+  };
+  const updateLabels = (): void => {
+    const transform = scene.getTransformMatrix();
+    const viewport = camera.viewport.toGlobal(engine.getRenderWidth(), engine.getRenderHeight());
+    const scale = canvas.clientWidth / engine.getRenderWidth();
+    for (const { label, el, at } of labels) {
+      let show = labelsOn && greybox.floorVisible(label.floor) && camera.radius < 140 && !label.hiddenBy.some((f) => greybox.floorVisible(f));
+      if (show) {
+        const p = Vector3.Project(at, Matrix.Identity(), transform, viewport);
+        show = p.z > 0 && p.z < 1;
+        el.style.left = `${p.x * scale}px`;
+        el.style.top = `${p.y * scale}px`;
+      }
+      el.style.display = show ? "block" : "none";
+    }
+  };
+  scene.onBeforeRenderObservable.add(updateLabels);
+
   const onKey = (event: KeyboardEvent): void => {
     if (event.ctrlKey || event.metaKey || event.altKey) return;
+    if (event.key === "l" || event.key === "L") toggleLabels();
     const floor = (FLOOR_KEYS as Record<string, FloorId | undefined>)[event.key];
     if (floor) toggleFloor(floor);
   };
@@ -71,7 +108,9 @@ export function createViewer(canvas: HTMLCanvasElement, map: MapFile, callbacks:
     camera,
     engine,
     toggleFloor,
+    toggleLabels,
     dispose() {
+      labelLayer.remove();
       window.clearInterval(fpsTimer);
       window.removeEventListener("keydown", onKey);
       window.removeEventListener("resize", onResize);

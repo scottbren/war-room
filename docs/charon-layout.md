@@ -1,4 +1,4 @@
-# CHARON layout (map version 6: zigzag of three bars; sections below the Version 6 note describe v5 and earlier and are superseded where they conflict)
+# CHARON layout (map version 7: zigzag of three bars; sections below the Version 6 note describe v5 and earlier and are superseded where they conflict)
 
 `content/maps/charon.json` implements this document. All rooms are axis-aligned rectangles, `[minX, minY] – [maxX, maxY]` in meters, in **map coordinates**. North is +y. The sea is to the south (y < 0). Non-rectangular buildings are composed from several rectangles (U, L and stepped shapes); the map format has no polygon rooms.
 
@@ -163,3 +163,10 @@ The U-shaped courtyard house is replaced by three 42 x 15 m bars, each slid side
 - **Basement** (z -4, under A and B): wine cellar, armory, vault, staff rooms, gym, spa with indoor pool, plant room and two service corridors. Stairs: `link.cellar-stairs` (library) and `link.plant-stairs` (service room), each with a ground-floor opening.
 - **Links:** panic room to boathouse tunnel from (68,34); shaft at (73,36); roof hatches `link.roof` (64,38), `link.roof.west` (42,28) and the ladder at (21,58)-(21,55).
 - **Fast-rope balcony** moved to the upper level over the pool, marker at (71,23).
+
+## Version 7: roof pavilion, fortified wall, terrain
+
+- **Roof:** the north-east deck strip is now `r.pavilion`, a walled glass-fronted structure beside the radar tower; the main deck gets three concealment beds (`cover.roof-garden.*`).
+- **Perimeter (west, north, east only; the sea side stays open, no guard towers):** 16 reinforced wall piers (`cover.wall-pier.*`, 3.8 m, indestructible), two of them flanking the main gate; a gate chicane (`cover.gate-barrier.1/2`, 1.6 m gap); 8 bollards along the drive; six more floodlight posts, each with a smart floodlight marker feeding the SOC.
+- **Terrain:** four earth berms inside the west and east walls, six rock outcrops along the cliff edge, two retaining walls in the garden notch. All heavy, indestructible cover. (A true slope would need a heightfield, a contract change.)
+- **Viewer:** press L to toggle room name labels. A label hides while a higher visible floor covers its room.
