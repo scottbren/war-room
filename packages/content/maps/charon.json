@@ -7638,7 +7638,7 @@
       "id": "m.smart.motion.roof-deck",
       "floor": "roof",
       "kind": "poi",
-      "at": { "x": 45, "y": 45 },
+      "at": { "x": 45, "y": 45.7 },
       "tags": ["smart:motion", "feeds:g.soc", "covers:roof-deck", "circuit:c.roof", "vlan:security"]
     },
     {
