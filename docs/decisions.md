@@ -31,3 +31,7 @@ User feedback on v3: remove the emergency stair, make it feel more like a luxury
 ## 2026-11-03: Contract change (APPROVED by the user): three more floor ids
 
 `FloorId` in `packages/content/src/schemas/common.ts` grows from four ids to seven: added `lower` (basement, indoor), `shore` (open-air, below the lawn) and `hill` (open-air, raised). Reason: the user wants a modern stacked-volume villa and a terraced site (hill, house, shore) with a basement; one flat elevation per floor could not express that. Nothing else in the schemas changed and existing maps stay valid. Tooling follows: the validator treats `grounds`, `shore` and `hill` as open-air (link ends may be outdoors; a tunnel may exit there), the greybox gets keys 5-7 and a shared `allFloorsVisible()`. Still open: window shutter and smart-home runtime state (see the v3 entry).
+
+## 2026-11-03: CHARON v5 (modern stacked-volume restyle, basement, shore, hill)
+
+User reference: a modern concrete villa of stacked boxes with glass to the pool. Changes: see the Version 5 section of `docs/charon-layout.md`. Known gaps: the silhouette is still close to a stepped U (all floors share the 44 x 40 m footprint; the roof is one level); the terrain is only the three extra levels (a real slope would need a heightfield: contract change); approach B stays on the west wall (the breach point); stair feet on the shore stand in the sea zone (no quay yet).

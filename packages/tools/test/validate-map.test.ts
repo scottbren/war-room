@@ -182,7 +182,7 @@ describe("required rooms and link ends", () => {
     for (const [floorId, roomId, tag] of [
       ["ground", "g.panic", "panic-room"],
       ["upper", "u.safe", "safe-landing"],
-      ["grounds", "grounds.boathouse", "tunnel-exit"],
+      ["shore", "grounds.boathouse", "tunnel-exit"],
     ] as const) {
       const map = charon();
       const room = floorOf(map, floorId).rooms.find((r) => r.id === roomId)!;
@@ -204,10 +204,11 @@ describe("required rooms and link ends", () => {
     expect(issue!.message).toContain("upper");
   });
 
-  it("a link end on the open grounds may be outdoors (cliff path, tunnel exit)", () => {
+  it("a link end on the open shore or grounds may be outdoors (cliff path, tunnel exit)", () => {
     const map = charon();
     const cliff = map.verticalLinks.find((l) => l.id === "link.cliff")!;
-    expect(cliff.from.floor).toBe("grounds");
+    expect(cliff.from.floor).toBe("shore");
+    expect(cliff.to.floor).toBe("grounds");
     expect(validateMap(map)).toEqual([]);
   });
 });
@@ -215,7 +216,7 @@ describe("required rooms and link ends", () => {
 describe("extra levels (lower, shore, hill)", () => {
   const withLevel = (id: "lower" | "shore" | "hill", elevation: number): MapFile => {
     const map = charon();
-    map.floors.push({ id, elevation, rooms: [], walls: [], doors: [], windows: [], openings: [], cover: [] });
+    if (!map.floors.some((f) => f.id === id)) map.floors.push({ id, elevation, rooms: [], walls: [], doors: [], windows: [], openings: [], cover: [] });
     return map;
   };
 
@@ -235,15 +236,15 @@ describe("extra levels (lower, shore, hill)", () => {
 
   it("a link end on the lower (indoor) level must still be inside a room", () => {
     const map = withLevel("lower", -4);
-    map.verticalLinks.push({ id: "link.test", kind: "stairs", from: { floor: "lower", at: { x: 40, y: 30 } }, to: { floor: "ground", at: { x: 40, y: 30 } }, bidirectional: true });
-    expect(find(validateMap(map), "link.test", "not inside any room")).toBeDefined();
+    map.verticalLinks.push({ id: "link.test", kind: "stairs", from: { floor: "lower", at: { x: 45, y: 20 } }, to: { floor: "ground", at: { x: 45, y: 20 } }, bidirectional: true });
+    expect(find(validateMap(map), "link.test", "not inside any room")).toBeDefined(); // under the open courtyard: no basement room
   });
 
   it("the panic-room tunnel may exit on the shore as well as on the grounds", () => {
     const map = withLevel("shore", -5);
     const shore = floorOf(map, "shore");
     shore.rooms.push({ id: "shore.cave", name: "Tunnel cave", rect: { min: { x: 0, y: -30 }, max: { x: 4, y: -26 } }, ceiling: 3, tags: ["tunnel-exit"] });
-    const boathouse = floorOf(map, "grounds").rooms.find((r) => r.id === "grounds.boathouse")!;
+    const boathouse = floorOf(map, "shore").rooms.find((r) => r.id === "grounds.boathouse")!;
     boathouse.tags = boathouse.tags.filter((t) => t !== "tunnel-exit");
     map.verticalLinks.find((l) => l.id === "link.tunnel")!.to = { floor: "shore", at: { x: 2, y: -28 } };
     expect(validateMap(map)).toEqual([]);

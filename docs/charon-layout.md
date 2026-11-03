@@ -1,4 +1,4 @@
-# CHARON layout (map version 4: the courtyard villa, fortress terrace, formal grounds)
+# CHARON layout (map version 5: modern courtyard villa, fortress terrace, basement, shore and hill)
 
 `content/maps/charon.json` implements this document. All rooms are axis-aligned rectangles, `[minX, minY] – [maxX, maxY]` in meters, in **map coordinates**. North is +y. The sea is to the south (y < 0). Non-rectangular buildings are composed from several rectangles (U, L and stepped shapes); the map format has no polygon rooms.
 
@@ -141,3 +141,11 @@ Data-only markers for now (kind `poi`, tagged `smart:*`); all report to the hub 
 - Principal at night: master suite or study (seeded). Drive: study desk, office safe, or on his person (seeded).
 - Family (if present): wife in her suite, son and daughter in their rooms.
 
+## Version 5: levels and the modern restyle
+
+- New floors (contract change approved 2026-11-03): `lower` (-4 m, basement), `shore` (-5 m) and `hill` (+4 m). See `docs/decisions.md`.
+- **Basement (`lower`)**: l.gym, l.storage, l.cellar (west block), l.corridor.w, l.armory, l.vault (under the hall, blast doors), l.corridor.e, l.mech (plant room and generator) and l.staff. Stairs: `link.cellar-stairs` (library to cellar) and `link.plant-stairs` (service room to plant room), each with a `gallery-void` opening in the ground floor.
+- **Shore**: the boathouse, store, yacht, yacht bow and dock lounge, with the sea and marina zones. The tunnel exits in the boathouse (on the shore). `link.cliff` (cliff path, x = 18) and `link.shore-stair` (stairs, x = 71) climb to the lawn.
+- **Hill**: the four neighbor-villa rooms on raised lawns (zones `zone.hill.west`, `zone.hill.east`).
+- **Upper floor**: the gym wing is now a covered sun terrace (`u.terrace.sw`) over the master suite; the sky lounge (`u.sky-lounge`, [62,8]-[72,13]) cantilevers over the south terrace, reached through the south balcony. The gym moved to the basement.
+- **Style**: classical v4 features removed (belvedere, colonnades, parterre, balustrades, urns); the entrance has a flat canopy on two piers (`cover.canopy-pier.*`); planters on the terraces and the main roof deck.

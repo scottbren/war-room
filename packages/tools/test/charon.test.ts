@@ -20,16 +20,19 @@ const rectOf = (x0: number, y0: number, x1: number, y1: number) => ({ min: { x: 
 describe("charon.json: basics", () => {
   it("parses against the schema", () => {
     expect(map.id).toBe("charon");
-    expect(map.version).toBe(4);
-    expect(map.floors.map((f) => f.id)).toEqual(["grounds", "ground", "upper", "roof"]);
-    expect(map.floors.map((f) => f.elevation)).toEqual([0, 0, 4, 8]);
+    expect(map.version).toBe(5);
+    expect(map.floors.map((f) => f.id)).toEqual(["grounds", "ground", "upper", "roof", "lower", "shore", "hill"]);
+    expect(map.floors.map((f) => f.elevation)).toEqual([0, 0, 4, 8, -4, -5, 4]);
   });
 
   it("has the expected room count per floor", () => {
-    expect(floor("grounds").rooms).toHaveLength(20);
+    expect(floor("grounds").rooms).toHaveLength(10);
     expect(floor("ground").rooms).toHaveLength(19);
-    expect(floor("upper").rooms).toHaveLength(17);
+    expect(floor("upper").rooms).toHaveLength(18);
     expect(floor("roof").rooms).toHaveLength(16);
+    expect(floor("lower").rooms).toHaveLength(9);
+    expect(floor("shore").rooms).toHaveLength(5);
+    expect(floor("hill").rooms).toHaveLength(4);
   });
 
   it("has unique ids across each floor and in every list", () => {
@@ -76,7 +79,8 @@ describe("charon.json: the courtyard villa", () => {
     const groundHouse = floor("ground").rooms.filter((r) => !r.tags.includes("walkway") && !r.tags.includes("portico"));
     expect(groundHouse.reduce((sum, r) => sum + area(r.rect), 0)).toBe(44 * 40);
     const upperHouse = floor("upper").rooms.filter((r) => r.tags.includes("interior"));
-    expect(upperHouse.reduce((sum, r) => sum + area(r.rect), 0)).toBe(44 * 40);
+    // v5: the gym wing became an open terrace (-120 m2) and a sky lounge cantilevers out (+50 m2)
+    expect(upperHouse.reduce((sum, r) => sum + area(r.rect), 0)).toBe(44 * 40 - 120 + 50);
   });
 
   it("has a double-height grand hall, a gallery walkway above it, and an open void between them", () => {
@@ -152,12 +156,12 @@ describe("charon.json: the courtyard villa", () => {
     expect(room("ground", "g.foyer").rect.max.y).toBe(56); // front door on the north face
     expect(room("ground", "g.master").rect.min.x).toBe(28); // west wing
     for (const id of ["u.son", "u.wife", "u.daughter"]) expect(room("upper", id).tags).toContain("family");
-    for (const id of ["u.guest", "u.spa", "u.gym", "u.office", "u.cinema", "u.bath"]) expect(room("upper", id)).toBeDefined();
+    for (const id of ["u.guest", "u.spa", "u.terrace.sw", "u.sky-lounge", "u.office", "u.cinema", "u.bath"]) expect(room("upper", id)).toBeDefined();
   });
 
   it("has an L- or stepped shape for the outbuildings instead of plain boxes", () => {
-    for (const id of ["grounds.guest-villa.wing", "grounds.staff.wing", "grounds.boathouse.store", "grounds.yacht.bow", "grounds.villa-west.wing", "grounds.villa-east.wing", "grounds.gate-lodge"]) {
-      expect(room("grounds", id)).toBeDefined();
+    for (const [fl, id] of [["grounds", "grounds.guest-villa.wing"], ["grounds", "grounds.staff.wing"], ["shore", "grounds.boathouse.store"], ["shore", "grounds.yacht.bow"], ["hill", "grounds.villa-west.wing"], ["hill", "grounds.villa-east.wing"], ["grounds", "grounds.gate-lodge"]] as const) {
+      expect(room(fl, id)).toBeDefined();
     }
   });
 });
@@ -224,7 +228,7 @@ describe("charon.json: anchors from the layout doc", () => {
     expect(l("link.roof")).toMatchObject({ kind: "roof-access", from: { floor: "upper" }, to: { floor: "roof" } });
     expect(l("link.shaft")).toMatchObject({ kind: "shaft", bidirectional: false, from: { floor: "upper", at: { x: 70, y: 26 } }, to: { floor: "ground", at: { x: 70, y: 26 } } });
     expect(l("link.shaft").restrictedTo).toEqual(["principal", "family"]);
-    expect(l("link.tunnel")).toMatchObject({ kind: "shaft", from: { floor: "ground", at: { x: 66, y: 18 } }, to: { floor: "grounds", at: { x: 85, y: 0 } } });
+    expect(l("link.tunnel")).toMatchObject({ kind: "shaft", from: { floor: "ground", at: { x: 66, y: 18 } }, to: { floor: "shore", at: { x: 85, y: 0 } } });
     expect(l("link.cliff")).toMatchObject({ kind: "cliff-path", from: { at: { x: 18, y: -6 } }, to: { at: { x: 18, y: 0 } } });
   });
 
@@ -363,7 +367,7 @@ describe("charon.json: nothing blocks the way", () => {
 
   it("furnishes the upper floor with cover too (desk, sofa, beds)", () => {
     const ids = floor("upper").cover.map((c) => c.id);
-    for (const id of ["cover.office-desk", "cover.cinema-seats", "cover.son-bed", "cover.wife-bed", "cover.daughter-bed", "cover.guest-bed", "cover.spa-tub", "cover.gym-rack"]) {
+    for (const id of ["cover.office-desk", "cover.cinema-seats", "cover.son-bed", "cover.wife-bed", "cover.daughter-bed", "cover.guest-bed", "cover.spa-tub", "cover.terrace-lounger.1"]) {
       expect(ids, id).toContain(id);
     }
   });
@@ -588,8 +592,8 @@ describe("charon.json: entries", () => {
     expect(map.verticalLinks.some((l) => l.id === "link.fire-stair")).toBe(false);
     expect(floor("upper").rooms.some((r) => r.id === "u.fire-escape")).toBe(false);
     expect(floor("upper").doors.some((d) => d.id === "d.u.gym-fire-escape")).toBe(false);
-    // the only stairs that reach the grounds floor are none: every stair joins the house floors
-    expect(map.verticalLinks.filter((l) => l.kind === "stairs").every((l) => l.from.floor !== "grounds" && l.to.floor !== "grounds")).toBe(true);
+    // no stairs join the upper floor to the outdoors
+    expect(map.verticalLinks.filter((l) => l.kind === "stairs" && [l.from.floor, l.to.floor].includes("upper")).every((l) => [l.from.floor, l.to.floor].every((f) => f === "ground" || f === "upper"))).toBe(true);
   });
 
   it("has a staff-only gate in the west perimeter wall and a staff entrance into the service room", () => {
@@ -615,7 +619,8 @@ describe("charon.json: extras", () => {
 
   it("has luxury interior rooms: library, wine room, gym, spa and a screening room", () => {
     for (const id of ["g.library", "g.wine-room"]) expect(room("ground", id)).toBeDefined();
-    for (const id of ["u.gym", "u.spa", "u.cinema"]) expect(room("upper", id)).toBeDefined();
+    for (const id of ["u.spa", "u.cinema"]) expect(room("upper", id)).toBeDefined();
+    expect(room("lower", "l.gym")).toBeDefined();
     expect(floor("ground").cover.some((c) => c.id === "cover.library-shelves")).toBe(true);
   });
 });

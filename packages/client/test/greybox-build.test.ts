@@ -32,7 +32,7 @@ describe("buildGreybox (headless Babylon)", () => {
   it("tags each mesh with its floor and makes translucent materials see-through", () => {
     const { greybox } = setup();
     for (const mesh of greybox.meshes) {
-      expect(["grounds", "ground", "upper", "roof"]).toContain(mesh.metadata.floor);
+      expect(["grounds", "ground", "upper", "roof", "lower", "shore", "hill"]).toContain(mesh.metadata.floor);
     }
     const glass = greybox.meshes.find((m) => m.name.includes("wall:glass"));
     expect(glass?.material?.alpha).toBeLessThan(1);
@@ -43,7 +43,7 @@ describe("buildGreybox (headless Babylon)", () => {
   it("draws translucent zone layers in a fixed order (lawn, garden, path, pool, sea), whatever the camera does", () => {
     const { greybox } = setup();
     const order = (kind: string) => {
-      const mesh = greybox.meshes.find((m) => m.name.endsWith(`zone:${kind}`) && m.metadata.floor === "grounds");
+      const mesh = greybox.meshes.find((m) => m.name.endsWith(`zone:${kind}`) && (m.metadata.floor === "grounds" || (kind === "sea" && m.metadata.floor === "shore")));
       if (!mesh) throw new Error(`no zone mesh for ${kind}`);
       return mesh.alphaIndex;
     };
