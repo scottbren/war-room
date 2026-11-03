@@ -31,6 +31,28 @@ function apply(world: World, ctx: Ctx, command: Command): void {
       ctx.emit({ type: "door", doorId: command.doorId, state: command.state });
       return;
     }
+    case "setDevice": {
+      const device = world.devices[command.deviceId];
+      if (!device) return reject(ctx, command, `unknown device: ${command.deviceId}`);
+      if (command.state === "looped" && device.kind !== "camera") return reject(ctx, command, "only cameras can be looped");
+      device.state = command.state;
+      ctx.emit({ type: "device", deviceId: command.deviceId, state: command.state });
+      return;
+    }
+    case "setShutter": {
+      if (!Object.hasOwn(world.shutters, command.windowId)) {
+        return reject(ctx, command, `no shutter on window: ${command.windowId}`);
+      }
+      world.shutters[command.windowId] = command.state;
+      ctx.emit({ type: "shutter", windowId: command.windowId, state: command.state });
+      return;
+    }
+    case "setAlert": {
+      if (![0, 1, 2, 3].includes(command.level)) return reject(ctx, command, `invalid alert level: ${String(command.level)}`);
+      world.alert = command.level;
+      ctx.emit({ type: "alert", level: command.level });
+      return;
+    }
     case "issuePlan":
     case "decide":
     case "intervene":

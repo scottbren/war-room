@@ -225,7 +225,7 @@ describe("determinism", () => {
   it("has a stable final hash (regression pin)", () => {
     const hashes = scripted(7);
     expect(hashes[hashes.length - 1]).toMatch(/^[0-9a-f]{8}$/);
-    expect(hashes[hashes.length - 1]).toBe("f0f5b0d9");
+    expect(hashes[hashes.length - 1]).toBe("f5963f5a");
   });
 });
 

@@ -1,5 +1,5 @@
 import type { FloorId, Side } from "@war-room/content";
-import type { Command, DoorState, EntityState } from "./types";
+import type { AlertLevel, Command, DeviceKind, DeviceState, DoorState, EntityState, ShutterState } from "./types";
 
 /** Position in integer centimeters. */
 export interface EntityPos {
@@ -32,6 +32,13 @@ export interface QueuedCommand {
   command: Command;
 }
 
+export interface Device {
+  kind: DeviceKind;
+  state: DeviceState;
+  /** Lock devices: the door they secure. */
+  door?: string;
+}
+
 export interface World {
   /** Number of completed ticks. */
   tick: number;
@@ -39,12 +46,17 @@ export interface World {
   seq: number;
   entities: Record<string, Entity>;
   doors: Record<string, DoorState>;
+  devices: Record<string, Device>;
+  shutters: Record<string, ShutterState>;
+  alert: AlertLevel;
+  /** Highest alert level whose automation has already run (edge trigger). */
+  alertApplied: AlertLevel;
   queue: QueuedCommand[];
 }
 
 export function createWorld(): World {
   // Null-prototype records so ids like "__proto__" are ordinary keys.
-  return { tick: 0, seq: 0, entities: Object.create(null), doors: Object.create(null), queue: [] };
+  return { tick: 0, seq: 0, entities: Object.create(null), doors: Object.create(null), devices: Object.create(null), shutters: Object.create(null), alert: 0, alertApplied: 0, queue: [] };
 }
 
 export function addEntity(world: World, entity: Entity): void {
@@ -65,4 +77,12 @@ export function sortedEntities(world: World): Entity[] {
 
 export function sortedDoorIds(world: World): string[] {
   return Object.keys(world.doors).sort();
+}
+
+export function sortedDeviceIds(world: World): string[] {
+  return Object.keys(world.devices).sort();
+}
+
+export function sortedShutterIds(world: World): string[] {
+  return Object.keys(world.shutters).sort();
 }

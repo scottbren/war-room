@@ -1,6 +1,7 @@
 import { commandsSystem } from "./systems/commands";
 import type { System } from "./systems/context";
 import { movementSystem } from "./systems/movement";
+import { smartHomeSystem } from "./systems/smart-home";
 
 // Stubs for later tasks; they keep their slot in the order now.
 const aiSystem: System = () => {};
@@ -17,6 +18,7 @@ export const pipeline: readonly System[] = [
   aiSystem,
   movementSystem,
   perceptionSystem,
+  smartHomeSystem,
   combatSystem,
   moraleSystem,
   objectivesSystem,

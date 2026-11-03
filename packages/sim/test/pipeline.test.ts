@@ -8,6 +8,7 @@ describe("pipeline", () => {
       "aiSystem",
       "movementSystem",
       "perceptionSystem",
+      "smartHomeSystem",
       "combatSystem",
       "moraleSystem",
       "objectivesSystem",

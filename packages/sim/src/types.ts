@@ -14,6 +14,14 @@ export type Pos = { floor: FloorId; x: number; y: number };
 
 export type DoorState = "open" | "closed" | "locked";
 
+/** Smart-home device kinds, from the `smart:<kind>` marker tag. */
+export type DeviceKind = "camera" | "motion" | "floodlight" | "lock" | "hub";
+/** "looped" (a hacked camera replaying old footage) is valid for cameras only. */
+export type DeviceState = "on" | "off" | "looped";
+export type ShutterState = "open" | "closed";
+/** 0 calm, 1 suspicious (floodlights), 2 alarm (shutters drop), 3 lockdown (locks engage). */
+export type AlertLevel = 0 | 1 | 2 | 3;
+
 export type EntityState = "idle" | "moving" | "firing" | "down";
 
 export type Command =
@@ -21,7 +29,10 @@ export type Command =
   | { kind: "issuePlan"; tick: Tick; plan: Plan } // week 2
   | { kind: "decide"; tick: Tick; cardId: string; optionId: string } // week 2
   | { kind: "intervene"; tick: Tick; action: "hold" | "proceed" | "abort" }
-  | { kind: "setDoor"; tick: Tick; doorId: string; state: DoorState };
+  | { kind: "setDoor"; tick: Tick; doorId: string; state: DoorState }
+  | { kind: "setDevice"; tick: Tick; deviceId: string; state: DeviceState }
+  | { kind: "setShutter"; tick: Tick; windowId: string; state: ShutterState }
+  | { kind: "setAlert"; tick: Tick; level: AlertLevel };
 
 export interface EntitySnapshot {
   id: EntityId;
@@ -40,6 +51,13 @@ export interface Snapshot {
   entities: EntitySnapshot[];
   /** Sorted by id. */
   doors: { id: string; state: DoorState }[];
+  /** Smart-home devices, sorted by id. */
+  devices: { id: string; kind: DeviceKind; state: DeviceState }[];
+  /** One per window that has a shutter, sorted by id. */
+  shutters: { id: string; state: ShutterState }[];
+  alert: AlertLevel;
+  /** True while at least one hub device is on; with no hub the house cannot automate or report. */
+  hubOnline: boolean;
 }
 
 export interface SimEventBase {
@@ -54,6 +72,9 @@ export type SimEvent =
   | (SimEventBase & { type: "moved"; entity: EntityId; to: Pos })
   | (SimEventBase & { type: "arrived"; entity: EntityId })
   | (SimEventBase & { type: "door"; doorId: string; state: DoorState })
+  | (SimEventBase & { type: "device"; deviceId: string; state: DeviceState })
+  | (SimEventBase & { type: "shutter"; windowId: string; state: ShutterState })
+  | (SimEventBase & { type: "alert"; level: AlertLevel })
   | (SimEventBase & { type: "contact"; observer: EntityId; target: EntityId })
   // Emitted when a command targets a tick that has already passed (see T3).
   | (SimEventBase & { type: "commandRejected"; command: Command["kind"]; reason: string });

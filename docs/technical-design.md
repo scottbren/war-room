@@ -66,10 +66,11 @@ Each tick runs the systems in a fixed order:
 2. AI decisions.
 3. Movement.
 4. Perception, with line of sight staggered across ticks.
-5. Combat.
-6. Suppression and morale.
-7. Objectives, complications, and hidden models.
-8. Emit events and the snapshot.
+5. Smart home: alert-level automation (floodlights, shutters, locks), run once per level and only while a hub is online.
+6. Combat.
+7. Suppression and morale.
+8. Objectives, complications, and hidden models.
+9. Emit events and the snapshot.
 
 **Determinism rules,** enforced by lint rules and tests:
 
