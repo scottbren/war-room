@@ -1,0 +1,181 @@
+{
+  "id": "broken-doors",
+  "version": 1,
+  "bounds": { "min": { "x": -10, "y": -10 }, "max": { "x": 30, "y": 20 } },
+  "floors": [
+    {
+      "id": "ground",
+      "elevation": 0,
+      "rooms": [
+        {
+          "id": "g.a",
+          "name": "g.a",
+          "rect": { "min": { "x": 0, "y": 0 }, "max": { "x": 4, "y": 4 } },
+          "ceiling": 3,
+          "tags": ["interior"]
+        },
+        {
+          "id": "g.b",
+          "name": "g.b",
+          "rect": { "min": { "x": 4, "y": 0 }, "max": { "x": 8, "y": 4 } },
+          "ceiling": 3,
+          "tags": ["interior"]
+        }
+      ],
+      "walls": [
+        {
+          "id": "w.ground.x0:0-4",
+          "a": { "x": 0, "y": 0 },
+          "b": { "x": 0, "y": 4 },
+          "thickness": 0.4,
+          "height": 3,
+          "material": "reinforced",
+          "destructible": true
+        },
+        {
+          "id": "w.ground.x4:0-1.5",
+          "a": { "x": 4, "y": 0 },
+          "b": { "x": 4, "y": 1.5 },
+          "thickness": 0.2,
+          "height": 3,
+          "material": "plaster",
+          "destructible": true
+        },
+        {
+          "id": "w.ground.x4:2.5-4",
+          "a": { "x": 4, "y": 2.5 },
+          "b": { "x": 4, "y": 4 },
+          "thickness": 0.2,
+          "height": 3,
+          "material": "plaster",
+          "destructible": true
+        },
+        {
+          "id": "w.ground.x8:0-4",
+          "a": { "x": 8, "y": 0 },
+          "b": { "x": 8, "y": 4 },
+          "thickness": 0.4,
+          "height": 3,
+          "material": "reinforced",
+          "destructible": true
+        },
+        {
+          "id": "w.ground.y0:0-1.5",
+          "a": { "x": 0, "y": 0 },
+          "b": { "x": 1.5, "y": 0 },
+          "thickness": 0.4,
+          "height": 3,
+          "material": "reinforced",
+          "destructible": true
+        },
+        {
+          "id": "w.ground.y0:2.5-4",
+          "a": { "x": 2.5, "y": 0 },
+          "b": { "x": 4, "y": 0 },
+          "thickness": 0.4,
+          "height": 3,
+          "material": "reinforced",
+          "destructible": true
+        },
+        {
+          "id": "w.ground.y0:4-5.5",
+          "a": { "x": 4, "y": 0 },
+          "b": { "x": 5.5, "y": 0 },
+          "thickness": 0.4,
+          "height": 3,
+          "material": "reinforced",
+          "destructible": true
+        },
+        {
+          "id": "w.ground.y0:6.5-8",
+          "a": { "x": 6.5, "y": 0 },
+          "b": { "x": 8, "y": 0 },
+          "thickness": 0.4,
+          "height": 3,
+          "material": "reinforced",
+          "destructible": true
+        },
+        {
+          "id": "w.ground.y4:0-2.5",
+          "a": { "x": 0, "y": 4 },
+          "b": { "x": 2.5, "y": 4 },
+          "thickness": 0.4,
+          "height": 3,
+          "material": "reinforced",
+          "destructible": true
+        },
+        {
+          "id": "w.ground.y4:3.5-4",
+          "a": { "x": 3.5, "y": 4 },
+          "b": { "x": 4, "y": 4 },
+          "thickness": 0.4,
+          "height": 3,
+          "material": "reinforced",
+          "destructible": true
+        },
+        {
+          "id": "w.ground.y4:4-8",
+          "a": { "x": 4, "y": 4 },
+          "b": { "x": 8, "y": 4 },
+          "thickness": 0.4,
+          "height": 3,
+          "material": "reinforced",
+          "destructible": true
+        }
+      ],
+      "doors": [
+        {
+          "id": "d.fine",
+          "at": { "x": 4, "y": 2 },
+          "width": 1,
+          "between": ["g.a", "g.b"],
+          "kind": "standard",
+          "state": "closed",
+          "breach": ["manual"]
+        },
+        {
+          "id": "d.out",
+          "at": { "x": 2, "y": 0 },
+          "width": 1,
+          "between": ["g.a", "outside"],
+          "kind": "standard",
+          "state": "closed",
+          "breach": ["manual"]
+        },
+        {
+          "id": "d.self",
+          "at": { "x": 3, "y": 4 },
+          "width": 1,
+          "between": ["g.a", "g.a"],
+          "kind": "standard",
+          "state": "closed",
+          "breach": ["manual"]
+        },
+        {
+          "id": "d.ghost",
+          "at": { "x": 6, "y": 0 },
+          "width": 1,
+          "between": ["g.b", "g.nowhere"],
+          "kind": "standard",
+          "state": "closed",
+          "breach": ["manual"]
+        },
+        {
+          "id": "d.floating",
+          "at": { "x": 2, "y": 2 },
+          "width": 1,
+          "between": ["g.a", "outside"],
+          "kind": "standard",
+          "state": "closed",
+          "breach": ["manual"]
+        }
+      ],
+      "windows": [],
+      "openings": [],
+      "cover": []
+    }
+  ],
+  "verticalLinks": [],
+  "zones": [],
+  "markers": [{ "id": "m.approach.A", "floor": "ground", "kind": "approach", "at": { "x": 2, "y": -3 }, "tags": ["approach:A"] }]
+}

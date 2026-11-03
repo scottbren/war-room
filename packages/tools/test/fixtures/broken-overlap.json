@@ -1,0 +1,45 @@
+{
+  "id": "broken-overlap",
+  "version": 1,
+  "bounds": { "min": { "x": -10, "y": -10 }, "max": { "x": 30, "y": 20 } },
+  "floors": [
+    {
+      "id": "ground",
+      "elevation": 0,
+      "rooms": [
+        {
+          "id": "g.a",
+          "name": "g.a",
+          "rect": { "min": { "x": 0, "y": 0 }, "max": { "x": 4, "y": 4 } },
+          "ceiling": 3,
+          "tags": ["interior"]
+        },
+        {
+          "id": "g.b",
+          "name": "g.b",
+          "rect": { "min": { "x": 3, "y": 0 }, "max": { "x": 8, "y": 4 } },
+          "ceiling": 3,
+          "tags": ["interior"]
+        }
+      ],
+      "walls": [],
+      "doors": [
+        {
+          "id": "d.out",
+          "at": { "x": 2, "y": 0 },
+          "width": 1,
+          "between": ["g.a", "outside"],
+          "kind": "standard",
+          "state": "closed",
+          "breach": ["manual"]
+        }
+      ],
+      "windows": [],
+      "openings": [],
+      "cover": []
+    }
+  ],
+  "verticalLinks": [],
+  "zones": [],
+  "markers": [{ "id": "m.approach.A", "floor": "ground", "kind": "approach", "at": { "x": 2, "y": -3 }, "tags": ["approach:A"] }]
+}
