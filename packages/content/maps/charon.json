@@ -1,6 +1,6 @@
 {
   "id": "charon",
-  "version": 7,
+  "version": 8,
   "bounds": { "min": { "x": -40, "y": -40 }, "max": { "x": 140, "y": 94 } },
   "floors": [
     {
@@ -4535,7 +4535,7 @@
         {
           "id": "r.deck.b",
           "name": "Sun deck and plunge pool",
-          "rect": { "min": { "x": 40, "y": 33 }, "max": { "x": 82, "y": 41 } },
+          "rect": { "min": { "x": 40, "y": 33 }, "max": { "x": 68, "y": 41 } },
           "ceiling": 10,
           "tags": ["roof", "deck"]
         },
@@ -4552,6 +4552,27 @@
           "rect": { "min": { "x": 54, "y": 17 }, "max": { "x": 66, "y": 26 } },
           "ceiling": 10,
           "tags": ["roof", "deck"]
+        },
+        {
+          "id": "r.deck.b.e",
+          "name": "South-east deck",
+          "rect": { "min": { "x": 68, "y": 33 }, "max": { "x": 80, "y": 35 } },
+          "ceiling": 10,
+          "tags": ["roof", "deck"]
+        },
+        {
+          "id": "r.deck.b.ee",
+          "name": "East deck",
+          "rect": { "min": { "x": 80, "y": 33 }, "max": { "x": 82, "y": 41 } },
+          "ceiling": 10,
+          "tags": ["roof", "deck"]
+        },
+        {
+          "id": "r.plant-house",
+          "name": "Rooftop plant house",
+          "rect": { "min": { "x": 68, "y": 35 }, "max": { "x": 80, "y": 41 } },
+          "ceiling": 3,
+          "tags": ["roof", "structure", "plant-house"]
         }
       ],
       "walls": [
@@ -4673,6 +4694,24 @@
           "destructible": false
         },
         {
+          "id": "w.roof.x68:35-37.4",
+          "a": { "x": 68, "y": 35 },
+          "b": { "x": 68, "y": 37.4 },
+          "thickness": 0.3,
+          "height": 3,
+          "material": "stone",
+          "destructible": true
+        },
+        {
+          "id": "w.roof.x68:38.6-41",
+          "a": { "x": 68, "y": 38.6 },
+          "b": { "x": 68, "y": 41 },
+          "thickness": 0.3,
+          "height": 3,
+          "material": "stone",
+          "destructible": true
+        },
+        {
           "id": "w.roof.x76:26-28.9",
           "a": { "x": 76, "y": 26 },
           "b": { "x": 76, "y": 28.9 },
@@ -4689,6 +4728,24 @@
           "height": 4,
           "material": "reinforced",
           "destructible": false
+        },
+        {
+          "id": "w.roof.x80:35-37.4",
+          "a": { "x": 80, "y": 35 },
+          "b": { "x": 80, "y": 37.4 },
+          "thickness": 0.3,
+          "height": 3,
+          "material": "stone",
+          "destructible": true
+        },
+        {
+          "id": "w.roof.x80:38.6-41",
+          "a": { "x": 80, "y": 38.6 },
+          "b": { "x": 80, "y": 41 },
+          "thickness": 0.3,
+          "height": 3,
+          "material": "stone",
+          "destructible": true
         },
         {
           "id": "w.roof.x82:26-33",
@@ -4745,13 +4802,49 @@
           "destructible": false
         },
         {
-          "id": "w.roof.y33:79.6-82",
+          "id": "w.roof.y33:79.6-80",
           "a": { "x": 79.6, "y": 33 },
+          "b": { "x": 80, "y": 33 },
+          "thickness": 0.5,
+          "height": 4,
+          "material": "reinforced",
+          "destructible": false
+        },
+        {
+          "id": "w.roof.y33:80-82",
+          "a": { "x": 80, "y": 33 },
           "b": { "x": 82, "y": 33 },
           "thickness": 0.5,
           "height": 4,
           "material": "reinforced",
           "destructible": false
+        },
+        {
+          "id": "w.roof.y35:68-73.4",
+          "a": { "x": 68, "y": 35 },
+          "b": { "x": 73.4, "y": 35 },
+          "thickness": 0.3,
+          "height": 3,
+          "material": "stone",
+          "destructible": true
+        },
+        {
+          "id": "w.roof.y35:74.6-80",
+          "a": { "x": 74.6, "y": 35 },
+          "b": { "x": 80, "y": 35 },
+          "thickness": 0.3,
+          "height": 3,
+          "material": "stone",
+          "destructible": true
+        },
+        {
+          "id": "w.roof.y41:68-80",
+          "a": { "x": 68, "y": 41 },
+          "b": { "x": 80, "y": 41 },
+          "thickness": 0.3,
+          "height": 3,
+          "material": "stone",
+          "destructible": true
         },
         {
           "id": "w.roof.y50:18-20.4",
@@ -5002,7 +5095,7 @@
           "id": "d.r.se-deck",
           "at": { "x": 79, "y": 33 },
           "width": 1.2,
-          "between": ["r.bastion.se", "r.deck.b"],
+          "between": ["r.bastion.se", "r.deck.b.e"],
           "kind": "standard",
           "state": "open",
           "breach": []
@@ -5021,6 +5114,51 @@
           "at": { "x": 60, "y": 26 },
           "width": 6,
           "between": ["r.deck.b.s", "r.deck.lounge"],
+          "kind": "standard",
+          "state": "open",
+          "breach": []
+        },
+        {
+          "id": "d.r.b-be",
+          "at": { "x": 68, "y": 34 },
+          "width": 2,
+          "between": ["r.deck.b", "r.deck.b.e"],
+          "kind": "standard",
+          "state": "open",
+          "breach": []
+        },
+        {
+          "id": "d.r.b-plant",
+          "at": { "x": 68, "y": 38 },
+          "width": 1.2,
+          "between": ["r.deck.b", "r.plant-house"],
+          "kind": "standard",
+          "state": "open",
+          "breach": []
+        },
+        {
+          "id": "d.r.be-plant",
+          "at": { "x": 74, "y": 35 },
+          "width": 1.2,
+          "between": ["r.deck.b.e", "r.plant-house"],
+          "kind": "standard",
+          "state": "open",
+          "breach": []
+        },
+        {
+          "id": "d.r.be-ee",
+          "at": { "x": 80, "y": 34 },
+          "width": 1.5,
+          "between": ["r.deck.b.e", "r.deck.b.ee"],
+          "kind": "standard",
+          "state": "open",
+          "breach": []
+        },
+        {
+          "id": "d.r.ee-plant",
+          "at": { "x": 80, "y": 38 },
+          "width": 1.2,
+          "between": ["r.deck.b.ee", "r.plant-house"],
           "kind": "standard",
           "state": "open",
           "breach": []
@@ -5121,6 +5259,22 @@
           "width": 1.8,
           "between": ["r.pavilion", "outside"],
           "shutter": true,
+          "blastRated": true
+        },
+        {
+          "id": "win.r.plant.n1",
+          "at": { "x": 72, "y": 41 },
+          "width": 0.4,
+          "between": ["r.plant-house", "outside"],
+          "shutter": false,
+          "blastRated": true
+        },
+        {
+          "id": "win.r.plant.n2",
+          "at": { "x": 77, "y": 41 },
+          "width": 0.4,
+          "between": ["r.plant-house", "outside"],
+          "shutter": false,
           "blastRated": true
         }
       ],
@@ -5280,7 +5434,7 @@
         },
         {
           "id": "cover.roof-access-housing",
-          "rect": { "min": { "x": 65, "y": 36 }, "max": { "x": 67.5, "y": 39 } },
+          "rect": { "min": { "x": 65, "y": 36 }, "max": { "x": 67, "y": 39 } },
           "type": "heavy",
           "height": 2.2,
           "facing": "all",
@@ -5291,22 +5445,6 @@
           "rect": { "min": { "x": 44, "y": 31.2 }, "max": { "x": 45.4, "y": 32.6 } },
           "type": "heavy",
           "height": 2.2,
-          "facing": "all",
-          "destructible": true
-        },
-        {
-          "id": "cover.hvac.1",
-          "rect": { "min": { "x": 70, "y": 35 }, "max": { "x": 73.5, "y": 38 } },
-          "type": "heavy",
-          "height": 1.6,
-          "facing": "all",
-          "destructible": true
-        },
-        {
-          "id": "cover.hvac.2",
-          "rect": { "min": { "x": 74.5, "y": 35 }, "max": { "x": 78, "y": 38 } },
-          "type": "heavy",
-          "height": 1.6,
           "facing": "all",
           "destructible": true
         },
@@ -5443,6 +5581,54 @@
           "rect": { "min": { "x": 52, "y": 47 }, "max": { "x": 58, "y": 48.2 } },
           "type": "concealment",
           "height": 1.2,
+          "facing": "all",
+          "destructible": true
+        },
+        {
+          "id": "cover.hvac.1",
+          "rect": { "min": { "x": 52, "y": 37 }, "max": { "x": 55.5, "y": 40 } },
+          "type": "heavy",
+          "height": 1.6,
+          "facing": "all",
+          "destructible": true
+        },
+        {
+          "id": "cover.hvac.2",
+          "rect": { "min": { "x": 56.5, "y": 37 }, "max": { "x": 60, "y": 40 } },
+          "type": "heavy",
+          "height": 1.6,
+          "facing": "all",
+          "destructible": true
+        },
+        {
+          "id": "cover.plant-gen.1",
+          "rect": { "min": { "x": 70, "y": 36.5 }, "max": { "x": 74, "y": 39.5 } },
+          "type": "heavy",
+          "height": 1.6,
+          "facing": "all",
+          "destructible": true
+        },
+        {
+          "id": "cover.plant-gen.2",
+          "rect": { "min": { "x": 75, "y": 36.5 }, "max": { "x": 78.5, "y": 39.5 } },
+          "type": "heavy",
+          "height": 1.4,
+          "facing": "all",
+          "destructible": true
+        },
+        {
+          "id": "cover.skylight.1",
+          "rect": { "min": { "x": 43, "y": 43 }, "max": { "x": 50, "y": 45.4 } },
+          "type": "light",
+          "height": 0.5,
+          "facing": "all",
+          "destructible": true
+        },
+        {
+          "id": "cover.skylight.2",
+          "rect": { "min": { "x": 26, "y": 45 }, "max": { "x": 32, "y": 46.4 } },
+          "type": "light",
+          "height": 0.5,
           "facing": "all",
           "destructible": true
         }

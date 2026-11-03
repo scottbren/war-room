@@ -367,3 +367,25 @@ describe("charon.json v7: terrain features", () => {
     for (const w of walls) expect(overlapArea(w.rect, rectOf(12, 26, 40, 41)), w.id).toBe(area(w.rect));
   });
 });
+
+describe("charon.json v8: a busier roof", () => {
+  it("has a rooftop plant house on bar B: a walled structure with a generator, split out of deck B", () => {
+    const plant = room("roof", "r.plant-house");
+    expect(plant.tags).toEqual(expect.arrayContaining(["structure", "plant-house"]));
+    expect(overlaps(plant.rect, BAR_B)).toBe(true);
+    expect(cover("roof", "cover.plant-gen").length).toBeGreaterThanOrEqual(2);
+    for (const c of cover("roof", "cover.plant-gen")) expect(overlapArea(c.rect, plant.rect), c.id).toBe(area(c.rect));
+    expect(floor("roof").doors.filter((d) => d.between.includes("r.plant-house")).length).toBeGreaterThanOrEqual(2);
+    // deck B is split around it with no overlap
+    for (const id of ["r.deck.b", "r.deck.b.e", "r.deck.b.ee"]) expect(overlaps(room("roof", id).rect, plant.rect), id).toBe(false);
+  });
+
+  it("has skylights over the double-height hall (low glass cover on deck A)", () => {
+    const sky = cover("roof", "cover.skylight");
+    expect(sky.length).toBeGreaterThanOrEqual(2);
+    for (const c of sky) {
+      expect(c.height).toBeLessThan(1);
+      expect(overlapArea(c.rect, room("roof", "r.deck.a").rect), c.id).toBe(area(c.rect));
+    }
+  });
+});

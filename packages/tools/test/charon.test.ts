@@ -19,7 +19,7 @@ const area = (r: { min: { x: number; y: number }; max: { x: number; y: number } 
 describe("charon.json: basics", () => {
   it("parses against the schema", () => {
     expect(map.id).toBe("charon");
-    expect(map.version).toBe(7);
+    expect(map.version).toBe(8);
     expect(map.floors.map((f) => f.id)).toEqual(["grounds", "ground", "upper", "roof", "lower", "shore", "hill"]);
     expect(map.floors.map((f) => f.elevation)).toEqual([0, 0, 4, 8, -4, -5, 4]);
   });
@@ -28,7 +28,7 @@ describe("charon.json: basics", () => {
     expect(floor("grounds").rooms).toHaveLength(10);
     expect(floor("ground").rooms).toHaveLength(21);
     expect(floor("upper").rooms).toHaveLength(18);
-    expect(floor("roof").rooms).toHaveLength(11);
+    expect(floor("roof").rooms).toHaveLength(14);
     expect(floor("lower").rooms).toHaveLength(9);
     expect(floor("shore").rooms).toHaveLength(5);
     expect(floor("hill").rooms).toHaveLength(4);
@@ -316,9 +316,8 @@ describe("charon.json: roof and gardens", () => {
     expect(ids("roof", "cover.solar").length).toBeGreaterThanOrEqual(2);
     expect(ids("roof", "cover.dish").length).toBeGreaterThanOrEqual(1);
     expect(ids("roof", "cover.roof-access-housing")).toHaveLength(1);
-    for (const c of [...ids("roof", "cover.hvac"), ...ids("roof", "cover.solar"), ...ids("roof", "cover.dish")]) {
-      expect(within(c, deckB), c.id).toBe(true);
-    }
+    for (const c of [...ids("roof", "cover.hvac"), ...ids("roof", "cover.solar")]) expect(within(c, deckB), c.id).toBe(true);
+    for (const c of ids("roof", "cover.dish")) expect(within(c, room("roof", "r.deck.b.ee").rect), c.id).toBe(true);
     for (const c of ids("roof", "cover.hvac")) expect(c.type).toBe("heavy");
   });
 

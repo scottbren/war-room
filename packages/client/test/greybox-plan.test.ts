@@ -44,6 +44,15 @@ describe("planGreybox: coordinates (map x, y, z -> Babylon x, z, y)", () => {
     expect(upperHall.center[1]).toBeCloseTo(floorElevation("upper") - 0.1, 10);
   });
 
+  it("colors open decks and terraces warm so a roof reads as a place, and enclosed rooms grey", () => {
+    expect(byId("slab:r.deck.a").material).toBe("slab:deck");
+    expect(byId("slab:u.terrace.c").material).toBe("slab:deck");
+    expect(byId("slab:r.pavilion").material).toBe("slab");
+    expect(byId("slab:g.grand-hall").material).toBe("slab");
+    const [r, , b] = MATERIALS["slab:deck"].color;
+    expect(r).toBeGreaterThan(b); // warm
+  });
+
   it("makes no slab for the open gallery void, but one for every other room", () => {
     expect(boxes.some((b) => b.id === "slab:u.void")).toBe(false);
     const rooms = map.floors.flatMap((f) => f.rooms).filter((r) => !r.tags.includes("void"));
@@ -238,7 +247,7 @@ describe("groupBoxes", () => {
     const keys = groups.map((g) => g.key);
     expect(keys).toEqual([...keys].sort());
     expect(new Set(keys).size).toBe(keys.length);
-    expect(groups.length).toBeLessThan(60); // merged meshes keep draw calls low
+    expect(groups.length).toBeLessThan(80); // merged meshes keep draw calls low
   });
 });
 

@@ -13,6 +13,7 @@ export type ZoneKind = Zone["kind"];
 export type MaterialKey =
   | "terrain"
   | "slab"
+  | "slab:deck"
   | "stairs"
   | "window:glass"
   | "window:slit"
@@ -36,6 +37,7 @@ export interface Material {
 export const MATERIALS: Record<MaterialKey, Material> = {
   terrain: { color: [0.18, 0.22, 0.16], alpha: 1 },
   slab: { color: [0.45, 0.45, 0.47], alpha: 1 },
+  "slab:deck": { color: [0.62, 0.52, 0.4], alpha: 1 }, // open decks and terraces: warm timber and stone
   stairs: { color: [0.78, 0.74, 0.66], alpha: 1 }, // pale marble
   "window:glass": { color: [0.55, 0.75, 0.9], alpha: 0.4 }, // blast-rated glazing
   "window:slit": { color: [0.1, 0.14, 0.18], alpha: 0.85 }, // narrow firing/light slit
@@ -249,7 +251,7 @@ export function planGreybox(map: MapFile): Box[] {
       boxes.push({
         id: `slab:${room.id}`,
         floor: floor.id,
-        material: "slab",
+        material: room.tags.includes("deck") || room.tags.includes("terrace") ? "slab:deck" : "slab",
         ...rectBox(room.rect, floor.elevation - SLAB_THICKNESS, SLAB_THICKNESS),
       });
     }

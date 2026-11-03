@@ -1,4 +1,4 @@
-# CHARON layout (map version 7: zigzag of three bars; sections below the Version 6 note describe v5 and earlier and are superseded where they conflict)
+# CHARON layout (map version 8: zigzag of three bars; sections below the Version 6 note describe v5 and earlier and are superseded where they conflict)
 
 `content/maps/charon.json` implements this document. All rooms are axis-aligned rectangles, `[minX, minY] – [maxX, maxY]` in meters, in **map coordinates**. North is +y. The sea is to the south (y < 0). Non-rectangular buildings are composed from several rectangles (U, L and stepped shapes); the map format has no polygon rooms.
 
@@ -170,3 +170,7 @@ The U-shaped courtyard house is replaced by three 42 x 15 m bars, each slid side
 - **Perimeter (west, north, east only; the sea side stays open, no guard towers):** 16 reinforced wall piers (`cover.wall-pier.*`, 3.8 m, indestructible), two of them flanking the main gate; a gate chicane (`cover.gate-barrier.1/2`, 1.6 m gap); 8 bollards along the drive; six more floodlight posts, each with a smart floodlight marker feeding the SOC.
 - **Terrain:** four earth berms inside the west and east walls, six rock outcrops along the cliff edge, two retaining walls in the garden notch. All heavy, indestructible cover. (A true slope would need a heightfield, a contract change.)
 - **Viewer:** press L to toggle room name labels. A label hides while a higher visible floor covers its room.
+
+## Version 8: a busier roof
+
+Open decks and terraces now draw in a warm timber color so a roof reads as a place. Deck B is split around a new walled rooftop plant house (`r.plant-house`, generator and equipment inside); HVAC units moved to deck B west; two skylights over the double-height hall. Known cosmetic: thin white lines on the roof are the tops of interior plaster walls on the floor below, flush with the roof slab.

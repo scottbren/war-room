@@ -47,3 +47,7 @@ The user said to go ahead and wire up the smart house after being told it needs 
 ## 2026-11-03: CHARON v7 (roof pavilion, fortified wall, terrain, room labels)
 
 User asked for a roof check, a fortified compound (no guard towers, no gate on the oceanfront), room labels and varied terrain. Map version 7 adds the roof pavilion and garden, wall piers, gate chicane, bollards, lights, berms, rock outcrops and retaining walls (see `docs/charon-layout.md`). No contract change. The client gets a room-label overlay (key L). Not done: a scenery terrain mesh beyond the walls.
+
+## 2026-11-03: CHARON v8 (roof second pass)
+
+User asked for more work on the roof after v7. Added: warm slab color for deck/terrace rooms (greybox), rooftop plant house, skylights, HVAC relocation. The greybox draw-group budget test was raised from 60 to 80 groups (one new material; still a few dozen draw calls). No contract change.
