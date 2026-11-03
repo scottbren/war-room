@@ -1,0 +1,2712 @@
+{
+  "id": "charon",
+  "version": 1,
+  "bounds": { "min": { "x": -40, "y": -40 }, "max": { "x": 140, "y": 94 } },
+  "floors": [
+    {
+      "id": "grounds",
+      "elevation": 0,
+      "rooms": [
+        {
+          "id": "grounds.guardhouse",
+          "name": "Gate guardhouse",
+          "rect": { "min": { "x": 72, "y": 76 }, "max": { "x": 76, "y": 80 } },
+          "ceiling": 3,
+          "tags": ["outbuilding", "guard-post"]
+        },
+        {
+          "id": "grounds.guest-villa",
+          "name": "Guest villa (reaction force)",
+          "rect": { "min": { "x": 74, "y": 60 }, "max": { "x": 94, "y": 74 } },
+          "ceiling": 4,
+          "tags": ["outbuilding"]
+        },
+        {
+          "id": "grounds.garage",
+          "name": "Garage with armored SUVs",
+          "rect": { "min": { "x": 74, "y": 52 }, "max": { "x": 94, "y": 60 } },
+          "ceiling": 4,
+          "tags": ["outbuilding"]
+        },
+        {
+          "id": "grounds.staff",
+          "name": "Staff quarters",
+          "rect": { "min": { "x": 6, "y": 60 }, "max": { "x": 24, "y": 74 } },
+          "ceiling": 3,
+          "tags": ["outbuilding"]
+        },
+        {
+          "id": "grounds.boathouse",
+          "name": "Boathouse (tunnel exit)",
+          "rect": { "min": { "x": 80, "y": -4 }, "max": { "x": 90, "y": 2 } },
+          "ceiling": 4,
+          "tags": ["outbuilding", "tunnel-exit"]
+        },
+        {
+          "id": "grounds.yacht",
+          "name": "His armed yacht",
+          "rect": { "min": { "x": 84, "y": -12 }, "max": { "x": 96, "y": -6 } },
+          "ceiling": 3,
+          "tags": ["vessel"]
+        },
+        {
+          "id": "grounds.villa-west",
+          "name": "Neighboring villa (west)",
+          "rect": { "min": { "x": -40, "y": 20 }, "max": { "x": -10, "y": 60 } },
+          "ceiling": 4,
+          "tags": ["neighbor"]
+        },
+        {
+          "id": "grounds.villa-east",
+          "name": "Neighboring villa (east)",
+          "rect": { "min": { "x": 110, "y": 20 }, "max": { "x": 140, "y": 60 } },
+          "ceiling": 4,
+          "tags": ["neighbor"]
+        }
+      ],
+      "walls": [
+        {
+          "id": "w.fixed.perimeter.east",
+          "a": { "x": 100, "y": 0 },
+          "b": { "x": 100, "y": 80 },
+          "thickness": 0.6,
+          "height": 3,
+          "material": "perimeter",
+          "destructible": true
+        },
+        {
+          "id": "w.fixed.perimeter.north.1",
+          "a": { "x": 0, "y": 80 },
+          "b": { "x": 66, "y": 80 },
+          "thickness": 0.6,
+          "height": 3,
+          "material": "perimeter",
+          "destructible": true
+        },
+        {
+          "id": "w.fixed.perimeter.north.2",
+          "a": { "x": 72, "y": 80 },
+          "b": { "x": 100, "y": 80 },
+          "thickness": 0.6,
+          "height": 3,
+          "material": "perimeter",
+          "destructible": true
+        },
+        {
+          "id": "w.fixed.perimeter.west",
+          "a": { "x": 0, "y": 0 },
+          "b": { "x": 0, "y": 80 },
+          "thickness": 0.6,
+          "height": 3,
+          "material": "perimeter",
+          "destructible": true
+        },
+        {
+          "id": "w.grounds.x-10:20-39.5",
+          "a": { "x": -10, "y": 20 },
+          "b": { "x": -10, "y": 39.5 },
+          "thickness": 0.3,
+          "height": 4,
+          "material": "stone",
+          "destructible": true
+        },
+        {
+          "id": "w.grounds.x-10:40.5-60",
+          "a": { "x": -10, "y": 40.5 },
+          "b": { "x": -10, "y": 60 },
+          "thickness": 0.3,
+          "height": 4,
+          "material": "stone",
+          "destructible": true
+        },
+        {
+          "id": "w.grounds.x-40:20-60",
+          "a": { "x": -40, "y": 20 },
+          "b": { "x": -40, "y": 60 },
+          "thickness": 0.3,
+          "height": 4,
+          "material": "stone",
+          "destructible": true
+        },
+        {
+          "id": "w.grounds.x110:20-39.5",
+          "a": { "x": 110, "y": 20 },
+          "b": { "x": 110, "y": 39.5 },
+          "thickness": 0.3,
+          "height": 4,
+          "material": "stone",
+          "destructible": true
+        },
+        {
+          "id": "w.grounds.x110:40.5-60",
+          "a": { "x": 110, "y": 40.5 },
+          "b": { "x": 110, "y": 60 },
+          "thickness": 0.3,
+          "height": 4,
+          "material": "stone",
+          "destructible": true
+        },
+        {
+          "id": "w.grounds.x140:20-60",
+          "a": { "x": 140, "y": 20 },
+          "b": { "x": 140, "y": 60 },
+          "thickness": 0.3,
+          "height": 4,
+          "material": "stone",
+          "destructible": true
+        },
+        {
+          "id": "w.grounds.x24:60-66.5",
+          "a": { "x": 24, "y": 60 },
+          "b": { "x": 24, "y": 66.5 },
+          "thickness": 0.3,
+          "height": 3,
+          "material": "stone",
+          "destructible": true
+        },
+        {
+          "id": "w.grounds.x24:67.5-74",
+          "a": { "x": 24, "y": 67.5 },
+          "b": { "x": 24, "y": 74 },
+          "thickness": 0.3,
+          "height": 3,
+          "material": "stone",
+          "destructible": true
+        },
+        {
+          "id": "w.grounds.x6:60-74",
+          "a": { "x": 6, "y": 60 },
+          "b": { "x": 6, "y": 74 },
+          "thickness": 0.3,
+          "height": 3,
+          "material": "stone",
+          "destructible": true
+        },
+        {
+          "id": "w.grounds.x72:76-80",
+          "a": { "x": 72, "y": 76 },
+          "b": { "x": 72, "y": 80 },
+          "thickness": 0.3,
+          "height": 3,
+          "material": "stone",
+          "destructible": true
+        },
+        {
+          "id": "w.grounds.x74:52-54",
+          "a": { "x": 74, "y": 52 },
+          "b": { "x": 74, "y": 54 },
+          "thickness": 0.3,
+          "height": 4,
+          "material": "stone",
+          "destructible": true
+        },
+        {
+          "id": "w.grounds.x74:58-60",
+          "a": { "x": 74, "y": 58 },
+          "b": { "x": 74, "y": 60 },
+          "thickness": 0.3,
+          "height": 4,
+          "material": "stone",
+          "destructible": true
+        },
+        {
+          "id": "w.grounds.x74:60-66.25",
+          "a": { "x": 74, "y": 60 },
+          "b": { "x": 74, "y": 66.25 },
+          "thickness": 0.3,
+          "height": 4,
+          "material": "stone",
+          "destructible": true
+        },
+        {
+          "id": "w.grounds.x74:67.75-74",
+          "a": { "x": 74, "y": 67.75 },
+          "b": { "x": 74, "y": 74 },
+          "thickness": 0.3,
+          "height": 4,
+          "material": "stone",
+          "destructible": true
+        },
+        {
+          "id": "w.grounds.x76:76-80",
+          "a": { "x": 76, "y": 76 },
+          "b": { "x": 76, "y": 80 },
+          "thickness": 0.3,
+          "height": 3,
+          "material": "stone",
+          "destructible": true
+        },
+        {
+          "id": "w.grounds.x80:-4-2",
+          "a": { "x": 80, "y": -4 },
+          "b": { "x": 80, "y": 2 },
+          "thickness": 0.3,
+          "height": 4,
+          "material": "stone",
+          "destructible": true
+        },
+        {
+          "id": "w.grounds.x84:-12--6",
+          "a": { "x": 84, "y": -12 },
+          "b": { "x": 84, "y": -6 },
+          "thickness": 0.3,
+          "height": 3,
+          "material": "reinforced",
+          "destructible": true
+        },
+        {
+          "id": "w.grounds.x90:-4--2",
+          "a": { "x": 90, "y": -4 },
+          "b": { "x": 90, "y": -2 },
+          "thickness": 0.3,
+          "height": 4,
+          "material": "stone",
+          "destructible": true
+        },
+        {
+          "id": "w.grounds.x90:0-2",
+          "a": { "x": 90, "y": 0 },
+          "b": { "x": 90, "y": 2 },
+          "thickness": 0.3,
+          "height": 4,
+          "material": "stone",
+          "destructible": true
+        },
+        {
+          "id": "w.grounds.x94:52-60",
+          "a": { "x": 94, "y": 52 },
+          "b": { "x": 94, "y": 60 },
+          "thickness": 0.3,
+          "height": 4,
+          "material": "stone",
+          "destructible": true
+        },
+        {
+          "id": "w.grounds.x94:60-74",
+          "a": { "x": 94, "y": 60 },
+          "b": { "x": 94, "y": 74 },
+          "thickness": 0.3,
+          "height": 4,
+          "material": "stone",
+          "destructible": true
+        },
+        {
+          "id": "w.grounds.x96:-12--6",
+          "a": { "x": 96, "y": -12 },
+          "b": { "x": 96, "y": -6 },
+          "thickness": 0.3,
+          "height": 3,
+          "material": "reinforced",
+          "destructible": true
+        },
+        {
+          "id": "w.grounds.y-12:84-96",
+          "a": { "x": 84, "y": -12 },
+          "b": { "x": 96, "y": -12 },
+          "thickness": 0.3,
+          "height": 3,
+          "material": "reinforced",
+          "destructible": true
+        },
+        {
+          "id": "w.grounds.y-4:80-90",
+          "a": { "x": 80, "y": -4 },
+          "b": { "x": 90, "y": -4 },
+          "thickness": 0.3,
+          "height": 4,
+          "material": "stone",
+          "destructible": true
+        },
+        {
+          "id": "w.grounds.y-6:84-89.5",
+          "a": { "x": 84, "y": -6 },
+          "b": { "x": 89.5, "y": -6 },
+          "thickness": 0.3,
+          "height": 3,
+          "material": "reinforced",
+          "destructible": true
+        },
+        {
+          "id": "w.grounds.y-6:90.5-96",
+          "a": { "x": 90.5, "y": -6 },
+          "b": { "x": 96, "y": -6 },
+          "thickness": 0.3,
+          "height": 3,
+          "material": "reinforced",
+          "destructible": true
+        },
+        {
+          "id": "w.grounds.y20:-40--10",
+          "a": { "x": -40, "y": 20 },
+          "b": { "x": -10, "y": 20 },
+          "thickness": 0.3,
+          "height": 4,
+          "material": "stone",
+          "destructible": true
+        },
+        {
+          "id": "w.grounds.y20:110-140",
+          "a": { "x": 110, "y": 20 },
+          "b": { "x": 140, "y": 20 },
+          "thickness": 0.3,
+          "height": 4,
+          "material": "stone",
+          "destructible": true
+        },
+        {
+          "id": "w.grounds.y2:80-84",
+          "a": { "x": 80, "y": 2 },
+          "b": { "x": 84, "y": 2 },
+          "thickness": 0.3,
+          "height": 4,
+          "material": "stone",
+          "destructible": true
+        },
+        {
+          "id": "w.grounds.y2:86-90",
+          "a": { "x": 86, "y": 2 },
+          "b": { "x": 90, "y": 2 },
+          "thickness": 0.3,
+          "height": 4,
+          "material": "stone",
+          "destructible": true
+        },
+        {
+          "id": "w.grounds.y52:74-94",
+          "a": { "x": 74, "y": 52 },
+          "b": { "x": 94, "y": 52 },
+          "thickness": 0.3,
+          "height": 4,
+          "material": "stone",
+          "destructible": true
+        },
+        {
+          "id": "w.grounds.y60:-40--10",
+          "a": { "x": -40, "y": 60 },
+          "b": { "x": -10, "y": 60 },
+          "thickness": 0.3,
+          "height": 4,
+          "material": "stone",
+          "destructible": true
+        },
+        {
+          "id": "w.grounds.y60:110-140",
+          "a": { "x": 110, "y": 60 },
+          "b": { "x": 140, "y": 60 },
+          "thickness": 0.3,
+          "height": 4,
+          "material": "stone",
+          "destructible": true
+        },
+        {
+          "id": "w.grounds.y60:6-24",
+          "a": { "x": 6, "y": 60 },
+          "b": { "x": 24, "y": 60 },
+          "thickness": 0.3,
+          "height": 3,
+          "material": "stone",
+          "destructible": true
+        },
+        {
+          "id": "w.grounds.y60:74-94",
+          "a": { "x": 74, "y": 60 },
+          "b": { "x": 94, "y": 60 },
+          "thickness": 0.3,
+          "height": 4,
+          "material": "stone",
+          "destructible": true
+        },
+        {
+          "id": "w.grounds.y74:6-24",
+          "a": { "x": 6, "y": 74 },
+          "b": { "x": 24, "y": 74 },
+          "thickness": 0.3,
+          "height": 3,
+          "material": "stone",
+          "destructible": true
+        },
+        {
+          "id": "w.grounds.y74:74-94",
+          "a": { "x": 74, "y": 74 },
+          "b": { "x": 94, "y": 74 },
+          "thickness": 0.3,
+          "height": 4,
+          "material": "stone",
+          "destructible": true
+        },
+        {
+          "id": "w.grounds.y76:72-73.5",
+          "a": { "x": 72, "y": 76 },
+          "b": { "x": 73.5, "y": 76 },
+          "thickness": 0.3,
+          "height": 3,
+          "material": "stone",
+          "destructible": true
+        },
+        {
+          "id": "w.grounds.y76:74.5-76",
+          "a": { "x": 74.5, "y": 76 },
+          "b": { "x": 76, "y": 76 },
+          "thickness": 0.3,
+          "height": 3,
+          "material": "stone",
+          "destructible": true
+        },
+        {
+          "id": "w.grounds.y80:72-76",
+          "a": { "x": 72, "y": 80 },
+          "b": { "x": 76, "y": 80 },
+          "thickness": 0.3,
+          "height": 3,
+          "material": "stone",
+          "destructible": true
+        }
+      ],
+      "doors": [
+        {
+          "id": "d.gate",
+          "at": { "x": 69, "y": 80 },
+          "width": 6,
+          "between": ["outside", "outside"],
+          "kind": "gate",
+          "state": "closed",
+          "breach": ["explosive", "hack"]
+        },
+        {
+          "id": "d.guardhouse",
+          "at": { "x": 74, "y": 76 },
+          "width": 1,
+          "between": ["grounds.guardhouse", "outside"],
+          "kind": "standard",
+          "state": "closed",
+          "breach": ["manual", "shotgun", "explosive"]
+        },
+        {
+          "id": "d.guest-villa",
+          "at": { "x": 74, "y": 67 },
+          "width": 1.5,
+          "between": ["grounds.guest-villa", "outside"],
+          "kind": "standard",
+          "state": "locked",
+          "breach": ["manual", "shotgun", "explosive"]
+        },
+        {
+          "id": "d.garage",
+          "at": { "x": 74, "y": 56 },
+          "width": 4,
+          "between": ["grounds.garage", "outside"],
+          "kind": "shutter",
+          "state": "closed",
+          "breach": ["manual", "explosive"]
+        },
+        {
+          "id": "d.staff",
+          "at": { "x": 24, "y": 67 },
+          "width": 1,
+          "between": ["grounds.staff", "outside"],
+          "kind": "standard",
+          "state": "closed",
+          "breach": ["manual", "shotgun", "explosive"]
+        },
+        {
+          "id": "d.boathouse.north",
+          "at": { "x": 85, "y": 2 },
+          "width": 2,
+          "between": ["grounds.boathouse", "outside"],
+          "kind": "standard",
+          "state": "locked",
+          "breach": ["manual", "shotgun", "explosive"]
+        },
+        {
+          "id": "d.boathouse.dock",
+          "at": { "x": 90, "y": -1 },
+          "width": 2,
+          "between": ["grounds.boathouse", "outside"],
+          "kind": "standard",
+          "state": "closed",
+          "breach": ["manual", "shotgun", "explosive"]
+        },
+        {
+          "id": "d.yacht",
+          "at": { "x": 90, "y": -6 },
+          "width": 1,
+          "between": ["grounds.yacht", "outside"],
+          "kind": "standard",
+          "state": "closed",
+          "breach": ["manual", "shotgun", "explosive"]
+        },
+        {
+          "id": "d.villa-west",
+          "at": { "x": -10, "y": 40 },
+          "width": 1,
+          "between": ["grounds.villa-west", "outside"],
+          "kind": "standard",
+          "state": "locked",
+          "breach": ["manual", "shotgun", "explosive"]
+        },
+        {
+          "id": "d.villa-east",
+          "at": { "x": 110, "y": 40 },
+          "width": 1,
+          "between": ["grounds.villa-east", "outside"],
+          "kind": "standard",
+          "state": "locked",
+          "breach": ["manual", "shotgun", "explosive"]
+        }
+      ],
+      "windows": [],
+      "openings": [],
+      "cover": [
+        {
+          "id": "cover.suv.1",
+          "rect": { "min": { "x": 76, "y": 53 }, "max": { "x": 81, "y": 55 } },
+          "type": "heavy",
+          "height": 1.6,
+          "facing": "all",
+          "destructible": true
+        },
+        {
+          "id": "cover.suv.2",
+          "rect": { "min": { "x": 83, "y": 53 }, "max": { "x": 88, "y": 55 } },
+          "type": "heavy",
+          "height": 1.6,
+          "facing": "all",
+          "destructible": true
+        },
+        {
+          "id": "cover.suv.3",
+          "rect": { "min": { "x": 76, "y": 57 }, "max": { "x": 81, "y": 59 } },
+          "type": "heavy",
+          "height": 1.6,
+          "facing": "all",
+          "destructible": true
+        },
+        {
+          "id": "cover.planter.1",
+          "rect": { "min": { "x": 34.5, "y": 15.4 }, "max": { "x": 35.5, "y": 16 } },
+          "type": "light",
+          "height": 0.8,
+          "facing": 180,
+          "destructible": true
+        },
+        {
+          "id": "cover.planter.2",
+          "rect": { "min": { "x": 44.5, "y": 15.4 }, "max": { "x": 45.5, "y": 16 } },
+          "type": "light",
+          "height": 0.8,
+          "facing": 180,
+          "destructible": true
+        },
+        {
+          "id": "cover.planter.3",
+          "rect": { "min": { "x": 54.5, "y": 15.4 }, "max": { "x": 55.5, "y": 16 } },
+          "type": "light",
+          "height": 0.8,
+          "facing": 180,
+          "destructible": true
+        },
+        {
+          "id": "cover.planter.4",
+          "rect": { "min": { "x": 64.5, "y": 15.4 }, "max": { "x": 65.5, "y": 16 } },
+          "type": "light",
+          "height": 0.8,
+          "facing": 180,
+          "destructible": true
+        }
+      ]
+    },
+    {
+      "id": "ground",
+      "elevation": 0,
+      "rooms": [
+        {
+          "id": "g.hall",
+          "name": "Central hall",
+          "rect": { "min": { "x": 48, "y": 16 }, "max": { "x": 52, "y": 52 } },
+          "ceiling": 4,
+          "tags": ["interior"]
+        },
+        {
+          "id": "g.foyer",
+          "name": "Foyer",
+          "rect": { "min": { "x": 48, "y": 52 }, "max": { "x": 52, "y": 56 } },
+          "ceiling": 4,
+          "tags": ["interior"]
+        },
+        {
+          "id": "g.great",
+          "name": "Great room",
+          "rect": { "min": { "x": 32, "y": 40 }, "max": { "x": 48, "y": 56 } },
+          "ceiling": 8,
+          "tags": ["interior"]
+        },
+        {
+          "id": "g.dining",
+          "name": "Dining room",
+          "rect": { "min": { "x": 32, "y": 32 }, "max": { "x": 48, "y": 40 } },
+          "ceiling": 4,
+          "tags": ["interior"]
+        },
+        {
+          "id": "g.study",
+          "name": "Study",
+          "rect": { "min": { "x": 32, "y": 24 }, "max": { "x": 48, "y": 32 } },
+          "ceiling": 4,
+          "tags": ["interior", "drive-option"]
+        },
+        {
+          "id": "g.master",
+          "name": "Master suite",
+          "rect": { "min": { "x": 32, "y": 16 }, "max": { "x": 48, "y": 24 } },
+          "ceiling": 4,
+          "tags": ["interior", "principal-option"]
+        },
+        {
+          "id": "g.kitchen",
+          "name": "Kitchen",
+          "rect": { "min": { "x": 52, "y": 46 }, "max": { "x": 68, "y": 56 } },
+          "ceiling": 4,
+          "tags": ["interior"]
+        },
+        {
+          "id": "g.pantry",
+          "name": "Pantry",
+          "rect": { "min": { "x": 52, "y": 41 }, "max": { "x": 60, "y": 46 } },
+          "ceiling": 4,
+          "tags": ["interior"]
+        },
+        {
+          "id": "g.mud",
+          "name": "Mud room",
+          "rect": { "min": { "x": 60, "y": 41 }, "max": { "x": 68, "y": 46 } },
+          "ceiling": 4,
+          "tags": ["interior"]
+        },
+        {
+          "id": "g.security",
+          "name": "Security office",
+          "rect": { "min": { "x": 52, "y": 34 }, "max": { "x": 68, "y": 41 } },
+          "ceiling": 4,
+          "tags": ["interior", "guard-post"]
+        },
+        {
+          "id": "g.stairs",
+          "name": "Stairwell",
+          "rect": { "min": { "x": 52, "y": 28 }, "max": { "x": 60, "y": 34 } },
+          "ceiling": 4,
+          "tags": ["interior"]
+        },
+        {
+          "id": "g.wc",
+          "name": "Guest WC",
+          "rect": { "min": { "x": 60, "y": 28 }, "max": { "x": 68, "y": 34 } },
+          "ceiling": 4,
+          "tags": ["interior"]
+        },
+        {
+          "id": "g.panic",
+          "name": "Panic room",
+          "rect": { "min": { "x": 52, "y": 16 }, "max": { "x": 62, "y": 28 } },
+          "ceiling": 4,
+          "tags": ["interior", "panic-room"]
+        },
+        {
+          "id": "g.generator",
+          "name": "Generator and utility",
+          "rect": { "min": { "x": 62, "y": 16 }, "max": { "x": 68, "y": 28 } },
+          "ceiling": 4,
+          "tags": ["interior", "utility"]
+        }
+      ],
+      "walls": [
+        {
+          "id": "w.ground.x32:16-24",
+          "a": { "x": 32, "y": 16 },
+          "b": { "x": 32, "y": 24 },
+          "thickness": 0.4,
+          "height": 4,
+          "material": "reinforced",
+          "destructible": true
+        },
+        {
+          "id": "w.ground.x32:24-32",
+          "a": { "x": 32, "y": 24 },
+          "b": { "x": 32, "y": 32 },
+          "thickness": 0.4,
+          "height": 4,
+          "material": "reinforced",
+          "destructible": true
+        },
+        {
+          "id": "w.ground.x32:32-40",
+          "a": { "x": 32, "y": 32 },
+          "b": { "x": 32, "y": 40 },
+          "thickness": 0.4,
+          "height": 4,
+          "material": "reinforced",
+          "destructible": true
+        },
+        {
+          "id": "w.ground.x32:40-56",
+          "a": { "x": 32, "y": 40 },
+          "b": { "x": 32, "y": 56 },
+          "thickness": 0.4,
+          "height": 8,
+          "material": "reinforced",
+          "destructible": true
+        },
+        {
+          "id": "w.ground.x48:16-19.5",
+          "a": { "x": 48, "y": 16 },
+          "b": { "x": 48, "y": 19.5 },
+          "thickness": 0.2,
+          "height": 4,
+          "material": "plaster",
+          "destructible": true
+        },
+        {
+          "id": "w.ground.x48:20.5-24",
+          "a": { "x": 48, "y": 20.5 },
+          "b": { "x": 48, "y": 24 },
+          "thickness": 0.2,
+          "height": 4,
+          "material": "plaster",
+          "destructible": true
+        },
+        {
+          "id": "w.ground.x48:24-27.5",
+          "a": { "x": 48, "y": 24 },
+          "b": { "x": 48, "y": 27.5 },
+          "thickness": 0.2,
+          "height": 4,
+          "material": "plaster",
+          "destructible": true
+        },
+        {
+          "id": "w.ground.x48:28.5-32",
+          "a": { "x": 48, "y": 28.5 },
+          "b": { "x": 48, "y": 32 },
+          "thickness": 0.2,
+          "height": 4,
+          "material": "plaster",
+          "destructible": true
+        },
+        {
+          "id": "w.ground.x48:32-35.5",
+          "a": { "x": 48, "y": 32 },
+          "b": { "x": 48, "y": 35.5 },
+          "thickness": 0.2,
+          "height": 4,
+          "material": "plaster",
+          "destructible": true
+        },
+        {
+          "id": "w.ground.x48:36.5-40",
+          "a": { "x": 48, "y": 36.5 },
+          "b": { "x": 48, "y": 40 },
+          "thickness": 0.2,
+          "height": 4,
+          "material": "plaster",
+          "destructible": true
+        },
+        {
+          "id": "w.ground.x48:40-45.4",
+          "a": { "x": 48, "y": 40 },
+          "b": { "x": 48, "y": 45.4 },
+          "thickness": 0.2,
+          "height": 8,
+          "material": "plaster",
+          "destructible": true
+        },
+        {
+          "id": "w.ground.x48:46.6-52",
+          "a": { "x": 48, "y": 46.6 },
+          "b": { "x": 48, "y": 52 },
+          "thickness": 0.2,
+          "height": 8,
+          "material": "plaster",
+          "destructible": true
+        },
+        {
+          "id": "w.ground.x48:52-53.4",
+          "a": { "x": 48, "y": 52 },
+          "b": { "x": 48, "y": 53.4 },
+          "thickness": 0.2,
+          "height": 8,
+          "material": "plaster",
+          "destructible": true
+        },
+        {
+          "id": "w.ground.x48:54.6-56",
+          "a": { "x": 48, "y": 54.6 },
+          "b": { "x": 48, "y": 56 },
+          "thickness": 0.2,
+          "height": 8,
+          "material": "plaster",
+          "destructible": true
+        },
+        {
+          "id": "w.ground.x52:16-21.4",
+          "a": { "x": 52, "y": 16 },
+          "b": { "x": 52, "y": 21.4 },
+          "thickness": 0.5,
+          "height": 4,
+          "material": "reinforced",
+          "destructible": false
+        },
+        {
+          "id": "w.ground.x52:22.6-28",
+          "a": { "x": 52, "y": 22.6 },
+          "b": { "x": 52, "y": 28 },
+          "thickness": 0.5,
+          "height": 4,
+          "material": "reinforced",
+          "destructible": false
+        },
+        {
+          "id": "w.ground.x52:28-30.5",
+          "a": { "x": 52, "y": 28 },
+          "b": { "x": 52, "y": 30.5 },
+          "thickness": 0.2,
+          "height": 4,
+          "material": "plaster",
+          "destructible": true
+        },
+        {
+          "id": "w.ground.x52:31.5-34",
+          "a": { "x": 52, "y": 31.5 },
+          "b": { "x": 52, "y": 34 },
+          "thickness": 0.2,
+          "height": 4,
+          "material": "plaster",
+          "destructible": true
+        },
+        {
+          "id": "w.ground.x52:34-37",
+          "a": { "x": 52, "y": 34 },
+          "b": { "x": 52, "y": 37 },
+          "thickness": 0.2,
+          "height": 4,
+          "material": "plaster",
+          "destructible": true
+        },
+        {
+          "id": "w.ground.x52:38-41",
+          "a": { "x": 52, "y": 38 },
+          "b": { "x": 52, "y": 41 },
+          "thickness": 0.2,
+          "height": 4,
+          "material": "plaster",
+          "destructible": true
+        },
+        {
+          "id": "w.ground.x52:41-43",
+          "a": { "x": 52, "y": 41 },
+          "b": { "x": 52, "y": 43 },
+          "thickness": 0.2,
+          "height": 4,
+          "material": "plaster",
+          "destructible": true
+        },
+        {
+          "id": "w.ground.x52:44-46",
+          "a": { "x": 52, "y": 44 },
+          "b": { "x": 52, "y": 46 },
+          "thickness": 0.2,
+          "height": 4,
+          "material": "plaster",
+          "destructible": true
+        },
+        {
+          "id": "w.ground.x52:46-48.5",
+          "a": { "x": 52, "y": 46 },
+          "b": { "x": 52, "y": 48.5 },
+          "thickness": 0.2,
+          "height": 4,
+          "material": "plaster",
+          "destructible": true
+        },
+        {
+          "id": "w.ground.x52:49.5-52",
+          "a": { "x": 52, "y": 49.5 },
+          "b": { "x": 52, "y": 52 },
+          "thickness": 0.2,
+          "height": 4,
+          "material": "plaster",
+          "destructible": true
+        },
+        {
+          "id": "w.ground.x52:52-56",
+          "a": { "x": 52, "y": 52 },
+          "b": { "x": 52, "y": 56 },
+          "thickness": 0.2,
+          "height": 4,
+          "material": "plaster",
+          "destructible": true
+        },
+        {
+          "id": "w.ground.x60:28-30.5",
+          "a": { "x": 60, "y": 28 },
+          "b": { "x": 60, "y": 30.5 },
+          "thickness": 0.2,
+          "height": 4,
+          "material": "plaster",
+          "destructible": true
+        },
+        {
+          "id": "w.ground.x60:31.5-34",
+          "a": { "x": 60, "y": 31.5 },
+          "b": { "x": 60, "y": 34 },
+          "thickness": 0.2,
+          "height": 4,
+          "material": "plaster",
+          "destructible": true
+        },
+        {
+          "id": "w.ground.x60:41-43",
+          "a": { "x": 60, "y": 41 },
+          "b": { "x": 60, "y": 43 },
+          "thickness": 0.2,
+          "height": 4,
+          "material": "plaster",
+          "destructible": true
+        },
+        {
+          "id": "w.ground.x60:44-46",
+          "a": { "x": 60, "y": 44 },
+          "b": { "x": 60, "y": 46 },
+          "thickness": 0.2,
+          "height": 4,
+          "material": "plaster",
+          "destructible": true
+        },
+        {
+          "id": "w.ground.x62:16-28",
+          "a": { "x": 62, "y": 16 },
+          "b": { "x": 62, "y": 28 },
+          "thickness": 0.5,
+          "height": 4,
+          "material": "reinforced",
+          "destructible": false
+        },
+        {
+          "id": "w.ground.x68:16-21.5",
+          "a": { "x": 68, "y": 16 },
+          "b": { "x": 68, "y": 21.5 },
+          "thickness": 0.4,
+          "height": 4,
+          "material": "reinforced",
+          "destructible": true
+        },
+        {
+          "id": "w.ground.x68:22.5-28",
+          "a": { "x": 68, "y": 22.5 },
+          "b": { "x": 68, "y": 28 },
+          "thickness": 0.4,
+          "height": 4,
+          "material": "reinforced",
+          "destructible": true
+        },
+        {
+          "id": "w.ground.x68:28-34",
+          "a": { "x": 68, "y": 28 },
+          "b": { "x": 68, "y": 34 },
+          "thickness": 0.4,
+          "height": 4,
+          "material": "reinforced",
+          "destructible": true
+        },
+        {
+          "id": "w.ground.x68:34-41",
+          "a": { "x": 68, "y": 34 },
+          "b": { "x": 68, "y": 41 },
+          "thickness": 0.4,
+          "height": 4,
+          "material": "reinforced",
+          "destructible": true
+        },
+        {
+          "id": "w.ground.x68:41-43",
+          "a": { "x": 68, "y": 41 },
+          "b": { "x": 68, "y": 43 },
+          "thickness": 0.4,
+          "height": 4,
+          "material": "reinforced",
+          "destructible": true
+        },
+        {
+          "id": "w.ground.x68:44-46",
+          "a": { "x": 68, "y": 44 },
+          "b": { "x": 68, "y": 46 },
+          "thickness": 0.4,
+          "height": 4,
+          "material": "reinforced",
+          "destructible": true
+        },
+        {
+          "id": "w.ground.x68:46-56",
+          "a": { "x": 68, "y": 46 },
+          "b": { "x": 68, "y": 56 },
+          "thickness": 0.4,
+          "height": 4,
+          "material": "reinforced",
+          "destructible": true
+        },
+        {
+          "id": "w.ground.y16:32-39",
+          "a": { "x": 32, "y": 16 },
+          "b": { "x": 39, "y": 16 },
+          "thickness": 0.4,
+          "height": 4,
+          "material": "reinforced",
+          "destructible": true
+        },
+        {
+          "id": "w.ground.y16:41-48",
+          "a": { "x": 41, "y": 16 },
+          "b": { "x": 48, "y": 16 },
+          "thickness": 0.4,
+          "height": 4,
+          "material": "reinforced",
+          "destructible": true
+        },
+        {
+          "id": "w.ground.y16:48-49",
+          "a": { "x": 48, "y": 16 },
+          "b": { "x": 49, "y": 16 },
+          "thickness": 0.4,
+          "height": 4,
+          "material": "reinforced",
+          "destructible": true
+        },
+        {
+          "id": "w.ground.y16:51-52",
+          "a": { "x": 51, "y": 16 },
+          "b": { "x": 52, "y": 16 },
+          "thickness": 0.4,
+          "height": 4,
+          "material": "reinforced",
+          "destructible": true
+        },
+        {
+          "id": "w.ground.y16:52-62",
+          "a": { "x": 52, "y": 16 },
+          "b": { "x": 62, "y": 16 },
+          "thickness": 0.5,
+          "height": 4,
+          "material": "reinforced",
+          "destructible": false
+        },
+        {
+          "id": "w.ground.y16:62-68",
+          "a": { "x": 62, "y": 16 },
+          "b": { "x": 68, "y": 16 },
+          "thickness": 0.4,
+          "height": 4,
+          "material": "reinforced",
+          "destructible": true
+        },
+        {
+          "id": "w.ground.y24:32-48",
+          "a": { "x": 32, "y": 24 },
+          "b": { "x": 48, "y": 24 },
+          "thickness": 0.2,
+          "height": 4,
+          "material": "plaster",
+          "destructible": true
+        },
+        {
+          "id": "w.ground.y28:52-60",
+          "a": { "x": 52, "y": 28 },
+          "b": { "x": 60, "y": 28 },
+          "thickness": 0.5,
+          "height": 4,
+          "material": "reinforced",
+          "destructible": false
+        },
+        {
+          "id": "w.ground.y28:60-62",
+          "a": { "x": 60, "y": 28 },
+          "b": { "x": 62, "y": 28 },
+          "thickness": 0.5,
+          "height": 4,
+          "material": "reinforced",
+          "destructible": false
+        },
+        {
+          "id": "w.ground.y28:62-68",
+          "a": { "x": 62, "y": 28 },
+          "b": { "x": 68, "y": 28 },
+          "thickness": 0.2,
+          "height": 4,
+          "material": "plaster",
+          "destructible": true
+        },
+        {
+          "id": "w.ground.y32:32-48",
+          "a": { "x": 32, "y": 32 },
+          "b": { "x": 48, "y": 32 },
+          "thickness": 0.2,
+          "height": 4,
+          "material": "plaster",
+          "destructible": true
+        },
+        {
+          "id": "w.ground.y34:52-60",
+          "a": { "x": 52, "y": 34 },
+          "b": { "x": 60, "y": 34 },
+          "thickness": 0.2,
+          "height": 4,
+          "material": "plaster",
+          "destructible": true
+        },
+        {
+          "id": "w.ground.y34:60-68",
+          "a": { "x": 60, "y": 34 },
+          "b": { "x": 68, "y": 34 },
+          "thickness": 0.2,
+          "height": 4,
+          "material": "plaster",
+          "destructible": true
+        },
+        {
+          "id": "w.ground.y40:32-48",
+          "a": { "x": 32, "y": 40 },
+          "b": { "x": 48, "y": 40 },
+          "thickness": 0.2,
+          "height": 8,
+          "material": "plaster",
+          "destructible": true
+        },
+        {
+          "id": "w.ground.y41:52-60",
+          "a": { "x": 52, "y": 41 },
+          "b": { "x": 60, "y": 41 },
+          "thickness": 0.2,
+          "height": 4,
+          "material": "plaster",
+          "destructible": true
+        },
+        {
+          "id": "w.ground.y41:60-68",
+          "a": { "x": 60, "y": 41 },
+          "b": { "x": 68, "y": 41 },
+          "thickness": 0.2,
+          "height": 4,
+          "material": "plaster",
+          "destructible": true
+        },
+        {
+          "id": "w.ground.y46:52-55.5",
+          "a": { "x": 52, "y": 46 },
+          "b": { "x": 55.5, "y": 46 },
+          "thickness": 0.2,
+          "height": 4,
+          "material": "plaster",
+          "destructible": true
+        },
+        {
+          "id": "w.ground.y46:56.5-60",
+          "a": { "x": 56.5, "y": 46 },
+          "b": { "x": 60, "y": 46 },
+          "thickness": 0.2,
+          "height": 4,
+          "material": "plaster",
+          "destructible": true
+        },
+        {
+          "id": "w.ground.y46:60-68",
+          "a": { "x": 60, "y": 46 },
+          "b": { "x": 68, "y": 46 },
+          "thickness": 0.2,
+          "height": 4,
+          "material": "plaster",
+          "destructible": true
+        },
+        {
+          "id": "w.ground.y52:48-48.2",
+          "a": { "x": 48, "y": 52 },
+          "b": { "x": 48.2, "y": 52 },
+          "thickness": 0.2,
+          "height": 4,
+          "material": "plaster",
+          "destructible": true
+        },
+        {
+          "id": "w.ground.y52:51.8-52",
+          "a": { "x": 51.8, "y": 52 },
+          "b": { "x": 52, "y": 52 },
+          "thickness": 0.2,
+          "height": 4,
+          "material": "plaster",
+          "destructible": true
+        },
+        {
+          "id": "w.ground.y56:32-48",
+          "a": { "x": 32, "y": 56 },
+          "b": { "x": 48, "y": 56 },
+          "thickness": 0.4,
+          "height": 8,
+          "material": "reinforced",
+          "destructible": true
+        },
+        {
+          "id": "w.ground.y56:48-48.8",
+          "a": { "x": 48, "y": 56 },
+          "b": { "x": 48.8, "y": 56 },
+          "thickness": 0.4,
+          "height": 4,
+          "material": "reinforced",
+          "destructible": true
+        },
+        {
+          "id": "w.ground.y56:51.2-52",
+          "a": { "x": 51.2, "y": 56 },
+          "b": { "x": 52, "y": 56 },
+          "thickness": 0.4,
+          "height": 4,
+          "material": "reinforced",
+          "destructible": true
+        },
+        {
+          "id": "w.ground.y56:52-68",
+          "a": { "x": 52, "y": 56 },
+          "b": { "x": 68, "y": 56 },
+          "thickness": 0.4,
+          "height": 4,
+          "material": "reinforced",
+          "destructible": true
+        }
+      ],
+      "doors": [
+        {
+          "id": "d.g.hall-master",
+          "at": { "x": 48, "y": 20 },
+          "width": 1,
+          "between": ["g.master", "g.hall"],
+          "kind": "standard",
+          "state": "closed",
+          "breach": ["manual", "shotgun", "explosive"]
+        },
+        {
+          "id": "d.g.hall-study",
+          "at": { "x": 48, "y": 28 },
+          "width": 1,
+          "between": ["g.study", "g.hall"],
+          "kind": "standard",
+          "state": "closed",
+          "breach": ["manual", "shotgun", "explosive"]
+        },
+        {
+          "id": "d.g.hall-dining",
+          "at": { "x": 48, "y": 36 },
+          "width": 1,
+          "between": ["g.dining", "g.hall"],
+          "kind": "standard",
+          "state": "closed",
+          "breach": ["manual", "shotgun", "explosive"]
+        },
+        {
+          "id": "d.g.hall-great",
+          "at": { "x": 48, "y": 46 },
+          "width": 1.2,
+          "between": ["g.great", "g.hall"],
+          "kind": "standard",
+          "state": "closed",
+          "breach": ["manual", "shotgun", "explosive"]
+        },
+        {
+          "id": "d.g.great-foyer",
+          "at": { "x": 48, "y": 54 },
+          "width": 1.2,
+          "between": ["g.great", "g.foyer"],
+          "kind": "standard",
+          "state": "closed",
+          "breach": ["manual", "shotgun", "explosive"]
+        },
+        {
+          "id": "d.g.hall-foyer",
+          "at": { "x": 50, "y": 52 },
+          "width": 3.6,
+          "between": ["g.hall", "g.foyer"],
+          "kind": "standard",
+          "state": "open",
+          "breach": []
+        },
+        {
+          "id": "d.g.main",
+          "at": { "x": 50, "y": 56 },
+          "width": 2.4,
+          "between": ["g.foyer", "outside"],
+          "kind": "standard",
+          "state": "locked",
+          "breach": ["manual", "shotgun", "explosive"]
+        },
+        {
+          "id": "d.g.hall-stairs",
+          "at": { "x": 52, "y": 31 },
+          "width": 1,
+          "between": ["g.stairs", "g.hall"],
+          "kind": "standard",
+          "state": "closed",
+          "breach": ["manual", "shotgun", "explosive"]
+        },
+        {
+          "id": "d.g.hall-security",
+          "at": { "x": 52, "y": 37.5 },
+          "width": 1,
+          "between": ["g.security", "g.hall"],
+          "kind": "standard",
+          "state": "closed",
+          "breach": ["manual", "shotgun", "explosive"]
+        },
+        {
+          "id": "d.g.hall-pantry",
+          "at": { "x": 52, "y": 43.5 },
+          "width": 1,
+          "between": ["g.pantry", "g.hall"],
+          "kind": "standard",
+          "state": "closed",
+          "breach": ["manual", "shotgun", "explosive"]
+        },
+        {
+          "id": "d.g.hall-kitchen",
+          "at": { "x": 52, "y": 49 },
+          "width": 1,
+          "between": ["g.kitchen", "g.hall"],
+          "kind": "standard",
+          "state": "closed",
+          "breach": ["manual", "shotgun", "explosive"]
+        },
+        {
+          "id": "d.g.hall-panic",
+          "at": { "x": 52, "y": 22 },
+          "width": 1.2,
+          "between": ["g.panic", "g.hall"],
+          "kind": "blast",
+          "state": "closed",
+          "breach": ["explosive", "thermal-lance", "hack"]
+        },
+        {
+          "id": "d.g.terrace-hall",
+          "at": { "x": 50, "y": 16 },
+          "width": 2,
+          "between": ["g.hall", "outside"],
+          "kind": "glass",
+          "state": "closed",
+          "breach": ["manual", "shotgun", "explosive"]
+        },
+        {
+          "id": "d.g.terrace-master",
+          "at": { "x": 40, "y": 16 },
+          "width": 2,
+          "between": ["g.master", "outside"],
+          "kind": "glass",
+          "state": "closed",
+          "breach": ["manual", "shotgun", "explosive"]
+        },
+        {
+          "id": "d.g.kitchen-pantry",
+          "at": { "x": 56, "y": 46 },
+          "width": 1,
+          "between": ["g.kitchen", "g.pantry"],
+          "kind": "standard",
+          "state": "closed",
+          "breach": ["manual", "shotgun", "explosive"]
+        },
+        {
+          "id": "d.g.pantry-mud",
+          "at": { "x": 60, "y": 43.5 },
+          "width": 1,
+          "between": ["g.pantry", "g.mud"],
+          "kind": "standard",
+          "state": "closed",
+          "breach": ["manual", "shotgun", "explosive"]
+        },
+        {
+          "id": "d.g.mud-east",
+          "at": { "x": 68, "y": 43.5 },
+          "width": 1,
+          "between": ["g.mud", "outside"],
+          "kind": "standard",
+          "state": "locked",
+          "breach": ["manual", "shotgun", "explosive"]
+        },
+        {
+          "id": "d.g.generator-east",
+          "at": { "x": 68, "y": 22 },
+          "width": 1,
+          "between": ["g.generator", "outside"],
+          "kind": "standard",
+          "state": "locked",
+          "breach": ["manual", "shotgun", "explosive"]
+        },
+        {
+          "id": "d.g.wc-stairs",
+          "at": { "x": 60, "y": 31 },
+          "width": 1,
+          "between": ["g.wc", "g.stairs"],
+          "kind": "standard",
+          "state": "closed",
+          "breach": ["manual", "shotgun", "explosive"]
+        }
+      ],
+      "windows": [],
+      "openings": [],
+      "cover": [
+        {
+          "id": "cover.dining-table",
+          "rect": { "min": { "x": 35, "y": 34 }, "max": { "x": 45, "y": 38 } },
+          "type": "light",
+          "height": 0.8,
+          "facing": "all",
+          "destructible": true
+        },
+        {
+          "id": "cover.study-desk",
+          "rect": { "min": { "x": 37, "y": 27 }, "max": { "x": 40, "y": 29 } },
+          "type": "heavy",
+          "height": 0.9,
+          "facing": "all",
+          "destructible": true
+        },
+        {
+          "id": "cover.kitchen-island",
+          "rect": { "min": { "x": 56, "y": 50 }, "max": { "x": 64, "y": 52 } },
+          "type": "heavy",
+          "height": 0.95,
+          "facing": "all",
+          "destructible": true
+        }
+      ]
+    },
+    {
+      "id": "upper",
+      "elevation": 4,
+      "rooms": [
+        {
+          "id": "u.hall",
+          "name": "Upper hall",
+          "rect": { "min": { "x": 48, "y": 16 }, "max": { "x": 52, "y": 52 } },
+          "ceiling": 4,
+          "tags": ["interior"]
+        },
+        {
+          "id": "u.gallery",
+          "name": "Gallery walkway",
+          "rect": { "min": { "x": 44, "y": 40 }, "max": { "x": 48, "y": 56 } },
+          "ceiling": 4,
+          "tags": ["interior"]
+        },
+        {
+          "id": "u.void",
+          "name": "Great room void",
+          "rect": { "min": { "x": 32, "y": 40 }, "max": { "x": 44, "y": 56 } },
+          "ceiling": 4,
+          "tags": ["interior", "void"]
+        },
+        {
+          "id": "u.office",
+          "name": "Private office",
+          "rect": { "min": { "x": 32, "y": 32 }, "max": { "x": 48, "y": 40 } },
+          "ceiling": 4,
+          "tags": ["interior", "drive-option"]
+        },
+        {
+          "id": "u.guest",
+          "name": "Guest room",
+          "rect": { "min": { "x": 32, "y": 24 }, "max": { "x": 48, "y": 32 } },
+          "ceiling": 4,
+          "tags": ["interior"]
+        },
+        {
+          "id": "u.son",
+          "name": "Son's room",
+          "rect": { "min": { "x": 32, "y": 16 }, "max": { "x": 48, "y": 24 } },
+          "ceiling": 4,
+          "tags": ["interior", "family"]
+        },
+        {
+          "id": "u.wife",
+          "name": "Wife's suite",
+          "rect": { "min": { "x": 52, "y": 44 }, "max": { "x": 68, "y": 56 } },
+          "ceiling": 4,
+          "tags": ["interior", "family"]
+        },
+        {
+          "id": "u.bath",
+          "name": "Bathroom",
+          "rect": { "min": { "x": 52, "y": 34 }, "max": { "x": 60, "y": 44 } },
+          "ceiling": 4,
+          "tags": ["interior"]
+        },
+        {
+          "id": "u.linen",
+          "name": "Linen",
+          "rect": { "min": { "x": 60, "y": 34 }, "max": { "x": 68, "y": 44 } },
+          "ceiling": 4,
+          "tags": ["interior"]
+        },
+        {
+          "id": "u.stairs",
+          "name": "Stair landing",
+          "rect": { "min": { "x": 52, "y": 28 }, "max": { "x": 60, "y": 34 } },
+          "ceiling": 4,
+          "tags": ["interior"]
+        },
+        {
+          "id": "u.safe",
+          "name": "Safe landing",
+          "rect": { "min": { "x": 52, "y": 16 }, "max": { "x": 62, "y": 28 } },
+          "ceiling": 4,
+          "tags": ["interior", "safe-landing"]
+        },
+        {
+          "id": "u.daughter",
+          "name": "Daughter's room",
+          "rect": { "min": { "x": 62, "y": 16 }, "max": { "x": 68, "y": 28 } },
+          "ceiling": 4,
+          "tags": ["interior", "family"]
+        },
+        {
+          "id": "u.balcony",
+          "name": "Balcony",
+          "rect": { "min": { "x": 32, "y": 13 }, "max": { "x": 68, "y": 16 } },
+          "ceiling": 4,
+          "tags": ["exterior"]
+        }
+      ],
+      "walls": [
+        {
+          "id": "w.upper.x32:13-16",
+          "a": { "x": 32, "y": 13 },
+          "b": { "x": 32, "y": 16 },
+          "thickness": 0.1,
+          "height": 1.1,
+          "material": "glass",
+          "destructible": true
+        },
+        {
+          "id": "w.upper.x32:16-24",
+          "a": { "x": 32, "y": 16 },
+          "b": { "x": 32, "y": 24 },
+          "thickness": 0.4,
+          "height": 4,
+          "material": "reinforced",
+          "destructible": true
+        },
+        {
+          "id": "w.upper.x32:24-32",
+          "a": { "x": 32, "y": 24 },
+          "b": { "x": 32, "y": 32 },
+          "thickness": 0.4,
+          "height": 4,
+          "material": "reinforced",
+          "destructible": true
+        },
+        {
+          "id": "w.upper.x32:32-40",
+          "a": { "x": 32, "y": 32 },
+          "b": { "x": 32, "y": 40 },
+          "thickness": 0.4,
+          "height": 4,
+          "material": "reinforced",
+          "destructible": true
+        },
+        {
+          "id": "w.upper.x32:40-56",
+          "a": { "x": 32, "y": 40 },
+          "b": { "x": 32, "y": 56 },
+          "thickness": 0.4,
+          "height": 4,
+          "material": "reinforced",
+          "destructible": true
+        },
+        {
+          "id": "w.upper.x44:40-56",
+          "a": { "x": 44, "y": 40 },
+          "b": { "x": 44, "y": 56 },
+          "thickness": 0.1,
+          "height": 1.1,
+          "material": "glass",
+          "destructible": true
+        },
+        {
+          "id": "w.upper.x48:16-19.5",
+          "a": { "x": 48, "y": 16 },
+          "b": { "x": 48, "y": 19.5 },
+          "thickness": 0.2,
+          "height": 4,
+          "material": "plaster",
+          "destructible": true
+        },
+        {
+          "id": "w.upper.x48:20.5-24",
+          "a": { "x": 48, "y": 20.5 },
+          "b": { "x": 48, "y": 24 },
+          "thickness": 0.2,
+          "height": 4,
+          "material": "plaster",
+          "destructible": true
+        },
+        {
+          "id": "w.upper.x48:24-27.5",
+          "a": { "x": 48, "y": 24 },
+          "b": { "x": 48, "y": 27.5 },
+          "thickness": 0.2,
+          "height": 4,
+          "material": "plaster",
+          "destructible": true
+        },
+        {
+          "id": "w.upper.x48:28.5-32",
+          "a": { "x": 48, "y": 28.5 },
+          "b": { "x": 48, "y": 32 },
+          "thickness": 0.2,
+          "height": 4,
+          "material": "plaster",
+          "destructible": true
+        },
+        {
+          "id": "w.upper.x48:32-35.5",
+          "a": { "x": 48, "y": 32 },
+          "b": { "x": 48, "y": 35.5 },
+          "thickness": 0.2,
+          "height": 4,
+          "material": "plaster",
+          "destructible": true
+        },
+        {
+          "id": "w.upper.x48:36.5-40",
+          "a": { "x": 48, "y": 36.5 },
+          "b": { "x": 48, "y": 40 },
+          "thickness": 0.2,
+          "height": 4,
+          "material": "plaster",
+          "destructible": true
+        },
+        {
+          "id": "w.upper.x48:40-44",
+          "a": { "x": 48, "y": 40 },
+          "b": { "x": 48, "y": 44 },
+          "thickness": 0.2,
+          "height": 4,
+          "material": "plaster",
+          "destructible": true
+        },
+        {
+          "id": "w.upper.x48:48-52",
+          "a": { "x": 48, "y": 48 },
+          "b": { "x": 48, "y": 52 },
+          "thickness": 0.2,
+          "height": 4,
+          "material": "plaster",
+          "destructible": true
+        },
+        {
+          "id": "w.upper.x48:52-56",
+          "a": { "x": 48, "y": 52 },
+          "b": { "x": 48, "y": 56 },
+          "thickness": 0.2,
+          "height": 4,
+          "material": "plaster",
+          "destructible": true
+        },
+        {
+          "id": "w.upper.x52:16-21.4",
+          "a": { "x": 52, "y": 16 },
+          "b": { "x": 52, "y": 21.4 },
+          "thickness": 0.5,
+          "height": 4,
+          "material": "reinforced",
+          "destructible": false
+        },
+        {
+          "id": "w.upper.x52:22.6-28",
+          "a": { "x": 52, "y": 22.6 },
+          "b": { "x": 52, "y": 28 },
+          "thickness": 0.5,
+          "height": 4,
+          "material": "reinforced",
+          "destructible": false
+        },
+        {
+          "id": "w.upper.x52:28-30.5",
+          "a": { "x": 52, "y": 28 },
+          "b": { "x": 52, "y": 30.5 },
+          "thickness": 0.2,
+          "height": 4,
+          "material": "plaster",
+          "destructible": true
+        },
+        {
+          "id": "w.upper.x52:31.5-34",
+          "a": { "x": 52, "y": 31.5 },
+          "b": { "x": 52, "y": 34 },
+          "thickness": 0.2,
+          "height": 4,
+          "material": "plaster",
+          "destructible": true
+        },
+        {
+          "id": "w.upper.x52:34-38.5",
+          "a": { "x": 52, "y": 34 },
+          "b": { "x": 52, "y": 38.5 },
+          "thickness": 0.2,
+          "height": 4,
+          "material": "plaster",
+          "destructible": true
+        },
+        {
+          "id": "w.upper.x52:39.5-44",
+          "a": { "x": 52, "y": 39.5 },
+          "b": { "x": 52, "y": 44 },
+          "thickness": 0.2,
+          "height": 4,
+          "material": "plaster",
+          "destructible": true
+        },
+        {
+          "id": "w.upper.x52:44-47.5",
+          "a": { "x": 52, "y": 44 },
+          "b": { "x": 52, "y": 47.5 },
+          "thickness": 0.2,
+          "height": 4,
+          "material": "plaster",
+          "destructible": true
+        },
+        {
+          "id": "w.upper.x52:48.5-52",
+          "a": { "x": 52, "y": 48.5 },
+          "b": { "x": 52, "y": 52 },
+          "thickness": 0.2,
+          "height": 4,
+          "material": "plaster",
+          "destructible": true
+        },
+        {
+          "id": "w.upper.x52:52-56",
+          "a": { "x": 52, "y": 52 },
+          "b": { "x": 52, "y": 56 },
+          "thickness": 0.2,
+          "height": 4,
+          "material": "plaster",
+          "destructible": true
+        },
+        {
+          "id": "w.upper.x60:28-34",
+          "a": { "x": 60, "y": 28 },
+          "b": { "x": 60, "y": 34 },
+          "thickness": 0.2,
+          "height": 4,
+          "material": "plaster",
+          "destructible": true
+        },
+        {
+          "id": "w.upper.x60:34-38.5",
+          "a": { "x": 60, "y": 34 },
+          "b": { "x": 60, "y": 38.5 },
+          "thickness": 0.2,
+          "height": 4,
+          "material": "plaster",
+          "destructible": true
+        },
+        {
+          "id": "w.upper.x60:39.5-44",
+          "a": { "x": 60, "y": 39.5 },
+          "b": { "x": 60, "y": 44 },
+          "thickness": 0.2,
+          "height": 4,
+          "material": "plaster",
+          "destructible": true
+        },
+        {
+          "id": "w.upper.x62:16-21.5",
+          "a": { "x": 62, "y": 16 },
+          "b": { "x": 62, "y": 21.5 },
+          "thickness": 0.5,
+          "height": 4,
+          "material": "reinforced",
+          "destructible": false
+        },
+        {
+          "id": "w.upper.x62:22.5-28",
+          "a": { "x": 62, "y": 22.5 },
+          "b": { "x": 62, "y": 28 },
+          "thickness": 0.5,
+          "height": 4,
+          "material": "reinforced",
+          "destructible": false
+        },
+        {
+          "id": "w.upper.x68:13-16",
+          "a": { "x": 68, "y": 13 },
+          "b": { "x": 68, "y": 16 },
+          "thickness": 0.1,
+          "height": 1.1,
+          "material": "glass",
+          "destructible": true
+        },
+        {
+          "id": "w.upper.x68:16-28",
+          "a": { "x": 68, "y": 16 },
+          "b": { "x": 68, "y": 28 },
+          "thickness": 0.4,
+          "height": 4,
+          "material": "reinforced",
+          "destructible": true
+        },
+        {
+          "id": "w.upper.x68:34-44",
+          "a": { "x": 68, "y": 34 },
+          "b": { "x": 68, "y": 44 },
+          "thickness": 0.4,
+          "height": 4,
+          "material": "reinforced",
+          "destructible": true
+        },
+        {
+          "id": "w.upper.x68:44-56",
+          "a": { "x": 68, "y": 44 },
+          "b": { "x": 68, "y": 56 },
+          "thickness": 0.4,
+          "height": 4,
+          "material": "reinforced",
+          "destructible": true
+        },
+        {
+          "id": "w.upper.y13:32-68",
+          "a": { "x": 32, "y": 13 },
+          "b": { "x": 68, "y": 13 },
+          "thickness": 0.1,
+          "height": 1.1,
+          "material": "glass",
+          "destructible": true
+        },
+        {
+          "id": "w.upper.y16:32-39.3",
+          "a": { "x": 32, "y": 16 },
+          "b": { "x": 39.3, "y": 16 },
+          "thickness": 0.4,
+          "height": 4,
+          "material": "reinforced",
+          "destructible": true
+        },
+        {
+          "id": "w.upper.y16:40.7-48",
+          "a": { "x": 40.7, "y": 16 },
+          "b": { "x": 48, "y": 16 },
+          "thickness": 0.4,
+          "height": 4,
+          "material": "reinforced",
+          "destructible": true
+        },
+        {
+          "id": "w.upper.y16:48-52",
+          "a": { "x": 48, "y": 16 },
+          "b": { "x": 52, "y": 16 },
+          "thickness": 0.4,
+          "height": 4,
+          "material": "reinforced",
+          "destructible": true
+        },
+        {
+          "id": "w.upper.y16:52-56.3",
+          "a": { "x": 52, "y": 16 },
+          "b": { "x": 56.3, "y": 16 },
+          "thickness": 0.5,
+          "height": 4,
+          "material": "reinforced",
+          "destructible": false
+        },
+        {
+          "id": "w.upper.y16:57.7-62",
+          "a": { "x": 57.7, "y": 16 },
+          "b": { "x": 62, "y": 16 },
+          "thickness": 0.5,
+          "height": 4,
+          "material": "reinforced",
+          "destructible": false
+        },
+        {
+          "id": "w.upper.y16:62-68",
+          "a": { "x": 62, "y": 16 },
+          "b": { "x": 68, "y": 16 },
+          "thickness": 0.4,
+          "height": 4,
+          "material": "reinforced",
+          "destructible": true
+        },
+        {
+          "id": "w.upper.y24:32-48",
+          "a": { "x": 32, "y": 24 },
+          "b": { "x": 48, "y": 24 },
+          "thickness": 0.2,
+          "height": 4,
+          "material": "plaster",
+          "destructible": true
+        },
+        {
+          "id": "w.upper.y28:52-60",
+          "a": { "x": 52, "y": 28 },
+          "b": { "x": 60, "y": 28 },
+          "thickness": 0.5,
+          "height": 4,
+          "material": "reinforced",
+          "destructible": false
+        },
+        {
+          "id": "w.upper.y28:60-62",
+          "a": { "x": 60, "y": 28 },
+          "b": { "x": 62, "y": 28 },
+          "thickness": 0.5,
+          "height": 4,
+          "material": "reinforced",
+          "destructible": false
+        },
+        {
+          "id": "w.upper.y28:62-68",
+          "a": { "x": 62, "y": 28 },
+          "b": { "x": 68, "y": 28 },
+          "thickness": 0.2,
+          "height": 4,
+          "material": "plaster",
+          "destructible": true
+        },
+        {
+          "id": "w.upper.y32:32-48",
+          "a": { "x": 32, "y": 32 },
+          "b": { "x": 48, "y": 32 },
+          "thickness": 0.2,
+          "height": 4,
+          "material": "plaster",
+          "destructible": true
+        },
+        {
+          "id": "w.upper.y34:52-60",
+          "a": { "x": 52, "y": 34 },
+          "b": { "x": 60, "y": 34 },
+          "thickness": 0.2,
+          "height": 4,
+          "material": "plaster",
+          "destructible": true
+        },
+        {
+          "id": "w.upper.y34:60-68",
+          "a": { "x": 60, "y": 34 },
+          "b": { "x": 68, "y": 34 },
+          "thickness": 0.2,
+          "height": 4,
+          "material": "plaster",
+          "destructible": true
+        },
+        {
+          "id": "w.upper.y40:32-44",
+          "a": { "x": 32, "y": 40 },
+          "b": { "x": 44, "y": 40 },
+          "thickness": 0.1,
+          "height": 1.1,
+          "material": "glass",
+          "destructible": true
+        },
+        {
+          "id": "w.upper.y40:44-48",
+          "a": { "x": 44, "y": 40 },
+          "b": { "x": 48, "y": 40 },
+          "thickness": 0.2,
+          "height": 4,
+          "material": "plaster",
+          "destructible": true
+        },
+        {
+          "id": "w.upper.y44:52-60",
+          "a": { "x": 52, "y": 44 },
+          "b": { "x": 60, "y": 44 },
+          "thickness": 0.2,
+          "height": 4,
+          "material": "plaster",
+          "destructible": true
+        },
+        {
+          "id": "w.upper.y44:60-68",
+          "a": { "x": 60, "y": 44 },
+          "b": { "x": 68, "y": 44 },
+          "thickness": 0.2,
+          "height": 4,
+          "material": "plaster",
+          "destructible": true
+        },
+        {
+          "id": "w.upper.y52:48-52",
+          "a": { "x": 48, "y": 52 },
+          "b": { "x": 52, "y": 52 },
+          "thickness": 0.2,
+          "height": 4,
+          "material": "plaster",
+          "destructible": true
+        },
+        {
+          "id": "w.upper.y56:32-44",
+          "a": { "x": 32, "y": 56 },
+          "b": { "x": 44, "y": 56 },
+          "thickness": 0.4,
+          "height": 4,
+          "material": "reinforced",
+          "destructible": true
+        },
+        {
+          "id": "w.upper.y56:44-48",
+          "a": { "x": 44, "y": 56 },
+          "b": { "x": 48, "y": 56 },
+          "thickness": 0.4,
+          "height": 4,
+          "material": "reinforced",
+          "destructible": true
+        },
+        {
+          "id": "w.upper.y56:52-68",
+          "a": { "x": 52, "y": 56 },
+          "b": { "x": 68, "y": 56 },
+          "thickness": 0.4,
+          "height": 4,
+          "material": "reinforced",
+          "destructible": true
+        }
+      ],
+      "doors": [
+        {
+          "id": "d.u.hall-son",
+          "at": { "x": 48, "y": 20 },
+          "width": 1,
+          "between": ["u.son", "u.hall"],
+          "kind": "standard",
+          "state": "closed",
+          "breach": ["manual", "shotgun", "explosive"]
+        },
+        {
+          "id": "d.u.hall-guest",
+          "at": { "x": 48, "y": 28 },
+          "width": 1,
+          "between": ["u.guest", "u.hall"],
+          "kind": "standard",
+          "state": "closed",
+          "breach": ["manual", "shotgun", "explosive"]
+        },
+        {
+          "id": "d.u.hall-office",
+          "at": { "x": 48, "y": 36 },
+          "width": 1,
+          "between": ["u.office", "u.hall"],
+          "kind": "standard",
+          "state": "closed",
+          "breach": ["manual", "shotgun", "explosive"]
+        },
+        {
+          "id": "d.u.hall-gallery",
+          "at": { "x": 48, "y": 46 },
+          "width": 4,
+          "between": ["u.gallery", "u.hall"],
+          "kind": "standard",
+          "state": "open",
+          "breach": []
+        },
+        {
+          "id": "d.u.hall-stairs",
+          "at": { "x": 52, "y": 31 },
+          "width": 1,
+          "between": ["u.stairs", "u.hall"],
+          "kind": "standard",
+          "state": "closed",
+          "breach": ["manual", "shotgun", "explosive"]
+        },
+        {
+          "id": "d.u.hall-bath",
+          "at": { "x": 52, "y": 39 },
+          "width": 1,
+          "between": ["u.bath", "u.hall"],
+          "kind": "standard",
+          "state": "closed",
+          "breach": ["manual", "shotgun", "explosive"]
+        },
+        {
+          "id": "d.u.hall-wife",
+          "at": { "x": 52, "y": 48 },
+          "width": 1,
+          "between": ["u.wife", "u.hall"],
+          "kind": "standard",
+          "state": "closed",
+          "breach": ["manual", "shotgun", "explosive"]
+        },
+        {
+          "id": "d.u.hall-safe",
+          "at": { "x": 52, "y": 22 },
+          "width": 1.2,
+          "between": ["u.safe", "u.hall"],
+          "kind": "standard",
+          "state": "closed",
+          "breach": ["manual", "shotgun", "explosive"]
+        },
+        {
+          "id": "d.u.bath-linen",
+          "at": { "x": 60, "y": 39 },
+          "width": 1,
+          "between": ["u.bath", "u.linen"],
+          "kind": "standard",
+          "state": "closed",
+          "breach": ["manual", "shotgun", "explosive"]
+        },
+        {
+          "id": "d.u.safe-daughter",
+          "at": { "x": 62, "y": 22 },
+          "width": 1,
+          "between": ["u.safe", "u.daughter"],
+          "kind": "standard",
+          "state": "closed",
+          "breach": ["manual", "shotgun", "explosive"]
+        },
+        {
+          "id": "d.u.balcony-son",
+          "at": { "x": 40, "y": 16 },
+          "width": 1.4,
+          "between": ["u.son", "u.balcony"],
+          "kind": "glass",
+          "state": "closed",
+          "breach": ["manual", "shotgun", "explosive"]
+        },
+        {
+          "id": "d.u.balcony-safe",
+          "at": { "x": 57, "y": 16 },
+          "width": 1.4,
+          "between": ["u.safe", "u.balcony"],
+          "kind": "glass",
+          "state": "closed",
+          "breach": ["manual", "shotgun", "explosive"]
+        }
+      ],
+      "windows": [],
+      "openings": [
+        {
+          "id": "op.gallery-void",
+          "rect": { "min": { "x": 32, "y": 40 }, "max": { "x": 44, "y": 56 } },
+          "kind": "gallery-void",
+          "below": "ground"
+        }
+      ],
+      "cover": []
+    },
+    {
+      "id": "roof",
+      "elevation": 8,
+      "rooms": [
+        {
+          "id": "r.roof",
+          "name": "Roof",
+          "rect": { "min": { "x": 32, "y": 16 }, "max": { "x": 68, "y": 56 } },
+          "ceiling": 10,
+          "tags": ["roof"]
+        }
+      ],
+      "walls": [],
+      "doors": [],
+      "windows": [],
+      "openings": [],
+      "cover": [
+        {
+          "id": "cover.parapet.south",
+          "rect": { "min": { "x": 32, "y": 16 }, "max": { "x": 68, "y": 16.3 } },
+          "type": "light",
+          "height": 1,
+          "facing": 180,
+          "destructible": false
+        },
+        {
+          "id": "cover.parapet.north",
+          "rect": { "min": { "x": 32, "y": 55.7 }, "max": { "x": 68, "y": 56 } },
+          "type": "light",
+          "height": 1,
+          "facing": 0,
+          "destructible": false
+        },
+        {
+          "id": "cover.parapet.west",
+          "rect": { "min": { "x": 32, "y": 16.3 }, "max": { "x": 32.3, "y": 55.7 } },
+          "type": "light",
+          "height": 1,
+          "facing": 270,
+          "destructible": false
+        },
+        {
+          "id": "cover.parapet.east",
+          "rect": { "min": { "x": 67.7, "y": 16.3 }, "max": { "x": 68, "y": 55.7 } },
+          "type": "light",
+          "height": 1,
+          "facing": 90,
+          "destructible": false
+        }
+      ]
+    }
+  ],
+  "verticalLinks": [
+    {
+      "id": "link.stairs",
+      "kind": "stairs",
+      "from": { "floor": "ground", "at": { "x": 56, "y": 31 } },
+      "to": { "floor": "upper", "at": { "x": 56, "y": 31 } },
+      "bidirectional": true
+    },
+    {
+      "id": "link.roof",
+      "kind": "roof-access",
+      "from": { "floor": "upper", "at": { "x": 56, "y": 31 } },
+      "to": { "floor": "roof", "at": { "x": 56, "y": 31 } },
+      "bidirectional": true
+    },
+    {
+      "id": "link.shaft",
+      "kind": "shaft",
+      "from": { "floor": "upper", "at": { "x": 60, "y": 26 } },
+      "to": { "floor": "ground", "at": { "x": 60, "y": 26 } },
+      "bidirectional": false,
+      "restrictedTo": ["principal"]
+    },
+    {
+      "id": "link.tunnel",
+      "kind": "shaft",
+      "from": { "floor": "ground", "at": { "x": 57, "y": 18 } },
+      "to": { "floor": "grounds", "at": { "x": 85, "y": 0 } },
+      "bidirectional": true
+    },
+    {
+      "id": "link.cliff",
+      "kind": "cliff-path",
+      "from": { "floor": "grounds", "at": { "x": 18, "y": -6 } },
+      "to": { "floor": "grounds", "at": { "x": 18, "y": 0 } },
+      "bidirectional": true
+    }
+  ],
+  "zones": [
+    {
+      "id": "zone.highway",
+      "floor": "grounds",
+      "rect": { "min": { "x": -20, "y": 84 }, "max": { "x": 120, "y": 94 } },
+      "kind": "road"
+    },
+    {
+      "id": "zone.sea",
+      "floor": "grounds",
+      "rect": { "min": { "x": -20, "y": -40 }, "max": { "x": 120, "y": 0 } },
+      "kind": "sea"
+    },
+    {
+      "id": "zone.marina",
+      "floor": "grounds",
+      "rect": { "min": { "x": 78, "y": -12 }, "max": { "x": 96, "y": 0 } },
+      "kind": "marina"
+    },
+    {
+      "id": "zone.helipad",
+      "floor": "grounds",
+      "rect": { "min": { "x": 40, "y": 60 }, "max": { "x": 56, "y": 76 } },
+      "kind": "exposed"
+    },
+    {
+      "id": "zone.drive.a",
+      "floor": "grounds",
+      "rect": { "min": { "x": 66, "y": 56 }, "max": { "x": 72, "y": 80 } },
+      "kind": "exposed"
+    },
+    {
+      "id": "zone.drive.b",
+      "floor": "grounds",
+      "rect": { "min": { "x": 50, "y": 56 }, "max": { "x": 72, "y": 60 } },
+      "kind": "exposed"
+    },
+    {
+      "id": "zone.terrace",
+      "floor": "grounds",
+      "rect": { "min": { "x": 32, "y": 10 }, "max": { "x": 68, "y": 16 } },
+      "kind": "terrace"
+    },
+    {
+      "id": "zone.pool",
+      "floor": "grounds",
+      "rect": { "min": { "x": 40, "y": 3 }, "max": { "x": 60, "y": 9 } },
+      "kind": "pool"
+    },
+    {
+      "id": "zone.lawn.west",
+      "floor": "grounds",
+      "rect": { "min": { "x": 0, "y": 0 }, "max": { "x": 32, "y": 16 } },
+      "kind": "lawn"
+    },
+    {
+      "id": "zone.lawn.east",
+      "floor": "grounds",
+      "rect": { "min": { "x": 68, "y": 0 }, "max": { "x": 100, "y": 16 } },
+      "kind": "lawn"
+    },
+    {
+      "id": "zone.lawn.south",
+      "floor": "grounds",
+      "rect": { "min": { "x": 32, "y": 0 }, "max": { "x": 68, "y": 3 } },
+      "kind": "lawn"
+    },
+    {
+      "id": "zone.lawn.mid-west",
+      "floor": "grounds",
+      "rect": { "min": { "x": 32, "y": 3 }, "max": { "x": 40, "y": 10 } },
+      "kind": "lawn"
+    },
+    {
+      "id": "zone.lawn.mid-east",
+      "floor": "grounds",
+      "rect": { "min": { "x": 60, "y": 3 }, "max": { "x": 68, "y": 10 } },
+      "kind": "lawn"
+    },
+    {
+      "id": "zone.lawn.mid-north",
+      "floor": "grounds",
+      "rect": { "min": { "x": 40, "y": 9 }, "max": { "x": 60, "y": 10 } },
+      "kind": "lawn"
+    },
+    {
+      "id": "zone.garden-east",
+      "floor": "grounds",
+      "rect": { "min": { "x": 72, "y": 16 }, "max": { "x": 96, "y": 50 } },
+      "kind": "garden"
+    },
+    {
+      "id": "zone.trees-west",
+      "floor": "grounds",
+      "rect": { "min": { "x": 4, "y": 20 }, "max": { "x": 28, "y": 50 } },
+      "kind": "garden"
+    }
+  ],
+  "markers": [
+    {
+      "id": "m.approach.A",
+      "floor": "grounds",
+      "kind": "approach",
+      "at": { "x": 69, "y": 81 },
+      "tags": ["approach:A", "approach:gate"]
+    },
+    {
+      "id": "m.approach.B",
+      "floor": "grounds",
+      "kind": "approach",
+      "at": { "x": 0, "y": 40 },
+      "tags": ["approach:B", "approach:west-wall"]
+    },
+    {
+      "id": "m.approach.C",
+      "floor": "grounds",
+      "kind": "approach",
+      "at": { "x": 48, "y": 68 },
+      "tags": ["approach:C", "approach:helipad"]
+    },
+    {
+      "id": "m.approach.C.fast-rope",
+      "floor": "upper",
+      "kind": "approach",
+      "at": { "x": 50, "y": 14.5 },
+      "tags": ["approach:C", "approach:fast-rope"]
+    },
+    {
+      "id": "m.approach.D",
+      "floor": "grounds",
+      "kind": "approach",
+      "at": { "x": 88, "y": -2 },
+      "tags": ["approach:D", "approach:dock"]
+    },
+    {
+      "id": "m.approach.E",
+      "floor": "grounds",
+      "kind": "approach",
+      "at": { "x": 18, "y": 0 },
+      "tags": ["approach:E", "approach:cliff-path"]
+    },
+    { "id": "m.lz.helipad", "floor": "grounds", "kind": "lz", "at": { "x": 48, "y": 68 }, "tags": ["lz:helipad"] },
+    {
+      "id": "m.spawn.hired.1",
+      "floor": "grounds",
+      "kind": "spawn",
+      "at": { "x": 73, "y": 78 },
+      "tags": ["entity:def.hired.1", "side:defender", "guard:hired", "ring:outer", "post:guardhouse"]
+    },
+    {
+      "id": "m.spawn.hired.2",
+      "floor": "grounds",
+      "kind": "spawn",
+      "at": { "x": 75, "y": 78 },
+      "tags": ["entity:def.hired.2", "side:defender", "guard:hired", "ring:outer", "post:guardhouse"]
+    },
+    {
+      "id": "m.spawn.hired.3",
+      "floor": "grounds",
+      "kind": "spawn",
+      "at": { "x": 2, "y": 4 },
+      "tags": ["entity:def.hired.3", "side:defender", "guard:hired", "ring:outer", "post:patrol-west"]
+    },
+    {
+      "id": "m.spawn.hired.4",
+      "floor": "grounds",
+      "kind": "spawn",
+      "at": { "x": 98, "y": 4 },
+      "tags": ["entity:def.hired.4", "side:defender", "guard:hired", "ring:outer", "post:patrol-east"]
+    },
+    {
+      "id": "m.spawn.hired.5",
+      "floor": "grounds",
+      "kind": "spawn",
+      "at": { "x": 92, "y": -3 },
+      "tags": ["entity:def.hired.5", "side:defender", "guard:hired", "ring:outer", "post:marina"]
+    },
+    {
+      "id": "m.spawn.hired.6",
+      "floor": "grounds",
+      "kind": "spawn",
+      "at": { "x": 50, "y": 13 },
+      "tags": ["entity:def.hired.6", "side:defender", "guard:hired", "ring:outer", "post:terrace"]
+    },
+    {
+      "id": "m.patrol.west",
+      "floor": "grounds",
+      "kind": "patrol",
+      "path": [{ "x": 2, "y": 4 }, { "x": 2, "y": 76 }, { "x": 33, "y": 76 }],
+      "tags": ["patrol:perimeter-west", "patrols:def.hired.3", "guard:hired"]
+    },
+    {
+      "id": "m.patrol.east",
+      "floor": "grounds",
+      "kind": "patrol",
+      "path": [{ "x": 98, "y": 4 }, { "x": 98, "y": 76 }, { "x": 67, "y": 76 }],
+      "tags": ["patrol:perimeter-east", "patrols:def.hired.4", "guard:hired"]
+    },
+    {
+      "id": "m.spawn.vet.1",
+      "floor": "roof",
+      "kind": "spawn",
+      "at": { "x": 34, "y": 54 },
+      "tags": ["entity:def.vet.1", "side:defender", "guard:veteran", "post:roof-sniper"]
+    },
+    {
+      "id": "m.spawn.vet.2",
+      "floor": "roof",
+      "kind": "spawn",
+      "at": { "x": 66, "y": 54 },
+      "tags": ["entity:def.vet.2", "side:defender", "guard:veteran", "post:roof-machine-gun"]
+    },
+    {
+      "id": "m.spawn.vet.3",
+      "floor": "roof",
+      "kind": "spawn",
+      "at": { "x": 50, "y": 18 },
+      "tags": ["entity:def.vet.3", "side:defender", "guard:veteran", "post:roof-machine-gun"]
+    },
+    {
+      "id": "m.spawn.vet.4",
+      "floor": "roof",
+      "kind": "spawn",
+      "at": { "x": 50, "y": 36 },
+      "tags": ["entity:def.vet.4", "side:defender", "guard:veteran", "post:roof-aa-missile"]
+    },
+    {
+      "id": "m.spawn.vet.5",
+      "floor": "ground",
+      "kind": "spawn",
+      "at": { "x": 56, "y": 38 },
+      "tags": ["entity:def.vet.5", "side:defender", "guard:veteran", "post:security-office"]
+    },
+    {
+      "id": "m.spawn.vet.6",
+      "floor": "ground",
+      "kind": "spawn",
+      "at": { "x": 64, "y": 38 },
+      "tags": ["entity:def.vet.6", "side:defender", "guard:veteran", "post:security-office"]
+    },
+    {
+      "id": "m.spawn.vet.7",
+      "floor": "ground",
+      "kind": "spawn",
+      "at": { "x": 50, "y": 30 },
+      "tags": ["entity:def.vet.7", "side:defender", "guard:veteran", "post:hall"]
+    },
+    {
+      "id": "m.spawn.vet.8",
+      "floor": "ground",
+      "kind": "spawn",
+      "at": { "x": 50, "y": 42 },
+      "tags": ["entity:def.vet.8", "side:defender", "guard:veteran", "post:hall"]
+    },
+    {
+      "id": "m.spawn.vet.9",
+      "floor": "grounds",
+      "kind": "spawn",
+      "at": { "x": 80, "y": 30 },
+      "tags": ["entity:def.vet.9", "side:defender", "guard:veteran", "post:garden-east"]
+    },
+    {
+      "id": "m.spawn.vet.10",
+      "floor": "grounds",
+      "kind": "spawn",
+      "at": { "x": 88, "y": 40 },
+      "tags": ["entity:def.vet.10", "side:defender", "guard:veteran", "post:garden-east"]
+    },
+    {
+      "id": "m.spawn.vet.11",
+      "floor": "grounds",
+      "kind": "spawn",
+      "at": { "x": 41, "y": 68 },
+      "tags": ["entity:def.vet.11", "side:defender", "guard:veteran", "post:helipad-edge"]
+    },
+    {
+      "id": "m.spawn.vet.12",
+      "floor": "grounds",
+      "kind": "spawn",
+      "at": { "x": 55, "y": 68 },
+      "tags": ["entity:def.vet.12", "side:defender", "guard:veteran", "post:helipad-edge"]
+    },
+    {
+      "id": "m.spawn.staff.1",
+      "floor": "grounds",
+      "kind": "spawn",
+      "at": { "x": 10, "y": 64 },
+      "tags": ["entity:civ.staff.1", "side:civilian", "staff"]
+    },
+    {
+      "id": "m.spawn.staff.2",
+      "floor": "grounds",
+      "kind": "spawn",
+      "at": { "x": 14, "y": 64 },
+      "tags": ["entity:civ.staff.2", "side:civilian", "staff"]
+    },
+    {
+      "id": "m.spawn.staff.3",
+      "floor": "grounds",
+      "kind": "spawn",
+      "at": { "x": 10, "y": 70 },
+      "tags": ["entity:civ.staff.3", "side:civilian", "staff"]
+    },
+    {
+      "id": "m.spawn.staff.4",
+      "floor": "grounds",
+      "kind": "spawn",
+      "at": { "x": 14, "y": 70 },
+      "tags": ["entity:civ.staff.4", "side:civilian", "staff"]
+    },
+    {
+      "id": "m.reaction.1",
+      "floor": "grounds",
+      "kind": "guard-post",
+      "at": { "x": 78, "y": 64 },
+      "tags": ["force:reaction", "reaction:1"]
+    },
+    {
+      "id": "m.reaction.2",
+      "floor": "grounds",
+      "kind": "guard-post",
+      "at": { "x": 82, "y": 64 },
+      "tags": ["force:reaction", "reaction:2"]
+    },
+    {
+      "id": "m.reaction.3",
+      "floor": "grounds",
+      "kind": "guard-post",
+      "at": { "x": 86, "y": 64 },
+      "tags": ["force:reaction", "reaction:3"]
+    },
+    {
+      "id": "m.reaction.4",
+      "floor": "grounds",
+      "kind": "guard-post",
+      "at": { "x": 90, "y": 64 },
+      "tags": ["force:reaction", "reaction:4"]
+    },
+    {
+      "id": "m.reaction.5",
+      "floor": "grounds",
+      "kind": "guard-post",
+      "at": { "x": 78, "y": 70 },
+      "tags": ["force:reaction", "reaction:5"]
+    },
+    {
+      "id": "m.reaction.6",
+      "floor": "grounds",
+      "kind": "guard-post",
+      "at": { "x": 82, "y": 70 },
+      "tags": ["force:reaction", "reaction:6"]
+    },
+    {
+      "id": "m.reaction.7",
+      "floor": "grounds",
+      "kind": "guard-post",
+      "at": { "x": 86, "y": 70 },
+      "tags": ["force:reaction", "reaction:7"]
+    },
+    {
+      "id": "m.reaction.8",
+      "floor": "grounds",
+      "kind": "guard-post",
+      "at": { "x": 90, "y": 70 },
+      "tags": ["force:reaction", "reaction:8"]
+    },
+    {
+      "id": "m.principal.master",
+      "floor": "ground",
+      "kind": "poi",
+      "at": { "x": 40, "y": 20 },
+      "tags": ["principal-start:master"]
+    },
+    {
+      "id": "m.principal.study",
+      "floor": "ground",
+      "kind": "poi",
+      "at": { "x": 42, "y": 28 },
+      "tags": ["principal-start:study"]
+    },
+    {
+      "id": "m.drive.study-desk",
+      "floor": "ground",
+      "kind": "poi",
+      "at": { "x": 38.5, "y": 28 },
+      "tags": ["poi:drive", "drive:study-desk"]
+    },
+    {
+      "id": "m.drive.office-safe",
+      "floor": "upper",
+      "kind": "poi",
+      "at": { "x": 34, "y": 36 },
+      "tags": ["poi:drive", "drive:office-safe"]
+    },
+    { "id": "m.family.wife", "floor": "upper", "kind": "poi", "at": { "x": 60, "y": 50 }, "tags": ["family:wife"] },
+    { "id": "m.family.son", "floor": "upper", "kind": "poi", "at": { "x": 40, "y": 20 }, "tags": ["family:son"] },
+    {
+      "id": "m.family.daughter",
+      "floor": "upper",
+      "kind": "poi",
+      "at": { "x": 65, "y": 22 },
+      "tags": ["family:daughter"]
+    },
+    {
+      "id": "m.poi.panic-room",
+      "floor": "ground",
+      "kind": "poi",
+      "at": { "x": 57, "y": 22 },
+      "tags": ["poi:panic-room"]
+    },
+    {
+      "id": "m.poi.tunnel-entrance",
+      "floor": "ground",
+      "kind": "poi",
+      "at": { "x": 57, "y": 18 },
+      "tags": ["poi:tunnel-entrance"]
+    },
+    {
+      "id": "m.poi.tunnel-exit",
+      "floor": "grounds",
+      "kind": "poi",
+      "at": { "x": 85, "y": 0 },
+      "tags": ["poi:tunnel-exit"]
+    }
+  ]
+}
