@@ -23,6 +23,11 @@ import type { Floor, Room, Vec2, VerticalLink } from "@war-room/content";
  *   - the map "charon" must contain rooms tagged "panic-room", "safe-landing",
  *     "tunnel-exit" and "security-center", so those checks cannot pass by finding
  *     nothing to check
+ *   - utilities (only on maps whose markers carry "circuit:<id>" tags): every circuit is fed by a
+ *     panel marker ("util:panel" + "feeds:<id>") that sits inside a room and has a power source
+ *     ("supplies:<id>"); circuit "c.panic" is never supplied by the mains and its panel is inside a
+ *     room tagged "panic-room"; the smart hubs are not all on one circuit; every "intel:item" lies
+ *     inside a room; no "net:wifi" access point is inside the panic room (its network is air-gapped)
  *   - every vertical-link end on an indoor floor lies inside a room (ends on the open-air
  *     levels "grounds", "shore" and "hill" may be outdoors, e.g. the cliff path)
  */
@@ -313,6 +318,68 @@ function checkFamily(map: MapFile, out: Issue[]): void {
   }
 }
 
+
+function checkUtilities(map: MapFile, out: Issue[]): void {
+  const tag = (m: { tags: string[] }, prefix: string): string[] =>
+    m.tags.filter((t) => t.startsWith(`${prefix}:`)).map((t) => t.slice(prefix.length + 1));
+  const markers = [...map.markers].sort(byId);
+  if (!markers.some((m) => tag(m, "circuit").length > 0)) return;
+  const roomOfMarker = (m: { floor: string; at?: Vec2 }): string => (m.at ? roomAt(map, m.floor, m.at) : "outside");
+
+  const panels = markers.filter((m) => m.tags.includes("util:panel"));
+  const fed = new Set(panels.flatMap((p) => tag(p, "feeds")));
+  for (const p of panels) {
+    if (roomOfMarker(p) === "outside") {
+      out.push({ check: "panel-room", message: `Panel ${p.id} (floor ${p.floor}) is not inside any room` });
+    }
+  }
+  const used = new Set<string>();
+  for (const m of markers) {
+    for (const c of tag(m, "circuit")) {
+      used.add(c);
+      if (!fed.has(c)) {
+        out.push({ check: "circuit-panel", message: `Marker ${m.id} is on circuit ${c} but no panel (a marker tagged "util:panel" and "feeds:${c}") feeds it` });
+      }
+    }
+  }
+  for (const c of [...new Set([...fed, ...used])].sort()) {
+    const suppliers = markers.filter((m) => tag(m, "supplies").includes(c));
+    if (suppliers.length === 0) {
+      out.push({ check: "circuit-source", message: `Circuit ${c} has no power source (a marker tagged "supplies:${c}")` });
+    }
+    if (c === "c.panic") {
+      for (const s of suppliers.filter((m) => m.tags.includes("power:mains"))) {
+        out.push({ check: "panic-circuit", message: `Circuit ${c} (panic room) must not be supplied by the mains (${s.id}); it runs on batteries and generators` });
+      }
+    }
+  }
+  for (const p of panels.filter((m) => tag(m, "feeds").includes("c.panic"))) {
+    const room = map.floors.flatMap((f) => (f.id === p.floor ? f.rooms : [])).find((r) => r.id === roomOfMarker(p));
+    if (!room || !room.tags.includes("panic-room")) {
+      out.push({ check: "panic-panel", message: `Panel ${p.id} feeds the panic circuit c.panic but is not inside a room tagged "panic-room"` });
+    }
+  }
+
+  const hubs = markers.filter((m) => m.tags.includes("smart:hub"));
+  const hubCircuits = new Set(hubs.flatMap((h) => tag(h, "circuit")));
+  if (hubs.length > 1 && hubCircuits.size < 2) {
+    out.push({ check: "hub-circuits", message: `Smart hubs ${hubs.map((h) => h.id).join(", ")} are all on one circuit; one breaker must not blind the house` });
+  }
+
+  for (const m of markers.filter((x) => x.tags.includes("intel:item"))) {
+    if (roomOfMarker(m) === "outside") {
+      out.push({ check: "intel-room", message: `Intel item ${m.id} (floor ${m.floor}) is not inside any room` });
+    }
+  }
+
+  for (const ap of markers.filter((x) => x.tags.includes("net:wifi"))) {
+    const room = map.floors.flatMap((f) => (f.id === ap.floor ? f.rooms : [])).find((r) => r.id === roomOfMarker(ap));
+    if (room?.tags.includes("panic-room")) {
+      out.push({ check: "panic-airgap", message: `Wifi access point ${ap.id} is inside panic room ${room.id}: that breaks the air gap its network segment is meant to have` });
+    }
+  }
+}
+
 /** Validates raw or parsed map data and returns every problem found (empty means valid). */
 export function validateMap(input: unknown): Issue[] {
   const early = coverFacingIssues(input);
@@ -334,6 +401,7 @@ export function validateMap(input: unknown): Issue[] {
   checkRequiredRooms(map, issues);
   checkPanicRooms(map, issues);
   checkFamily(map, issues);
+  checkUtilities(map, issues);
   return issues;
 }
 

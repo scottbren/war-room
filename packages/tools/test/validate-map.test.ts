@@ -339,3 +339,66 @@ describe("formatIssues", () => {
     expect(text).toContain("Rooms a and b overlap on floor ground");
   });
 });
+
+describe("utilities, power and network checks", () => {
+  const marker = (map: MapFile, id: string) => map.markers.find((m) => m.id === id)!;
+
+  it("passes the real map", () => {
+    expect(messages(validateMap(charon()))).toEqual([]);
+  });
+
+  it("a device on a circuit that no panel feeds is reported by device and circuit", () => {
+    const map = charon();
+    const cam = map.markers.find((m) => m.tags.includes("circuit:c.perimeter") && m.tags.includes("smart:camera"))!;
+    cam.tags = cam.tags.map((t) => (t === "circuit:c.perimeter" ? "circuit:c.ghost" : t));
+    expect(find(validateMap(map), cam.id, "c.ghost", "panel")).toBeDefined();
+  });
+
+  it("a panel outside every room is reported by id", () => {
+    const map = charon();
+    marker(map, "m.util.panel.a").at = { x: 1, y: 1 };
+    marker(map, "m.util.panel.a").floor = "ground";
+    expect(find(validateMap(map), "m.util.panel.a", "not inside any room")).toBeDefined();
+  });
+
+  it("a circuit with no power source is reported", () => {
+    const map = charon();
+    for (const m of map.markers) m.tags = m.tags.filter((t) => t !== "supplies:c.roof");
+    expect(find(validateMap(map), "c.roof", "no power source")).toBeDefined();
+  });
+
+  it("the panic-room circuit must be independent of the mains and its panel must be inside the panic room", () => {
+    const map = charon();
+    marker(map, "m.util.mains").tags.push("supplies:c.panic");
+    expect(find(validateMap(map), "c.panic", "mains")).toBeDefined();
+    const map2 = charon();
+    marker(map2, "m.util.panel.panic").at = { x: 71, y: 28 }; // the SOC
+    expect(find(validateMap(map2), "m.util.panel.panic", "panic")).toBeDefined();
+  });
+
+  it("both hubs on one circuit is reported (one breaker must not blind the house)", () => {
+    const map = charon();
+    const backup = map.markers.find((m) => m.tags.includes("hub:backup"))!;
+    const primary = map.markers.find((m) => m.tags.includes("hub:primary"))!;
+    backup.tags = backup.tags.filter((t) => !t.startsWith("circuit:")).concat(primary.tags.filter((t) => t.startsWith("circuit:")));
+    expect(find(validateMap(map), "hub", "one circuit")).toBeDefined();
+  });
+
+  it("an intel item outside every room is reported by id", () => {
+    const map = charon();
+    const item = map.markers.find((m) => m.tags.includes("intel:item") && m.floor === "ground")!;
+    item.at = { x: 1, y: 1 };
+    expect(find(validateMap(map), item.id, "not inside any room")).toBeDefined();
+  });
+
+  it("a wifi access point inside the panic room breaks its air gap", () => {
+    const map = charon();
+    map.markers.push({ id: "m.net.wifi.bad", floor: "ground", kind: "poi", at: { x: 71, y: 37 }, tags: ["net:wifi", "vlan:house"] });
+    expect(find(validateMap(map), "m.net.wifi.bad", "air gap")).toBeDefined();
+  });
+
+  it("maps with no circuits are not forced to have any", () => {
+    const issues = validateMap(readJson("./fixtures/broken-unreachable.json"));
+    expect(find(issues, "circuit")).toBeUndefined();
+  });
+});

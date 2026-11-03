@@ -1,4 +1,4 @@
-# CHARON layout (map version 8: zigzag of three bars; sections below the Version 6 note describe v5 and earlier and are superseded where they conflict)
+# CHARON layout (map version 9: zigzag of three bars; sections below the Version 6 note describe v5 and earlier and are superseded where they conflict)
 
 `content/maps/charon.json` implements this document. All rooms are axis-aligned rectangles, `[minX, minY] – [maxX, maxY]` in meters, in **map coordinates**. North is +y. The sea is to the south (y < 0). Non-rectangular buildings are composed from several rectangles (U, L and stepped shapes); the map format has no polygon rooms.
 
@@ -174,3 +174,13 @@ The U-shaped courtyard house is replaced by three 42 x 15 m bars, each slid side
 ## Version 8: a busier roof
 
 Open decks and terraces now draw in a warm timber color so a roof reads as a place. Deck B is split around a new walled rooftop plant house (`r.plant-house`, generator and equipment inside); HVAC units moved to deck B west; two skylights over the double-height hall. Known cosmetic: thin white lines on the roof are the tops of interior plaster walls on the floor below, flush with the roof slab.
+
+## v9: utilities, comms, intel and network layer (markers only)
+
+Tag conventions (no geometry changes):
+- Power: `power:<mains|transformer|generator|fuel|battery>` with `supplies:<circuit>`; breaker panels are `util:panel` + `feeds:<circuit>`. Circuits: c.gate, c.house.a/b/c, c.roof, c.perimeter, c.soc, c.panic. The panic circuit is never fed by mains.
+- Devices carry `circuit:<id>` and `vlan:<guest|house|security|panic>`. Two hubs sit on different circuits (primary c.soc, backup c.perimeter).
+- Comms: `comms:<landline|fiber|sat|radio-base|antenna|cell|sat-phone|hardline|siren|intercom>`.
+- Intel: `intel:item` with `id:`, `type:` (digital|paper|physical), `value:`, optional `wipe:yes`.
+- Network: `net:<router|dvr|sat-modem|wifi|keypad|entry>`; entry nodes have `access:<physical|wifi|remote>`. No wifi in the panic room (air gap).
+- Do not use the `smart:` prefix for non-devices; the sim throws on unknown kinds.

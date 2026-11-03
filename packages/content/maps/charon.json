@@ -1,6 +1,6 @@
 {
   "id": "charon",
-  "version": 8,
+  "version": 9,
   "bounds": { "min": { "x": -40, "y": -40 }, "max": { "x": 140, "y": 94 } },
   "floors": [
     {
@@ -7419,14 +7419,14 @@
       "floor": "ground",
       "kind": "poi",
       "at": { "x": 52.5, "y": 40.5 },
-      "tags": ["poi:drive", "drive:study-desk"]
+      "tags": ["poi:drive", "drive:study-desk", "intel:item", "id:study-drive", "type:digital", "value:7", "wipe:yes"]
     },
     {
       "id": "m.drive.office-safe",
       "floor": "upper",
       "kind": "poi",
       "at": { "x": 31, "y": 54 },
-      "tags": ["poi:drive", "drive:office-safe"]
+      "tags": ["poi:drive", "drive:office-safe", "intel:item", "id:office-safe", "type:digital", "value:8", "wipe:yes"]
     },
     { "id": "m.family.wife", "floor": "upper", "kind": "poi", "at": { "x": 56, "y": 53 }, "tags": ["family:wife"] },
     { "id": "m.family.son", "floor": "upper", "kind": "poi", "at": { "x": 24, "y": 52 }, "tags": ["family:son"] },
@@ -7471,266 +7471,581 @@
       "floor": "ground",
       "kind": "poi",
       "at": { "x": 71, "y": 27.8 },
-      "tags": ["smart:hub", "hub:primary", "in:g.soc"]
+      "tags": ["smart:hub", "hub:primary", "in:g.soc", "circuit:c.soc", "vlan:security"]
     },
     {
       "id": "m.smart.hub.backup",
       "floor": "grounds",
       "kind": "poi",
       "at": { "x": 8, "y": 11 },
-      "tags": ["smart:hub", "hub:backup", "in:grounds.power-house"]
+      "tags": ["smart:hub", "hub:backup", "in:grounds.power-house", "circuit:c.perimeter", "vlan:security"]
     },
     {
       "id": "m.smart.camera.gate",
       "floor": "grounds",
       "kind": "poi",
       "at": { "x": 69, "y": 78 },
-      "tags": ["smart:camera", "feeds:g.soc", "covers:gate"]
+      "tags": ["smart:camera", "feeds:g.soc", "covers:gate", "circuit:c.gate", "vlan:security"]
     },
     {
       "id": "m.smart.camera.west-fence",
       "floor": "grounds",
       "kind": "poi",
       "at": { "x": 2, "y": 40 },
-      "tags": ["smart:camera", "feeds:g.soc", "covers:west-fence"]
+      "tags": ["smart:camera", "feeds:g.soc", "covers:west-fence", "circuit:c.perimeter", "vlan:security"]
     },
     {
       "id": "m.smart.camera.east-fence",
       "floor": "grounds",
       "kind": "poi",
       "at": { "x": 98, "y": 40 },
-      "tags": ["smart:camera", "feeds:g.soc", "covers:east-fence"]
+      "tags": ["smart:camera", "feeds:g.soc", "covers:east-fence", "circuit:c.perimeter", "vlan:security"]
     },
     {
       "id": "m.smart.camera.southwest-corner",
       "floor": "grounds",
       "kind": "poi",
       "at": { "x": 2, "y": 2 },
-      "tags": ["smart:camera", "feeds:g.soc", "covers:southwest-corner"]
+      "tags": ["smart:camera", "feeds:g.soc", "covers:southwest-corner", "circuit:c.perimeter", "vlan:security"]
     },
     {
       "id": "m.smart.camera.southeast-corner",
       "floor": "grounds",
       "kind": "poi",
       "at": { "x": 98, "y": 2 },
-      "tags": ["smart:camera", "feeds:g.soc", "covers:southeast-corner"]
+      "tags": ["smart:camera", "feeds:g.soc", "covers:southeast-corner", "circuit:c.perimeter", "vlan:security"]
     },
     {
       "id": "m.smart.camera.helipad",
       "floor": "grounds",
       "kind": "poi",
       "at": { "x": 48, "y": 72 },
-      "tags": ["smart:camera", "feeds:g.soc", "covers:helipad"]
+      "tags": ["smart:camera", "feeds:g.soc", "covers:helipad", "circuit:c.perimeter", "vlan:security"]
     },
     {
       "id": "m.smart.camera.garden-east",
       "floor": "grounds",
       "kind": "poi",
       "at": { "x": 84, "y": 25 },
-      "tags": ["smart:camera", "feeds:g.soc", "covers:garden-east"]
+      "tags": ["smart:camera", "feeds:g.soc", "covers:garden-east", "circuit:c.perimeter", "vlan:security"]
     },
     {
       "id": "m.smart.camera.marina",
       "floor": "shore",
       "kind": "poi",
       "at": { "x": 92, "y": -2 },
-      "tags": ["smart:camera", "feeds:g.soc", "covers:marina"]
+      "tags": ["smart:camera", "feeds:g.soc", "covers:marina", "circuit:c.perimeter", "vlan:security"]
     },
     {
       "id": "m.smart.camera.garage",
       "floor": "grounds",
       "kind": "poi",
       "at": { "x": 78, "y": 56 },
-      "tags": ["smart:camera", "feeds:g.soc", "covers:garage"]
+      "tags": ["smart:camera", "feeds:g.soc", "covers:garage", "circuit:c.perimeter", "vlan:security"]
     },
     {
       "id": "m.smart.camera.foyer",
       "floor": "ground",
       "kind": "poi",
       "at": { "x": 41, "y": 53 },
-      "tags": ["smart:camera", "feeds:g.soc", "covers:foyer"]
+      "tags": ["smart:camera", "feeds:g.soc", "covers:foyer", "circuit:c.house.a", "vlan:security"]
     },
     {
       "id": "m.smart.camera.grand-hall",
       "floor": "ground",
       "kind": "poi",
       "at": { "x": 38, "y": 47 },
-      "tags": ["smart:camera", "feeds:g.soc", "covers:grand-hall"]
+      "tags": ["smart:camera", "feeds:g.soc", "covers:grand-hall", "circuit:c.house.a", "vlan:security"]
     },
     {
       "id": "m.smart.camera.roof",
       "floor": "roof",
       "kind": "poi",
       "at": { "x": 37.5, "y": 52 },
-      "tags": ["smart:camera", "feeds:g.soc", "covers:roof"]
+      "tags": ["smart:camera", "feeds:g.soc", "covers:roof", "circuit:c.roof", "vlan:security"]
     },
     {
       "id": "m.smart.camera.portico",
       "floor": "ground",
       "kind": "poi",
       "at": { "x": 41, "y": 59.6 },
-      "tags": ["smart:camera", "feeds:g.soc", "covers:portico"]
+      "tags": ["smart:camera", "feeds:g.soc", "covers:portico", "circuit:c.house.a", "vlan:security"]
     },
     {
       "id": "m.smart.camera.forecourt",
       "floor": "grounds",
       "kind": "poi",
       "at": { "x": 61, "y": 61 },
-      "tags": ["smart:camera", "feeds:g.soc", "covers:forecourt"]
+      "tags": ["smart:camera", "feeds:g.soc", "covers:forecourt", "circuit:c.gate", "vlan:security"]
     },
     {
       "id": "m.smart.floodlight.1",
       "floor": "grounds",
       "kind": "poi",
       "at": { "x": 68.6, "y": 62 },
-      "tags": ["smart:floodlight", "feeds:g.soc"]
+      "tags": ["smart:floodlight", "feeds:g.soc", "circuit:c.gate", "vlan:security"]
     },
     {
       "id": "m.smart.floodlight.2",
       "floor": "grounds",
       "kind": "poi",
       "at": { "x": 30.6, "y": 66 },
-      "tags": ["smart:floodlight", "feeds:g.soc"]
+      "tags": ["smart:floodlight", "feeds:g.soc", "circuit:c.perimeter", "vlan:security"]
     },
     {
       "id": "m.smart.floodlight.3",
       "floor": "grounds",
       "kind": "poi",
       "at": { "x": 95.6, "y": 20 },
-      "tags": ["smart:floodlight", "feeds:g.soc"]
+      "tags": ["smart:floodlight", "feeds:g.soc", "circuit:c.perimeter", "vlan:security"]
     },
     {
       "id": "m.smart.floodlight.4",
       "floor": "grounds",
       "kind": "poi",
       "at": { "x": 60, "y": 8 },
-      "tags": ["smart:floodlight", "feeds:g.soc"]
+      "tags": ["smart:floodlight", "feeds:g.soc", "circuit:c.perimeter", "vlan:security"]
     },
     {
       "id": "m.smart.floodlight.5",
       "floor": "grounds",
       "kind": "poi",
       "at": { "x": 40, "y": 8 },
-      "tags": ["smart:floodlight", "feeds:g.soc"]
+      "tags": ["smart:floodlight", "feeds:g.soc", "circuit:c.perimeter", "vlan:security"]
     },
     {
       "id": "m.smart.floodlight.6",
       "floor": "grounds",
       "kind": "poi",
       "at": { "x": 89, "y": 14 },
-      "tags": ["smart:floodlight", "feeds:g.soc"]
+      "tags": ["smart:floodlight", "feeds:g.soc", "circuit:c.perimeter", "vlan:security"]
     },
     {
       "id": "m.smart.motion.foyer",
       "floor": "ground",
       "kind": "poi",
       "at": { "x": 44, "y": 52 },
-      "tags": ["smart:motion", "feeds:g.soc", "covers:foyer"]
+      "tags": ["smart:motion", "feeds:g.soc", "covers:foyer", "circuit:c.house.a", "vlan:security"]
     },
     {
       "id": "m.smart.motion.gallery",
       "floor": "upper",
       "kind": "poi",
       "at": { "x": 50, "y": 51 },
-      "tags": ["smart:motion", "feeds:g.soc", "covers:gallery"]
+      "tags": ["smart:motion", "feeds:g.soc", "covers:gallery", "circuit:c.house.a", "vlan:security"]
     },
     {
       "id": "m.smart.motion.roof-deck",
       "floor": "roof",
       "kind": "poi",
       "at": { "x": 45, "y": 46 },
-      "tags": ["smart:motion", "feeds:g.soc", "covers:roof-deck"]
+      "tags": ["smart:motion", "feeds:g.soc", "covers:roof-deck", "circuit:c.roof", "vlan:security"]
     },
     {
       "id": "m.smart.lock.main",
       "floor": "ground",
       "kind": "poi",
       "at": { "x": 41, "y": 55.2 },
-      "tags": ["smart:lock", "door:d.g.main"]
+      "tags": ["smart:lock", "door:d.g.main", "circuit:c.house.a", "vlan:security"]
     },
     {
       "id": "m.smart.lock.soc",
       "floor": "ground",
       "kind": "poi",
       "at": { "x": 66.6, "y": 28.5 },
-      "tags": ["smart:lock", "door:d.g.soc-bath"]
+      "tags": ["smart:lock", "door:d.g.soc-bath", "circuit:c.soc", "vlan:security"]
     },
     {
       "id": "m.smart.lock.panic",
       "floor": "ground",
       "kind": "poi",
       "at": { "x": 66.6, "y": 37 },
-      "tags": ["smart:lock", "door:d.g.panic-core"]
+      "tags": ["smart:lock", "door:d.g.panic-core", "circuit:c.panic", "vlan:panic"]
     },
     {
       "id": "m.smart.camera.pool",
       "floor": "grounds",
       "kind": "poi",
       "at": { "x": 68, "y": 12 },
-      "tags": ["smart:camera", "feeds:g.soc", "covers:pool"]
+      "tags": ["smart:camera", "feeds:g.soc", "covers:pool", "circuit:c.perimeter", "vlan:security"]
     },
     {
       "id": "m.smart.camera.living",
       "floor": "ground",
       "kind": "poi",
       "at": { "x": 40, "y": 18 },
-      "tags": ["smart:camera", "feeds:g.soc", "covers:living"]
+      "tags": ["smart:camera", "feeds:g.soc", "covers:living", "circuit:c.house.c", "vlan:security"]
     },
     {
       "id": "m.smart.camera.garden-notch",
       "floor": "grounds",
       "kind": "poi",
       "at": { "x": 30, "y": 34 },
-      "tags": ["smart:camera", "feeds:g.soc", "covers:garden-notch"]
+      "tags": ["smart:camera", "feeds:g.soc", "covers:garden-notch", "circuit:c.perimeter", "vlan:security"]
     },
     {
       "id": "m.smart.motion.core",
       "floor": "ground",
       "kind": "poi",
       "at": { "x": 62, "y": 37 },
-      "tags": ["smart:motion", "feeds:g.soc", "covers:core"]
+      "tags": ["smart:motion", "feeds:g.soc", "covers:core", "circuit:c.house.b", "vlan:security"]
     },
     {
       "id": "m.smart.floodlight.7",
       "floor": "grounds",
       "kind": "poi",
       "at": { "x": 3.6, "y": 16 },
-      "tags": ["smart:floodlight", "feeds:g.soc"]
+      "tags": ["smart:floodlight", "feeds:g.soc", "circuit:c.perimeter", "vlan:security"]
     },
     {
       "id": "m.smart.floodlight.8",
       "floor": "grounds",
       "kind": "poi",
       "at": { "x": 3.6, "y": 48 },
-      "tags": ["smart:floodlight", "feeds:g.soc"]
+      "tags": ["smart:floodlight", "feeds:g.soc", "circuit:c.perimeter", "vlan:security"]
     },
     {
       "id": "m.smart.floodlight.9",
       "floor": "grounds",
       "kind": "poi",
       "at": { "x": 97.6, "y": 16 },
-      "tags": ["smart:floodlight", "feeds:g.soc"]
+      "tags": ["smart:floodlight", "feeds:g.soc", "circuit:c.perimeter", "vlan:security"]
     },
     {
       "id": "m.smart.floodlight.10",
       "floor": "grounds",
       "kind": "poi",
       "at": { "x": 97.6, "y": 48 },
-      "tags": ["smart:floodlight", "feeds:g.soc"]
+      "tags": ["smart:floodlight", "feeds:g.soc", "circuit:c.perimeter", "vlan:security"]
     },
     {
       "id": "m.smart.floodlight.11",
       "floor": "grounds",
       "kind": "poi",
       "at": { "x": 30.6, "y": 77 },
-      "tags": ["smart:floodlight", "feeds:g.soc"]
+      "tags": ["smart:floodlight", "feeds:g.soc", "circuit:c.gate", "vlan:security"]
     },
     {
       "id": "m.smart.floodlight.12",
       "floor": "grounds",
       "kind": "poi",
       "at": { "x": 88.6, "y": 77 },
-      "tags": ["smart:floodlight", "feeds:g.soc"]
+      "tags": ["smart:floodlight", "feeds:g.soc", "circuit:c.gate", "vlan:security"]
+    },
+    {
+      "id": "m.util.mains",
+      "floor": "grounds",
+      "kind": "poi",
+      "at": { "x": 60, "y": 82 },
+      "tags": [
+        "util:power",
+        "power:mains",
+        "supplies:c.gate",
+        "supplies:c.house.a",
+        "supplies:c.house.b",
+        "supplies:c.house.c",
+        "supplies:c.roof",
+        "supplies:c.perimeter",
+        "supplies:c.soc"
+      ]
+    },
+    {
+      "id": "m.util.transformer",
+      "floor": "grounds",
+      "kind": "poi",
+      "at": { "x": 9, "y": 12 },
+      "tags": ["util:power", "power:transformer"]
+    },
+    {
+      "id": "m.util.generator.1",
+      "floor": "lower",
+      "kind": "poi",
+      "at": { "x": 70, "y": 38 },
+      "tags": [
+        "util:power",
+        "power:generator",
+        "supplies:c.gate",
+        "supplies:c.house.a",
+        "supplies:c.house.b",
+        "supplies:c.house.c",
+        "supplies:c.roof",
+        "supplies:c.perimeter",
+        "supplies:c.soc",
+        "supplies:c.panic"
+      ]
+    },
+    {
+      "id": "m.util.generator.2",
+      "floor": "ground",
+      "kind": "poi",
+      "at": { "x": 79, "y": 40.2 },
+      "tags": [
+        "util:power",
+        "power:generator",
+        "supplies:c.house.a",
+        "supplies:c.house.b",
+        "supplies:c.house.c",
+        "supplies:c.soc"
+      ]
+    },
+    {
+      "id": "m.util.fuel",
+      "floor": "grounds",
+      "kind": "poi",
+      "at": { "x": 6, "y": 17 },
+      "tags": ["util:power", "power:fuel"]
+    },
+    {
+      "id": "m.util.battery.roof",
+      "floor": "roof",
+      "kind": "poi",
+      "at": { "x": 72, "y": 40.2 },
+      "tags": ["util:power", "power:battery", "supplies:c.roof", "supplies:c.soc"]
+    },
+    {
+      "id": "m.util.battery.soc",
+      "floor": "ground",
+      "kind": "poi",
+      "at": { "x": 75.4, "y": 27.6 },
+      "tags": ["util:power", "power:battery", "supplies:c.soc", "supplies:c.panic"]
+    },
+    {
+      "id": "m.util.panel.a",
+      "floor": "ground",
+      "kind": "poi",
+      "at": { "x": 33, "y": 52 },
+      "tags": ["util:power", "util:panel", "feeds:c.house.a"]
+    },
+    {
+      "id": "m.util.panel.b",
+      "floor": "ground",
+      "kind": "poi",
+      "at": { "x": 44, "y": 27.5 },
+      "tags": ["util:power", "util:panel", "feeds:c.house.b"]
+    },
+    {
+      "id": "m.util.panel.c",
+      "floor": "ground",
+      "kind": "poi",
+      "at": { "x": 13, "y": 12 },
+      "tags": ["util:power", "util:panel", "feeds:c.house.c"]
+    },
+    {
+      "id": "m.util.panel.roof",
+      "floor": "roof",
+      "kind": "poi",
+      "at": { "x": 79.3, "y": 38 },
+      "tags": ["util:power", "util:panel", "feeds:c.roof"]
+    },
+    {
+      "id": "m.util.panel.perimeter",
+      "floor": "grounds",
+      "kind": "poi",
+      "at": { "x": 6, "y": 10 },
+      "tags": ["util:power", "util:panel", "feeds:c.perimeter"]
+    },
+    {
+      "id": "m.util.panel.gate",
+      "floor": "grounds",
+      "kind": "poi",
+      "at": { "x": 64, "y": 78 },
+      "tags": ["util:power", "util:panel", "feeds:c.gate"]
+    },
+    {
+      "id": "m.util.panel.soc",
+      "floor": "ground",
+      "kind": "poi",
+      "at": { "x": 75.4, "y": 30.4 },
+      "tags": ["util:power", "util:panel", "feeds:c.soc"]
+    },
+    {
+      "id": "m.util.panel.panic",
+      "floor": "ground",
+      "kind": "poi",
+      "at": { "x": 67, "y": 39.2 },
+      "tags": ["util:power", "util:panel", "feeds:c.panic"]
+    },
+    {
+      "id": "m.comms.landline",
+      "floor": "grounds",
+      "kind": "poi",
+      "at": { "x": 65, "y": 79 },
+      "tags": ["util:comms", "comms:landline", "net:entry", "access:physical", "vlan:security"]
+    },
+    {
+      "id": "m.comms.fiber",
+      "floor": "grounds",
+      "kind": "poi",
+      "at": { "x": 5, "y": 13 },
+      "tags": ["util:comms", "comms:fiber"]
+    },
+    {
+      "id": "m.comms.sat",
+      "floor": "roof",
+      "kind": "poi",
+      "at": { "x": 81, "y": 38 },
+      "tags": ["util:comms", "comms:sat"]
+    },
+    {
+      "id": "m.comms.radio-base",
+      "floor": "ground",
+      "kind": "poi",
+      "at": { "x": 67.3, "y": 27.5 },
+      "tags": ["util:comms", "comms:radio-base"]
+    },
+    {
+      "id": "m.comms.antenna",
+      "floor": "roof",
+      "kind": "poi",
+      "at": { "x": 37.5, "y": 53.8 },
+      "tags": ["util:comms", "comms:antenna"]
+    },
+    {
+      "id": "m.comms.cell",
+      "floor": "grounds",
+      "kind": "poi",
+      "at": { "x": 118, "y": 88 },
+      "tags": ["util:comms", "comms:cell"]
+    },
+    {
+      "id": "m.comms.sat-phone",
+      "floor": "ground",
+      "kind": "poi",
+      "at": { "x": 73, "y": 39 },
+      "tags": ["util:comms", "comms:sat-phone", "comms:hardline"]
+    },
+    {
+      "id": "m.comms.siren.1",
+      "floor": "roof",
+      "kind": "poi",
+      "at": { "x": 59, "y": 55 },
+      "tags": ["util:comms", "comms:siren", "circuit:c.roof"]
+    },
+    {
+      "id": "m.comms.siren.2",
+      "floor": "roof",
+      "kind": "poi",
+      "at": { "x": 19, "y": 55 },
+      "tags": ["util:comms", "comms:siren", "circuit:c.roof"]
+    },
+    {
+      "id": "m.comms.intercom",
+      "floor": "grounds",
+      "kind": "poi",
+      "at": { "x": 74, "y": 77.5 },
+      "tags": ["util:comms", "comms:intercom", "circuit:c.gate"]
+    },
+    {
+      "id": "m.intel.vault-archive",
+      "floor": "lower",
+      "kind": "poi",
+      "at": { "x": 47, "y": 47 },
+      "tags": ["intel:item", "id:vault-archive", "type:digital", "value:10", "wipe:yes"]
+    },
+    {
+      "id": "m.intel.soc-records",
+      "floor": "ground",
+      "kind": "poi",
+      "at": { "x": 69.2, "y": 27.5 },
+      "tags": ["intel:item", "id:soc-records", "type:digital", "value:6", "wipe:no"]
+    },
+    {
+      "id": "m.intel.panic-drive",
+      "floor": "ground",
+      "kind": "poi",
+      "at": { "x": 74, "y": 33.5 },
+      "tags": ["intel:item", "id:panic-drive", "type:digital", "value:9", "wipe:yes"]
+    },
+    {
+      "id": "m.intel.master-devices",
+      "floor": "ground",
+      "kind": "poi",
+      "at": { "x": 47, "y": 32 },
+      "tags": ["intel:item", "id:master-devices", "type:digital", "value:6", "wipe:no"]
+    },
+    {
+      "id": "m.intel.guard-roster",
+      "floor": "ground",
+      "kind": "poi",
+      "at": { "x": 47, "y": 55 },
+      "tags": ["intel:item", "id:guard-roster", "type:paper", "value:4", "wipe:no"]
+    },
+    {
+      "id": "m.intel.armory-manifest",
+      "floor": "lower",
+      "kind": "poi",
+      "at": { "x": 36, "y": 47 },
+      "tags": ["intel:item", "id:armory-manifest", "type:paper", "value:3", "wipe:no"]
+    },
+    {
+      "id": "m.intel.yacht-charts",
+      "floor": "shore",
+      "kind": "poi",
+      "at": { "x": 88, "y": -9 },
+      "tags": ["intel:item", "id:yacht-charts", "type:physical", "value:5", "wipe:no"]
+    },
+    {
+      "id": "m.net.router",
+      "floor": "ground",
+      "kind": "poi",
+      "at": { "x": 75.4, "y": 28.4 },
+      "tags": ["net:router", "vlan:security"]
+    },
+    {
+      "id": "m.net.dvr",
+      "floor": "ground",
+      "kind": "poi",
+      "at": { "x": 71.2, "y": 27.5 },
+      "tags": ["net:dvr", "vlan:security"]
+    },
+    {
+      "id": "m.net.sat-modem",
+      "floor": "roof",
+      "kind": "poi",
+      "at": { "x": 81, "y": 39.5 },
+      "tags": ["net:sat-modem", "net:entry", "access:remote", "vlan:security"]
+    },
+    {
+      "id": "m.net.wifi.foyer",
+      "floor": "ground",
+      "kind": "poi",
+      "at": { "x": 38, "y": 52.5 },
+      "tags": ["net:wifi", "vlan:house", "circuit:c.house.a"]
+    },
+    {
+      "id": "m.net.wifi.living",
+      "floor": "ground",
+      "kind": "poi",
+      "at": { "x": 30, "y": 14 },
+      "tags": ["net:wifi", "vlan:house", "circuit:c.house.c"]
+    },
+    {
+      "id": "m.net.wifi.sky-lounge",
+      "floor": "upper",
+      "kind": "poi",
+      "at": { "x": 60, "y": 28 },
+      "tags": ["net:wifi", "vlan:house", "circuit:c.house.b"]
+    },
+    {
+      "id": "m.net.wifi.pavilion",
+      "floor": "roof",
+      "kind": "poi",
+      "at": { "x": 48, "y": 52.5 },
+      "tags": ["net:wifi", "vlan:house", "circuit:c.roof"]
+    },
+    {
+      "id": "m.net.wifi.guest",
+      "floor": "upper",
+      "kind": "poi",
+      "at": { "x": 79, "y": 30 },
+      "tags": ["net:wifi", "vlan:guest", "net:entry", "access:wifi", "circuit:c.house.b"]
+    },
+    {
+      "id": "m.net.keypad.gate",
+      "floor": "grounds",
+      "kind": "poi",
+      "at": { "x": 68, "y": 79 },
+      "tags": ["net:keypad", "net:entry", "access:physical", "vlan:house", "circuit:c.gate"]
     }
   ]
 }

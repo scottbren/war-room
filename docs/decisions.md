@@ -51,3 +51,6 @@ User asked for a roof check, a fortified compound (no guard towers, no gate on t
 ## 2026-11-03: CHARON v8 (roof second pass)
 
 User asked for more work on the roof after v7. Added: warm slab color for deck/terrace rooms (greybox), rooftop plant house, skylights, HVAC relocation. The greybox draw-group budget test was raised from 60 to 80 groups (one new material; still a few dozen draw calls). No contract change.
+
+## Map v9: utilities layer (tier 1)
+Added power, comms, intel and network markers and validator checks (`checkUtilities`). Data only; no sim or contract change. Runtime (power graph, comms status, cyber actions) awaits a written spec and approval.
