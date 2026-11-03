@@ -106,11 +106,11 @@ describe("individual checks, by breaking a copy of charon", () => {
     expect(find(validateMap(map), "g.panic", "hall")).toBeDefined();
   });
 
-  it("doors between roof sections need no wall (the roof has only a parapet of cover)", () => {
+  it("doors between open roof decks need no wall (decks have only a parapet of cover)", () => {
     const map = charon();
     const roof = floorOf(map, "roof");
     expect(roof.doors.length).toBeGreaterThan(0);
-    expect(roof.walls).toEqual([]);
+    expect(roof.doors.some((d) => d.between.every((id) => id.startsWith("r.deck.")))).toBe(true);
     expect(validateMap(map)).toEqual([]);
   });
 
@@ -150,10 +150,18 @@ describe("individual checks, by breaking a copy of charon", () => {
     expect(validateMap(map)).toEqual([]);
   });
 
-  it("removing a vertical link cuts off what only it connected", () => {
+  it("removing every vertical link to the roof cuts the roof off", () => {
+    const map = charon();
+    map.verticalLinks = map.verticalLinks.filter((l) => l.kind !== "roof-access");
+    // the ladder top is a door to "outside" on the roof, which the validator treats as a way in
+    floorOf(map, "roof").doors = floorOf(map, "roof").doors.filter((d) => d.id !== "d.r.nw-ladder");
+    expect(find(validateMap(map), "r.deck.main", "cannot be reached")).toBeDefined();
+  });
+
+  it("the roof stays reachable if one of its three access routes is lost", () => {
     const map = charon();
     map.verticalLinks = map.verticalLinks.filter((l) => l.id !== "link.roof");
-    expect(find(validateMap(map), "r.roof", "cannot be reached")).toBeDefined();
+    expect(validateMap(map)).toEqual([]);
   });
 
   it("void rooms are not expected to be reachable", () => {
@@ -201,6 +209,64 @@ describe("required rooms and link ends", () => {
     const cliff = map.verticalLinks.find((l) => l.id === "link.cliff")!;
     expect(cliff.from.floor).toBe("grounds");
     expect(validateMap(map)).toEqual([]);
+  });
+});
+
+describe("windows", () => {
+  const win = (id: string, x: number, y: number, between: [string, string], width = 1.8) => ({ id, at: { x, y }, width, between, shutter: true, blastRated: true });
+
+  it("accepts an armored window in an exterior wall", () => {
+    const map = charon();
+    floorOf(map, "ground").windows.push(win("w.ok", 28, 22, ["g.master", "outside"]));
+    expect(validateMap(map)).toEqual([]);
+  });
+
+  it("rejects a window that is not on any wall", () => {
+    const map = charon();
+    floorOf(map, "ground").windows.push(win("w.floating", 33, 22, ["g.master", "outside"]));
+    expect(find(validateMap(map), "w.floating", "not on any wall")).toBeDefined();
+  });
+
+  it("rejects a window naming a room that is not on that floor", () => {
+    const map = charon();
+    floorOf(map, "ground").windows.push(win("w.ghost", 28, 22, ["g.nowhere", "outside"]));
+    expect(find(validateMap(map), "w.ghost", "unknown room", "g.nowhere")).toBeDefined();
+  });
+
+  it("rejects a window that does not face the outside", () => {
+    const map = charon();
+    floorOf(map, "ground").windows.push(win("w.inside", 28, 22, ["g.master", "g.study"]));
+    expect(find(validateMap(map), "w.inside", "outside")).toBeDefined();
+  });
+
+  it("rejects windows in the panic room and the safe landing", () => {
+    const map = charon();
+    floorOf(map, "ground").windows.push(win("w.panic", 72, 22, ["g.panic", "outside"]));
+    floorOf(map, "upper").windows.push(win("w.safe", 72, 22, ["u.safe", "outside"]));
+    const issues = validateMap(map);
+    expect(find(issues, "w.panic", "g.panic")).toBeDefined();
+    expect(find(issues, "w.safe", "u.safe")).toBeDefined();
+  });
+
+  it("rejects a window that overlaps a door on the same wall", () => {
+    const map = charon();
+    // d.g.master-terrace is a 2 m glass door at (33,16) on the south wall
+    floorOf(map, "ground").windows.push(win("w.clash", 33.5, 16, ["g.master", "outside"], 1.2));
+    expect(find(validateMap(map), "w.clash", "d.g.master-terrace", "overlaps")).toBeDefined();
+  });
+
+  it("allows a window beside a door", () => {
+    const map = charon();
+    floorOf(map, "ground").windows.push(win("w.beside", 29.6, 16, ["g.master", "outside"], 1.6));
+    expect(validateMap(map)).toEqual([]);
+  });
+});
+
+describe("security center", () => {
+  it("CHARON must have a room tagged security-center (the checks cannot pass without one)", () => {
+    const map = charon();
+    for (const f of map.floors) for (const r of f.rooms) r.tags = r.tags.filter((t) => t !== "security-center");
+    expect(find(validateMap(map), "charon", "\"security-center\"", "must have")).toBeDefined();
   });
 });
 

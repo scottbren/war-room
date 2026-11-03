@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { MapFile } from "@war-room/content";
-import type { Door, Floor, Room, Vec2, VerticalLink } from "@war-room/content";
+import type { Floor, Room, Vec2, VerticalLink } from "@war-room/content";
 
 /**
  * Map validator. Every message names the exact id at fault.
@@ -18,8 +18,11 @@ import type { Door, Floor, Room, Vec2, VerticalLink } from "@war-room/content";
  *     a shaft up to a room tagged "safe-landing" on the upper floor, and a tunnel
  *     whose far end is inside a room tagged "tunnel-exit"
  *   - rooms tagged "family" are on the upper floor
- *   - the map "charon" must contain rooms tagged "panic-room", "safe-landing" and
- *     "tunnel-exit", so the panic-room checks cannot pass by finding nothing to check
+ *   - every window sits on a wall, joins a room on its floor to "outside", is not in a
+ *     room tagged "panic-room" or "safe-landing", and does not overlap a door
+ *   - the map "charon" must contain rooms tagged "panic-room", "safe-landing",
+ *     "tunnel-exit" and "security-center", so those checks cannot pass by finding
+ *     nothing to check
  *   - every vertical-link end on a floor other than "grounds" lies inside a room
  *     (ends on the open grounds may be outdoors, e.g. the cliff path)
  */
@@ -79,7 +82,7 @@ const overlaps = (a: Rect, b: Rect): boolean =>
   a.min.x < b.max.x && b.min.x < a.max.x && a.min.y < b.max.y && b.min.y < a.max.y;
 
 /** On a wall line: collinear with a wall and within its extent, widened by half the door (the gap cut for it). */
-function onWall(door: Door, floor: Floor): boolean {
+function onWall(door: { at: Vec2; width: number }, floor: Floor): boolean {
   const half = door.width / 2;
   return floor.walls.some((w) => {
     const vertical = w.a.x === w.b.x;
@@ -233,8 +236,44 @@ function checkPanicRooms(map: MapFile, out: Issue[]): void {
 }
 
 const REQUIRED_TAGS_BY_MAP: Record<string, readonly string[]> = {
-  charon: ["panic-room", "safe-landing", "tunnel-exit"],
+  charon: ["panic-room", "safe-landing", "tunnel-exit", "security-center"],
 };
+
+function checkWindows(map: MapFile, out: Issue[]): void {
+  for (const floor of map.floors) {
+    const roomsById = new Map(floor.rooms.map((r) => [r.id, r]));
+    for (const w of floor.windows) {
+      const where = `Window ${w.id} (floor ${floor.id})`;
+      const [a, b] = w.between;
+      const sides = [a, b];
+      let known = true;
+      for (const side of sides) {
+        if (side !== "outside" && !roomsById.has(side)) {
+          out.push({ check: "window-room", message: `${where} names unknown room ${side}` });
+          known = false;
+        }
+      }
+      if (known && !(sides.includes("outside") && sides.some((x) => x !== "outside"))) {
+        out.push({ check: "window-outside", message: `${where} must join a room to "outside", not ${a} to ${b}` });
+      }
+      for (const side of sides) {
+        const room = roomsById.get(side);
+        if (room && (room.tags.includes("panic-room") || room.tags.includes("safe-landing"))) {
+          out.push({ check: "window-hardened-room", message: `${where} is in ${room.id}, which must stay windowless (panic rooms and safe landings)` });
+        }
+      }
+      if (!onWall(w, floor)) out.push({ check: "window-on-wall", message: `${where} is not on any wall` });
+      for (const d of floor.doors) {
+        const reach = (w.width + d.width) / 2;
+        const sameVerticalLine = d.at.x === w.at.x && Math.abs(d.at.y - w.at.y) < reach;
+        const sameHorizontalLine = d.at.y === w.at.y && Math.abs(d.at.x - w.at.x) < reach;
+        if (sameVerticalLine || sameHorizontalLine) {
+          out.push({ check: "window-door-overlap", message: `${where} overlaps door ${d.id}` });
+        }
+      }
+    }
+  }
+}
 
 function checkRequiredRooms(map: MapFile, out: Issue[]): void {
   for (const tag of REQUIRED_TAGS_BY_MAP[map.id] ?? []) {
@@ -286,6 +325,7 @@ export function validateMap(input: unknown): Issue[] {
   checkOverlaps(map, issues);
   checkDoors(map, issues);
   checkReachability(map, issues);
+  checkWindows(map, issues);
   checkLinkEnds(map, issues);
   checkRequiredRooms(map, issues);
   checkPanicRooms(map, issues);

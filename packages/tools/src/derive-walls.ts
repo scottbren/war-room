@@ -9,11 +9,15 @@ import type { Floor, Room, Wall } from "@war-room/content";
  * For each floor: every room edge is split wherever another room's edge starts
  * or stops on the same line. A run shared by two rooms becomes ONE interior
  * wall; a run owned by one room becomes an exterior wall. Gaps are then cut
- * for doors and windows. Walls whose id starts with "w.fixed." are hand-authored
- * (e.g. the estate perimeter) and are kept untouched. The roof gets no derived
- * walls: its parapet is cover.
+ * for doors. Windows do NOT cut gaps: a window sits in solid wall and only a door
+ * opens it. Walls whose id starts with "w.fixed." are hand-authored (e.g. the
+ * estate perimeter) and are kept untouched. The roof gets walls only around rooms
+ * tagged "structure" (bastions, the radar tower, covered walkways); the open decks
+ * have none, their parapet is cover.
  *
  * Material rules, first match wins (tags come from the room's `tags`):
+ *   roof "structure" with "bastion" or "radar-tower" -> reinforced, 0.5 m, indestructible
+ *   roof "structure" otherwise (a covered walkway)   -> stone, 0.3 m
  *   "arcade" room shared with an "exterior" room -> no wall (an open colonnade)
  *   panic-room / safe-landing on either side  -> reinforced, 0.5 m, indestructible
  *   lone edge of a "void" room                -> glass railing, 1.1 m
@@ -128,6 +132,13 @@ function classify(run: Run, outline: Rect4 | undefined): Spec | undefined {
   const has = (tag: string) => owners.some((o) => o.tags.includes(tag));
   const shared = owners.length >= 2;
 
+  if (has("structure")) {
+    // Walls stand as tall as the structure, not as the open deck beside it.
+    const height = Math.max(...owners.filter((o) => o.tags.includes("structure")).map((o) => o.ceiling));
+    return has("bastion") || has("radar-tower")
+      ? { material: "reinforced", thickness: 0.5, destructible: false, height }
+      : { material: "stone", thickness: 0.3, destructible: true, height };
+  }
   if (shared && has("arcade") && has("exterior")) return undefined;
 
   if (has("panic-room") || has("safe-landing")) return { material: "reinforced", thickness: 0.5, destructible: false };
@@ -172,17 +183,15 @@ function gapOf(item: { id: string; at: { x: number; y: number }; width: number }
 
 function deriveFloor(floor: Floor): Floor {
   const fixed = floor.walls.filter((w) => w.id.startsWith(FIXED_PREFIX));
-  if (floor.id === "roof") return { ...floor, walls: fixed.sort(byId) };
-
+  const isRoof = floor.id === "roof";
   overlapCheck(floor);
-  const runs = collectRuns(floor);
+  let runs = collectRuns(floor);
+  // On the roof only structures are walled; the open decks have a parapet of cover instead.
+  if (isRoof) runs = runs.filter((run) => run.owners.some((o) => o.tags.includes("structure")));
   const outline = houseOutline(floor);
 
   const cuts = new Map<Run, Gap[]>();
-  const openings = [
-    ...floor.doors.map((d) => ({ item: d, kind: "door" as const })),
-    ...floor.windows.map((w) => ({ item: w, kind: "window" as const })),
-  ];
+  const openings = floor.doors.map((d) => ({ item: d, kind: "door" as const }));
   for (const { item, kind } of openings) {
     let placed = false;
     for (const run of runs) {
@@ -192,7 +201,8 @@ function deriveFloor(floor: Floor): Floor {
       placed = true;
       break;
     }
-    if (!placed && !fixed.some((w) => fixedWallHasGap(w, item))) {
+    // A roof door between two open decks has no wall to cut: it just marks the connection.
+    if (!placed && !isRoof && !fixed.some((w) => fixedWallHasGap(w, item))) {
       throw new Error(`${kind === "door" ? "Door" : "Window"} ${item.id} on floor ${floor.id} is not on any wall`);
     }
   }

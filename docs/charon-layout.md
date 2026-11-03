@@ -1,13 +1,13 @@
-# CHARON layout (map version 2: the courtyard villa)
+# CHARON layout (map version 3: the courtyard villa, fortress terrace)
 
 `content/maps/charon.json` implements this document. All rooms are axis-aligned rectangles, `[minX, minY] – [maxX, maxY]` in meters, in **map coordinates**. North is +y. The sea is to the south (y < 0). Non-rectangular buildings are composed from several rectangles (U, L and stepped shapes); the map format has no polygon rooms.
 
-Version 2 replaced the original single rectangular block (see `docs/decisions.md`). Everything gameplay depends on is unchanged: the approach points, gate, helipad, marina, the panic room / shaft / tunnel roles, family rooms upstairs, the guard counts, and the reaction force in the guest villa.
+Version 3 added the fortress roof, the security operations center, windows, extra entries, the pool house and a smart-home layer (see `docs/decisions.md`, 2026-11-03). Version 2 replaced the original single rectangular block (see `docs/decisions.md`). Everything gameplay depends on is unchanged: the approach points, gate, helipad, marina, the panic room / shaft / tunnel roles, family rooms upstairs, the guard counts, and the reaction force in the guest villa.
 
 ## Compound (floor `grounds`, z = 0)
 | Id | What | Rect | Notes |
 | --- | --- | --- | --- |
-| grounds.estate | Walled estate | [0,0] – [100,80] | Perimeter wall on west, north, east (material `perimeter`, 3 m high, 0.6 m thick); hand-authored `w.fixed.*` walls, with a 6 m gap for the gate |
+| grounds.estate | Walled estate | [0,0] – [100,80] | Perimeter wall on west, north, east (material `perimeter`, 3 m high, 0.6 m thick); hand-authored `w.fixed.*` walls, with a 6 m gap for the gate and a 2 m gap for the staff gate (`d.staff-gate`, west wall at (0,64), kind `gate`, locked) |
 | grounds.cliff | Seawall and cliff edge | along y = 0, x 0–100 | 6 m drop to the beach; `cliff-path` link at x 18 for divers (approach E) |
 | grounds.highway | Coastal highway (outside) | [-20,84] – [120,94] | Zone `road` |
 | grounds.gate | Main gate | door at (69,80), width 6, kind `gate` | Approach A. Joins outside to outside (it sits in the perimeter wall, not between rooms) |
@@ -16,6 +16,8 @@ Version 2 replaced the original single rectangular block (see `docs/decisions.md
 | grounds.guest-villa (+ .wing) | Guest villa, **L-shaped** (reaction force) | [74,60] – [94,68] and wing [84,68] – [94,74] | 8 reaction-force posts |
 | grounds.garage | Garage with armored SUVs | [74,52] – [94,60] | SUVs are heavy cover |
 | grounds.staff (+ .wing) | Staff quarters, **L-shaped** | [6,60] – [24,68] and wing [6,68] – [14,74] | Civilian staff spawn |
+| grounds.pool-house | Pool house | [74,4] – [88,12] | Door north at (80,12); outdoor kitchen on the lawn side (grill island, bar; terrace zone [74,12.2]–[90,15]) |
+| grounds.power-house | Power house | [4,8] – [12,14] | Locked door at (8,14). Holds the backup smart-home hub |
 | grounds.helipad | Helipad | [40,60] – [56,76] | `lz` marker; approach C |
 | grounds.drive | Driveway | zones [66,56] – [72,80] and [50,56] – [72,60] | Zone `exposed` |
 | grounds.house | Main residence | [28,16] – [72,56] | A U: main block north, wings south, open courtyard (below) |
@@ -56,9 +58,10 @@ The house footprint is x 28–72, y 16–56 (44 x 40 m). The main block (y 38–
 | --- | --- | --- | --- |
 | g.foyer | Entrance foyer | [46,52] – [54,56] | Main doors at (50,56), approach A side |
 | g.cloak | Cloakroom and powder room | [38,52] – [46,56] | Off the foyer |
-| g.security | Security office | [54,52] – [62,56] | CCTV and alarm servers; guard post |
+| g.security | Guard room | [54,52] – [62,56] | Front-door guard post with an armory rack (heavy cover) and two slit windows |
 | g.grand-hall | Grand hall | [38,38] – [62,52] | Double height (ceiling 8). Piano (light cover). **Twin grand staircases**: two walkable marble flights, 3 m wide and 9.2 m long, run up the west and east walls from y = 41 and rise 4 m to the gallery (x = 40 and x = 60). A balustrade rail (light cover) lines each flight's open edge. The flights are drawn as real steps from the `stairs` links, not as solid blocks. Glass doors to the courtyard at (50,38) |
-| g.library | Library | [28,46] – [38,56] | |
+| g.library | Library | [28,46] – [38,53] | Built-in shelves along the west wall, reading table |
+| g.wine-room | Wine room and humidor | [28,53] – [38,56] | Off the library; racks; two slit windows |
 | g.drawing | Drawing room | [28,38] – [38,46] | Sofas: light cover |
 | g.dining | Formal dining room | [62,46] – [72,56] | Long table: light cover |
 | g.kitchen | Kitchen | [62,38] – [72,46] | Island: heavy cover |
@@ -68,10 +71,11 @@ The house footprint is x 28–72, y 16–56 (44 x 40 m). The main block (y 38–
 | g.courtyard | Pool courtyard | [42,16] – [58,38] | Open air (tag `exterior`). Pool, fountain, four loungers. A low glass balustrade closes its south edge, with an 8 m gap at (50,16) |
 | g.loggia.e | East loggia | [58,16] – [62,38] | Arcade; five columns; service stairs at (60,30) |
 | g.panic | Panic room | [62,16] – [72,28] | East wing. Reinforced walls, not destructible; blast door on the loggia at (62,22); floor hatch to the tunnel at (66,18); shaft up at (70,26) |
-| g.generator | Generator and utility | [62,28] – [72,33] | Backup power; target for the power cut. Exterior door (72,30.5) |
-| g.pantry | Pantry and service entry | [62,33] – [72,38] | Exterior service door (72,35.5); connects to the kitchen |
+| g.soc | Security operations center | [62,28] – [72,33] | Tags `security-center`, `smart-hub`. Shares the panic room's north wall. Locked door to the east loggia at (62,30.5). Monitor console and server racks (heavy cover); two slit windows. The smart-home hub is here |
+| g.service | Generator, pantry and staff entrance | [62,33] – [72,38] | Backup power (target for the power cut). Staff entrance: locked exterior door at (72,35.5); connects to the kitchen at (67,38) |
+| g.garage-link | Covered garage walkway | [72,52] – [74,56] | Tag `walkway`. Door from the dining room at (72,54), locked door to the garage side at (74,54) |
 
-Rooms tagged `hall` (grand hall, both loggias, the gallery and the upper galleries) are the circulation spaces; the panic room's door opens to one of them. Interior walls are `plaster`; exterior walls `reinforced`; panic room and safe landing walls `reinforced` and not destructible. Glass doors (kind `glass`) face the terrace from the master suite and the courtyard from the grand hall. There are no windows: it is a fortified home, with shutters and blast-rated glass doors only.
+Rooms tagged `hall` (grand hall, both loggias, the gallery and the upper galleries) are the circulation spaces; the panic room's door opens to one of them. Interior walls are `plaster`; exterior walls `reinforced`; panic room and safe landing walls `reinforced` and not destructible. Glass doors (kind `glass`) face the terrace from the master suite and the courtyard from the grand hall. Windows: about 37, all blast-rated. Armored glass windows (1.8 m, steel shutter) light the bedrooms, library, drawing room and dining room; narrow slit windows (0.4 m, no shutter) guard the wine room, the guard room, the SOC, the bath and the roof bastions. The panic room and the safe landing have none. Shutters are **open by default** and are meant to close as the target's alert level rises; that is runtime state and is not in the sim yet (see decisions).
 
 ## Upper floor (floor `upper`, z = 4)
 | Id | Room | Rect | Notes |
@@ -79,9 +83,11 @@ Rooms tagged `hall` (grand hall, both loggias, the gallery and the upper galleri
 | u.void | Grand hall void | [38,38] – [62,50] | Open to the ground floor (`gallery-void` opening) |
 | u.gallery | Gallery walkway | [38,50] – [62,52] | Where both grand staircases arrive; glass railing along the void. Doors to the office, lounge, son's room and wife's suite |
 | u.office | Private office | [38,52] – [50,56] | Safe: possible second drive |
-| u.lounge | Upper lounge | [50,52] – [62,56] | |
+| u.cinema | Screening room | [50,52] – [62,56] | Cinema seating (light cover) |
 | u.son | Son's room | [28,46] – [38,56] | Tag `family`; glass door to the north balcony |
-| u.guest.1 / .2 / .3 | Guest suites | [28,38]–[38,46], [28,28]–[38,38], [28,16]–[38,28] | West wing, in a row |
+| u.guest | Guest suite | [28,38] – [38,46] | West wing |
+| u.spa | Spa and sauna | [28,28] – [38,38] | |
+| u.gym | Gym | [28,16] – [38,28] | Rack (heavy cover). Locked door to the emergency stair landing at (30,16) |
 | u.loggia.w | West gallery | [38,16] – [42,38] | Railing onto the open courtyard |
 | u.court-void | Courtyard void | [42,16] – [58,38] | Open air above the courtyard (`gallery-void` opening) |
 | u.loggia.e | East gallery | [58,16] – [62,38] | Service stairs down at (60,30); roof hatch at (60,24) |
@@ -90,16 +96,30 @@ Rooms tagged `hall` (grand hall, both loggias, the gallery and the upper galleri
 | u.daughter | Daughter's room | [62,28] – [72,34] | Tag `family`; next to the safe landing |
 | u.bath | Bathroom | [62,34] – [72,38] | |
 | u.balcony.e | South balcony | [62,13] – [72,16] | Exterior; fast-rope point (approach C) |
-| u.balcony.n | North balcony | [28,56] – [38,59] | Exterior, off the son's room |
+| u.balcony.n | North balcony | [28,56] – [38,59] | Exterior, off the son's room. The roof ladder (`link.roof-ladder`) climbs from (30,58) |
+| u.fire-escape | Emergency stair landing | [28,13] – [32,16] | Exterior. `link.fire-stair` runs down to the lawn at (30,7), a walkable 6.5 m flight |
 
-## Roof (floor `roof`, z = 8)
-- Three connected sections over the house outline: west wing [28,16]–[42,38], main block [28,38]–[72,56], east wing [58,16]–[72,38]; open 6 m gaps join them at (35,38) and (65,38).
-- A 1 m parapet (light cover, facing outward) runs around the whole U outline and around the courtyard's rim (eight strips). The roof has no derived walls.
-- Roof access hatch above the east gallery at (60,24).
-- Defender positions: sniper at (30,54), machine gun at (70,54), machine gun at (33,18), anti-aircraft missile team at (50,46). Each gun post has a sandbag nest (light cover); the AA team has its launcher (heavy cover).
-- West wing roof: a sun deck (zone `terrace`, [29,22]–[41,37]) with a plunge pool ([31,30]–[39,36]), a four-post pergola and four loungers.
-- East wing roof: a mechanical yard with three HVAC units (heavy cover), three rows of solar panels, two satellite dishes, and a housing around the roof hatch ((60,24); the housing starts at x = 60.8).
-- Main roof: a 6 m comm mast, two chimney stacks and the AA launcher.
+## Roof: the fortress terrace (floor `roof`, z = 8)
+Four corner bastions, a radar tower and four covered walkways are walled structures; the rest are open decks edged by a 1 m parapet of cover (nine strips: the U outline, the courtyard rim, and a gap for the ladder).
+
+| Id | Room | Rect | Notes |
+| --- | --- | --- | --- |
+| r.bastion.sw / .se / .nw / .ne | Corner bastions | 6 x 6 m at each corner of the house outline | Reinforced 0.5 m walls, not destructible. Two slit windows each |
+| r.radar-tower | Radar tower | [47,50] – [53,56] | Taller (ceiling 7), reinforced; the 6 m comm mast and a radar console stand inside; two slit windows |
+| r.walk.west / .east | Side covered walkways | [28,22]–[30,50] and [70,22]–[72,50] | Stone walls, link bastion to bastion |
+| r.walk.north.w / .e | North covered walkways | [34,54]–[47,56] and [53,54]–[66,56] | Link the northern bastions to the radar tower |
+| r.deck.sun | Sun deck | [30,22] – [42,38] | Small sun deck: pergola, four loungers, a plunge pool (zones inside [31,24]–[41,37]) |
+| r.deck.west-south | West wing south deck | [34,16] – [42,22] | West hatch housing at (40.6–41.6, 18–21) |
+| r.deck.main | Main roof deck and air-defense site | [30,38] – [70,50] | AA launcher behind a U of sandbags at (47–53, 42–47), chimneys |
+| r.deck.north.w / .e | North decks | [34,50]–[47,54] and [53,50]–[66,54] | Between the bastions and the radar tower |
+| r.deck.yard | Mechanical yard | [58,22] – [70,38] | Three HVAC units, three solar rows, two dishes, the east hatch housing |
+| r.deck.east-south | East wing south deck | [58,16] – [66,22] | |
+
+- Defender positions: sniper in the northwest bastion (30,54), machine guns in the northeast bastion (70,54) and southwest bastion (33,18), anti-aircraft missile team on the main deck (50,46).
+- Roof access: east hatch `link.roof` (upper (60,24)), west hatch `link.roof.west` (upper (40,19)), and a ladder `link.roof-ladder` from the north balcony (30,58) into the northwest bastion at (30,55), through a gap in its north wall (`d.r.nw-ladder`) and in the parapet.
+
+## Smart home
+Data-only markers for now (kind `poi`, tagged `smart:*`); all report to the hub in the security operations center. Primary hub (66,30) in `g.soc`, backup hub (8,11) in the power house. 14 cameras (gate, west and east fences, two southern corners, helipad, terrace, east garden, marina, garage, foyer, grand hall, courtyard, roof), 6 floodlights, 4 motion sensors and 3 smart locks (front door, SOC, panic room). Runtime behavior (camera feeds, hacking, lights) comes in a later task.
 
 ## Vertical links
 | Id | Kind | From | To |
@@ -108,13 +128,16 @@ Rooms tagged `hall` (grand hall, both loggias, the gallery and the upper galleri
 | link.grand-stairs.east | stairs | ground (60,41) | upper (60,50.2) |
 | link.stairs | stairs (service) | ground (60,30) | upper (60,30) (straight up; not drawn as steps yet) |
 | link.roof | roof-access | upper (60,24) | roof (60,24) |
+| link.roof.west | roof-access | upper (40,19) | roof (40,19) |
+| link.roof-ladder | roof-access | upper (30,58) | roof (30,55) |
+| link.fire-stair | stairs | grounds (30,7) | upper (30,13.5) |
 | link.shaft | shaft | upper (70,26) | ground (70,26), one way down; principal and family only until breached |
 | link.tunnel | shaft | ground (66,18) | grounds (85,0) boathouse; long tunnel, about 60 s on foot |
 | link.cliff | cliff-path | grounds (18,-6) | grounds (18,0) |
 
 ## Guard and spawn defaults (seeded variation added later)
 - Outer ring (hired, 6): guardhouse (2), patrol along the inner perimeter (2), marina (1), terrace (1).
-- REQUIEM veterans (12): roof positions (4), security office (2), grand hall (2), garden-east (2), helipad edge (2).
+- REQUIEM veterans (12): roof positions (4: three bastions and the AA site), guard room (2), grand hall (2), garden-east (2), helipad edge (2).
 - Inner circle (6): near the principal at all times.
 - Reaction force (8): guest villa.
 - Principal at night: master suite or study (seeded). Drive: study desk, office safe, or on his person (seeded).

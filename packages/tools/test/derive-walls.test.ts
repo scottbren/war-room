@@ -185,6 +185,66 @@ describe("deriveWalls: courtyards, arcades and voids", () => {
   });
 });
 
+describe("deriveWalls: windows", () => {
+  it("does not cut a gap for a window: a window sits in solid wall, only a door opens it", () => {
+    const map = fixture();
+    map.floors[0]!.windows = [{ id: "w.n", at: { x: 2, y: 4 }, width: 1, between: ["g.a", "outside"], shutter: true, blastRated: true }];
+    const north = wallsOf(deriveWalls(map), "ground").filter((w) => w.a.y === 4 && w.b.y === 4 && Math.max(w.a.x, w.b.x) <= 4);
+    expect(north.map(key)).toEqual(["0,4-4,4"]); // g.a's north wall stays one unbroken wall
+  });
+});
+
+describe("deriveWalls: roof structures", () => {
+  const roofMap = (): MapFile => {
+    const map = fixture();
+    map.floors[1]!.rooms = [
+      room("r.deck", rect(0, 0, 4, 4), ["roof", "deck"], 10),
+      room("r.bastion", rect(4, 0, 8, 4), ["roof", "structure", "bastion"], 3),
+      room("r.walk", rect(0, 4, 4, 6), ["roof", "structure", "walkway"], 2.8),
+    ];
+    map.floors[1]!.doors = [];
+    return map;
+  };
+  const roofWalls = (map: MapFile) => wallsOf(deriveWalls(map), "roof");
+
+  it("builds hardened walls around a bastion, on every side, and none around the open deck", () => {
+    const walls = roofWalls(roofMap());
+    const bastion = walls.filter((w) => w.material === "reinforced");
+    expect(bastion.length).toBeGreaterThanOrEqual(3);
+    for (const w of bastion) expect(w).toMatchObject({ thickness: 0.5, destructible: false, height: 3 });
+    // the deck's own open edges (west x = 0, south y = 0) have no wall
+    expect(walls.some((w) => w.a.x === 0 && w.b.x === 0 && w.a.y < 4)).toBe(false);
+    expect(walls.some((w) => w.a.y === 0 && w.b.y === 0 && w.b.x <= 4)).toBe(false);
+  });
+
+  it("walls the shared edge between a deck and a bastion (a bastion is a closed structure)", () => {
+    const shared = roofWalls(roofMap()).filter((w) => w.a.x === 4 && w.b.x === 4 && Math.min(w.a.y, w.b.y) >= 0 && Math.max(w.a.y, w.b.y) <= 4);
+    expect(shared.length).toBe(1);
+  });
+
+  it("makes a covered walkway out of lighter stone walls", () => {
+    const walk = roofWalls(roofMap()).filter((w) => w.height === 2.8);
+    expect(walk.length).toBeGreaterThan(0);
+    for (const w of walk) expect(w.material).toBe("stone");
+  });
+
+  it("cuts a door gap in a structure wall, and ignores a roof door between two open decks", () => {
+    const map = roofMap();
+    map.floors[1]!.rooms.push(room("r.deck2", rect(-4, 0, 0, 4), ["roof", "deck"], 10));
+    map.floors[1]!.doors = [
+      { id: "d.bastion", at: { x: 4, y: 2 }, width: 1, between: ["r.deck", "r.bastion"], kind: "standard", state: "open", breach: [] },
+      { id: "d.decks", at: { x: 0, y: 2 }, width: 6, between: ["r.deck2", "r.deck"], kind: "standard", state: "open", breach: [] },
+    ];
+    const shared = roofWalls(map).filter((w) => w.a.x === 4 && w.b.x === 4 && Math.max(w.a.y, w.b.y) <= 4);
+    expect(shared.map(key).sort()).toEqual(["4,0-4,1.5", "4,2.5-4,4"]);
+    expect(() => deriveWalls(map)).not.toThrow();
+  });
+
+  it("still makes no roof walls when no room is a structure (the parapet is cover)", () => {
+    expect(roofWalls(fixture())).toEqual([]);
+  });
+});
+
 describe("formatMap", () => {
   it("is valid JSON that round-trips, ends with a newline, and keeps small objects on one line", () => {
     const map = deriveWalls(fixture());

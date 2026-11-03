@@ -63,20 +63,20 @@ describe("planGreybox: coordinates (map x, y, z -> Babylon x, z, y)", () => {
   });
 
   it("orients walls along their length: vertical walls are long in z, horizontal ones in x", () => {
-    const vertical = map.floors[0]!.walls.find((w) => w.id === "w.fixed.perimeter.west")!;
+    const vertical = map.floors[0]!.walls.find((w) => w.id === "w.fixed.perimeter.west.1")!;
     const v = byId(`wall:${vertical.id}`);
     expect(v.size[0]).toBe(vertical.thickness);
-    expect(v.size[2]).toBeGreaterThan(80);
+    expect(v.size[2]).toBeGreaterThan(60);
     const horizontal = byId("wall:w.fixed.perimeter.north.1");
     expect(horizontal.size[2]).toBe(0.6);
     expect(horizontal.size[0]).toBeGreaterThan(66);
   });
 
   it("extends wall ends by half a thickness to close corners, but not where a door gap starts", () => {
-    // west wall (0,0)-(0,80), both ends free: 80 + 0.6, centered
-    const west = byId("wall:w.fixed.perimeter.west");
-    expect(west.size[2]).toBeCloseTo(80.6, 10);
-    expect(west.center[2]).toBeCloseTo(40, 10);
+    // west.1 (0,0)-(0,63): the start is a corner (extended), the end is the staff gate gap (not extended)
+    const west = byId("wall:w.fixed.perimeter.west.1");
+    expect(west.size[2]).toBeCloseTo(63.3, 10);
+    expect(west.center[2]).toBeCloseTo(31.35, 10);
     // north.1 (0,80)-(66,80): start is a corner (extended), end at x = 66 is the gate gap (not extended)
     const north = byId("wall:w.fixed.perimeter.north.1");
     expect(north.size[0]).toBeCloseTo(66.3, 10);
@@ -158,6 +158,49 @@ describe("planGreybox: coordinates (map x, y, z -> Babylon x, z, y)", () => {
     expect(boxes.filter((b) => b.id.startsWith("stairs:link.stairs:"))).toEqual([]);
     expect(boxes.filter((b) => b.id.startsWith("stairs:link.shaft"))).toEqual([]);
     expect(boxes.filter((b) => b.id.startsWith("stairs:link.tunnel"))).toEqual([]);
+  });
+
+  it("draws every window as a pane proud of its wall, at sill height, in the glass or slit material", () => {
+    const windows = map.floors.flatMap((f) => f.windows.map((w) => ({ f, w })));
+    expect(windows.length).toBeGreaterThanOrEqual(20);
+    for (const { f, w } of windows) {
+      const pane = byId(`window:${w.id}`);
+      expect(pane.floor, w.id).toBe(f.id);
+      expect(pane.material, w.id).toBe(w.width <= 0.5 ? "window:slit" : "window:glass");
+      expect(pane.center[1], w.id).toBeGreaterThan(f.elevation + 0.8); // above the sill
+      expect(pane.center[1], w.id).toBeLessThan(f.elevation + 2.6);
+      // the pane runs along the wall for the window's width and pokes out of both faces of the wall
+      const wall = f.walls.find((x) => (x.a.x === x.b.x ? x.a.x === w.at.x : x.a.y === w.at.y) && Math.min(x.a.x, x.b.x) - 0.5 <= w.at.x && Math.max(x.a.x, x.b.x) + 0.5 >= w.at.x && Math.min(x.a.y, x.b.y) - 0.5 <= w.at.y && Math.max(x.a.y, x.b.y) + 0.5 >= w.at.y);
+      const vertical = wall!.a.x === wall!.b.x;
+      const along = vertical ? pane.size[2] : pane.size[0];
+      const across = vertical ? pane.size[0] : pane.size[2];
+      expect(along, w.id).toBeCloseTo(w.width, 5);
+      expect(across, w.id).toBeGreaterThan(wall!.thickness);
+    }
+  });
+
+  it("puts a steel shutter housing over each shuttered window, and none over an unshuttered slit", () => {
+    for (const f of map.floors) {
+      for (const w of f.windows) {
+        const housing = boxes.find((b) => b.id === `shutter:${w.id}`);
+        if (w.shutter) {
+          expect(housing, w.id).toBeDefined();
+          expect(housing!.material).toBe("window:shutter");
+          expect(housing!.center[1]).toBeGreaterThan(byId(`window:${w.id}`).center[1]); // above the pane
+        } else {
+          expect(housing, w.id).toBeUndefined();
+        }
+      }
+    }
+  });
+
+  it("does not punch a hole in the wall for a window (windows stand on solid wall)", () => {
+    for (const f of map.floors) {
+      for (const w of f.windows) {
+        const wall = byId(`wall:${f.walls.find((x) => (x.a.x === x.b.x ? x.a.x === w.at.x : x.a.y === w.at.y) && Math.min(x.a.x, x.b.x) - 0.5 <= w.at.x && Math.max(x.a.x, x.b.x) + 0.5 >= w.at.x && Math.min(x.a.y, x.b.y) - 0.5 <= w.at.y && Math.max(x.a.y, x.b.y) + 0.5 >= w.at.y)!.id}`);
+        expect(wall, w.id).toBeDefined();
+      }
+    }
   });
 
   it("puts one terrain plane under the whole map bounds", () => {

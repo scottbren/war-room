@@ -14,6 +14,9 @@ export type MaterialKey =
   | "terrain"
   | "slab"
   | "stairs"
+  | "window:glass"
+  | "window:slit"
+  | "window:shutter"
   | "wall:reinforced"
   | "wall:stone"
   | "wall:plaster"
@@ -34,6 +37,9 @@ export const MATERIALS: Record<MaterialKey, Material> = {
   terrain: { color: [0.18, 0.22, 0.16], alpha: 1 },
   slab: { color: [0.45, 0.45, 0.47], alpha: 1 },
   stairs: { color: [0.78, 0.74, 0.66], alpha: 1 }, // pale marble
+  "window:glass": { color: [0.55, 0.75, 0.9], alpha: 0.4 }, // blast-rated glazing
+  "window:slit": { color: [0.1, 0.14, 0.18], alpha: 0.85 }, // narrow firing/light slit
+  "window:shutter": { color: [0.25, 0.27, 0.3], alpha: 1 }, // steel shutter housing
   "wall:reinforced": { color: [0.35, 0.37, 0.42], alpha: 1 },
   "wall:stone": { color: [0.55, 0.52, 0.47], alpha: 1 },
   "wall:plaster": { color: [0.82, 0.8, 0.75], alpha: 1 },
@@ -77,6 +83,16 @@ export function zoneRank(material: MaterialKey): number | undefined {
   if (!material.startsWith("zone:")) return undefined;
   return ZONE_ORDER.indexOf(material.slice("zone:".length) as ZoneKind);
 }
+
+// Window panes stand in solid wall (windows never cut the wall). Wide windows are armored
+// glazing with a steel shutter housing over them; narrow ones (<= 0.5 m) are slits.
+const SLIT_MAX_WIDTH = 0.5;
+const GLASS_SILL = 0.9;
+const GLASS_HEIGHT = 1.4;
+const SLIT_SILL = 1.2;
+const SLIT_HEIGHT = 0.6;
+const PANE_PROUD = 0.1; // the pane sticks out this much past the wall faces, in total
+const SHUTTER_HEIGHT = 0.3;
 
 const STAIR_WIDTH = 3;
 const STAIR_STEP_RISE = 0.25;
@@ -164,6 +180,40 @@ function stairBoxes(link: MapFile["verticalLinks"][number], elevationOf: Map<Flo
   return boxes;
 }
 
+/** Pane (and shutter housing) for one window, standing in the wall that contains it. */
+function windowBoxes(floor: Floor, w: Floor["windows"][number]): Box[] {
+  const wall = floor.walls.find((x) => {
+    const vertical = x.a.x === x.b.x;
+    const line = vertical ? x.a.x : x.a.y;
+    const across = vertical ? w.at.x : w.at.y;
+    const along = vertical ? w.at.y : w.at.x;
+    const lo = Math.min(vertical ? x.a.y : x.a.x, vertical ? x.b.y : x.b.x) - w.width / 2;
+    const hi = Math.max(vertical ? x.a.y : x.a.x, vertical ? x.b.y : x.b.x) + w.width / 2;
+    return across === line && along >= lo && along <= hi;
+  });
+  if (!wall) return [];
+  const vertical = wall.a.x === wall.b.x;
+  const slit = w.width <= SLIT_MAX_WIDTH;
+  const sill = slit ? SLIT_SILL : GLASS_SILL;
+  const height = slit ? SLIT_HEIGHT : GLASS_HEIGHT;
+  const place = (y: number, h: number, thickness: number, width: number): Pick<Box, "center" | "size"> => ({
+    center: [w.at.x, floor.elevation + y + h / 2, w.at.y],
+    size: vertical ? [thickness, h, width] : [width, h, thickness],
+  });
+  const boxes: Box[] = [
+    { id: `window:${w.id}`, floor: floor.id, material: slit ? "window:slit" : "window:glass", ...place(sill, height, wall.thickness + PANE_PROUD, w.width) },
+  ];
+  if (w.shutter) {
+    boxes.push({
+      id: `shutter:${w.id}`,
+      floor: floor.id,
+      material: "window:shutter",
+      ...place(sill + height, SHUTTER_HEIGHT, wall.thickness + PANE_PROUD * 2, w.width + 0.2),
+    });
+  }
+  return boxes;
+}
+
 export function planGreybox(map: MapFile): Box[] {
   const boxes: Box[] = [];
   const elevationOf = new Map<FloorId, number>(map.floors.map((f) => [f.id, f.elevation]));
@@ -204,6 +254,7 @@ export function planGreybox(map: MapFile): Box[] {
       });
     }
     for (const wall of floor.walls) boxes.push(wallBox(floor, wall));
+    for (const window of floor.windows) boxes.push(...windowBoxes(floor, window));
     for (const cover of floor.cover) {
       boxes.push({
         id: `cover:${cover.id}`,
