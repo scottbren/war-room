@@ -21,7 +21,7 @@ describe("charon.json", () => {
   it("has the expected room count per floor", () => {
     expect(floor("grounds").rooms).toHaveLength(8);
     expect(floor("ground").rooms).toHaveLength(14);
-    expect(floor("upper").rooms).toHaveLength(13);
+    expect(floor("upper").rooms).toHaveLength(15);
     expect(floor("roof").rooms).toHaveLength(1);
   });
 
@@ -35,6 +35,23 @@ describe("charon.json", () => {
     expect(u("u.wife").tags).toContain("family");
     expect(u("u.daughter").tags).toContain("family");
     expect(u("u.balcony").rect.min.y).toBe(13);
+  });
+
+  it("fills the two leftover upper-floor spaces with an upstairs restroom and a storage closet", () => {
+    const u = (id: string) => floor("upper").rooms.find((r) => r.id === id)!;
+    expect(u("u.wc").rect).toEqual({ min: { x: 60, y: 28 }, max: { x: 68, y: 34 } });
+    expect(u("u.storage").rect).toEqual({ min: { x: 48, y: 52 }, max: { x: 52, y: 56 } });
+    const doors = floor("upper").doors;
+    expect(doors.find((d) => d.between.includes("u.wc"))?.between).toEqual(["u.wc", "u.stairs"]);
+    expect(doors.find((d) => d.between.includes("u.storage"))?.between).toEqual(["u.storage", "u.hall"]);
+  });
+
+  it("leaves no unassigned space inside the upper-floor house outline", () => {
+    const area = (r: { min: { x: number; y: number }; max: { x: number; y: number } }) =>
+      (r.max.x - r.min.x) * (r.max.y - r.min.y);
+    const house = floor("upper").rooms.filter((r) => r.tags.includes("interior"));
+    expect(house.reduce((sum, r) => sum + area(r.rect), 0)).toBe(36 * 40);
+    expect(floor("ground").rooms.reduce((sum, r) => sum + area(r.rect), 0)).toBe(36 * 40);
   });
 
   it("has unique ids across each floor and in every list", () => {
@@ -106,7 +123,7 @@ describe("charon.json", () => {
     expect(l("link.stairs")).toMatchObject({ kind: "stairs", from: { floor: "ground", at: { x: 56, y: 31 } }, to: { floor: "upper", at: { x: 56, y: 31 } } });
     expect(l("link.roof")).toMatchObject({ kind: "roof-access", from: { floor: "upper" }, to: { floor: "roof" } });
     expect(l("link.shaft")).toMatchObject({ kind: "shaft", from: { floor: "upper", at: { x: 60, y: 26 } }, to: { floor: "ground", at: { x: 60, y: 26 } } });
-    expect(l("link.shaft").restrictedTo).toEqual(["principal"]);
+    expect(l("link.shaft").restrictedTo).toEqual(["principal", "family"]);
     expect(l("link.tunnel")).toMatchObject({ kind: "shaft", from: { floor: "ground", at: { x: 57, y: 18 } }, to: { floor: "grounds", at: { x: 85, y: 0 } } });
     expect(l("link.cliff")).toMatchObject({ kind: "cliff-path", from: { at: { x: 18, y: -6 } }, to: { at: { x: 18, y: 0 } } });
   });

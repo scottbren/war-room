@@ -1569,6 +1569,20 @@
           "tags": ["interior", "family"]
         },
         {
+          "id": "u.wc",
+          "name": "Upstairs restroom",
+          "rect": { "min": { "x": 60, "y": 28 }, "max": { "x": 68, "y": 34 } },
+          "ceiling": 4,
+          "tags": ["interior"]
+        },
+        {
+          "id": "u.storage",
+          "name": "Storage closet",
+          "rect": { "min": { "x": 48, "y": 52 }, "max": { "x": 52, "y": 56 } },
+          "ceiling": 4,
+          "tags": ["interior"]
+        },
+        {
           "id": "u.balcony",
           "name": "Balcony",
           "rect": { "min": { "x": 32, "y": 13 }, "max": { "x": 68, "y": 16 } },
@@ -1794,8 +1808,17 @@
           "destructible": true
         },
         {
-          "id": "w.upper.x60:28-34",
+          "id": "w.upper.x60:28-30.5",
           "a": { "x": 60, "y": 28 },
+          "b": { "x": 60, "y": 30.5 },
+          "thickness": 0.2,
+          "height": 4,
+          "material": "plaster",
+          "destructible": true
+        },
+        {
+          "id": "w.upper.x60:31.5-34",
+          "a": { "x": 60, "y": 31.5 },
           "b": { "x": 60, "y": 34 },
           "thickness": 0.2,
           "height": 4,
@@ -1851,6 +1874,15 @@
           "id": "w.upper.x68:16-28",
           "a": { "x": 68, "y": 16 },
           "b": { "x": 68, "y": 28 },
+          "thickness": 0.4,
+          "height": 4,
+          "material": "reinforced",
+          "destructible": true
+        },
+        {
+          "id": "w.upper.x68:28-34",
+          "a": { "x": 68, "y": 28 },
+          "b": { "x": 68, "y": 34 },
           "thickness": 0.4,
           "height": 4,
           "material": "reinforced",
@@ -2037,8 +2069,17 @@
           "destructible": true
         },
         {
-          "id": "w.upper.y52:48-52",
+          "id": "w.upper.y52:48-49.5",
           "a": { "x": 48, "y": 52 },
+          "b": { "x": 49.5, "y": 52 },
+          "thickness": 0.2,
+          "height": 4,
+          "material": "plaster",
+          "destructible": true
+        },
+        {
+          "id": "w.upper.y52:50.5-52",
+          "a": { "x": 50.5, "y": 52 },
           "b": { "x": 52, "y": 52 },
           "thickness": 0.2,
           "height": 4,
@@ -2058,6 +2099,15 @@
           "id": "w.upper.y56:44-48",
           "a": { "x": 44, "y": 56 },
           "b": { "x": 48, "y": 56 },
+          "thickness": 0.4,
+          "height": 4,
+          "material": "reinforced",
+          "destructible": true
+        },
+        {
+          "id": "w.upper.y56:48-52",
+          "a": { "x": 48, "y": 56 },
+          "b": { "x": 52, "y": 56 },
           "thickness": 0.4,
           "height": 4,
           "material": "reinforced",
@@ -2142,6 +2192,24 @@
           "at": { "x": 52, "y": 22 },
           "width": 1.2,
           "between": ["u.safe", "u.hall"],
+          "kind": "standard",
+          "state": "closed",
+          "breach": ["manual", "shotgun", "explosive"]
+        },
+        {
+          "id": "d.u.wc-stairs",
+          "at": { "x": 60, "y": 31 },
+          "width": 1,
+          "between": ["u.wc", "u.stairs"],
+          "kind": "standard",
+          "state": "closed",
+          "breach": ["manual", "shotgun", "explosive"]
+        },
+        {
+          "id": "d.u.storage-hall",
+          "at": { "x": 50, "y": 52 },
+          "width": 1,
+          "between": ["u.storage", "u.hall"],
           "kind": "standard",
           "state": "closed",
           "breach": ["manual", "shotgun", "explosive"]
@@ -2267,7 +2335,7 @@
       "from": { "floor": "upper", "at": { "x": 60, "y": 26 } },
       "to": { "floor": "ground", "at": { "x": 60, "y": 26 } },
       "bidirectional": false,
-      "restrictedTo": ["principal"]
+      "restrictedTo": ["principal", "family"]
     },
     {
       "id": "link.tunnel",

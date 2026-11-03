@@ -103,6 +103,24 @@ describe("MapFile", () => {
   });
 });
 
+describe("VerticalLink restrictedTo", () => {
+  const link = {
+    id: "l1",
+    kind: "shaft",
+    from: { floor: "upper", at: { x: 1, y: 1 } },
+    to: { floor: "ground", at: { x: 1, y: 1 } },
+    bidirectional: false,
+  };
+  const withMap = (restrictedTo: unknown) => ({ ...validMap, verticalLinks: [{ ...link, restrictedTo }] });
+
+  it("accepts principal and family (approved contract change)", () => {
+    expect(MapFile.safeParse(withMap(["principal", "family"])).success).toBe(true);
+  });
+  it("still rejects unknown roles", () => {
+    expect(MapFile.safeParse(withMap(["alien"])).success).toBe(false);
+  });
+});
+
 describe("UnitType / Team / Equipment", () => {
   it("accepts valid examples", () => {
     expect(UnitType.safeParse(validUnit).success).toBe(true);

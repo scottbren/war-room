@@ -99,7 +99,7 @@ export const VerticalLink = z
     from: LinkEnd,
     to: LinkEnd,
     bidirectional: z.boolean(),
-    restrictedTo: z.array(z.enum(["defender", "principal", "operator"])).optional(),
+    restrictedTo: z.array(z.enum(["defender", "principal", "operator", "family"])).optional(),
   })
   .strict();
 export type VerticalLink = z.infer<typeof VerticalLink>;
