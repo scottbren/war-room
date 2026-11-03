@@ -35,3 +35,7 @@ User feedback on v3: remove the emergency stair, make it feel more like a luxury
 ## 2026-11-03: CHARON v5 (modern stacked-volume restyle, basement, shore, hill)
 
 User reference: a modern concrete villa of stacked boxes with glass to the pool. Changes: see the Version 5 section of `docs/charon-layout.md`. Known gaps: the silhouette is still close to a stepped U (all floors share the 44 x 40 m footprint; the roof is one level); the terrain is only the three extra levels (a real slope would need a heightfield: contract change); approach B stays on the west wall (the breach point); stair feet on the shore stand in the sea zone (no quay yet).
+
+## 2026-11-03: CHARON v6 (zigzag of three bars)
+
+User rejected the U shape and approved the zigzag sketch (three offset 42 x 15 m bars, pool in the notch, cantilevered sky lounge, stepped heights). Map version 6 replaces the ground, upper, roof and basement floors; grounds, shore and hill are kept, with the lawn cleared of trees and hedges where the bars stand. No contract change. Tests were rewritten around the new layout (`charon-grandeur.test.ts`, `charon.test.ts`, validator and greybox tests). Known gaps: the 3 m wide hall stair flights share the hall's 9 m depth so the hall is smaller than v5's (22 x 9 m); west grove and east hedges are thinned; the shutter and smart-home runtime question above is still open.

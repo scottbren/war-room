@@ -37,9 +37,9 @@ describe("planGreybox: basics", () => {
 
 describe("planGreybox: coordinates (map x, y, z -> Babylon x, z, y)", () => {
   it("lays a room slab so its top is at the floor elevation", () => {
-    const hall = byId("slab:g.grand-hall"); // map rect [38,38]-[62,52], floor ground at z = 0
-    expect(hall.center).toEqual([50, -0.1, 45]);
-    expect(hall.size).toEqual([24, 0.2, 14]);
+    const hall = byId("slab:g.grand-hall"); // map rect [30,41]-[52,50], floor ground at z = 0
+    expect(hall.center).toEqual([41, -0.1, 45.5]);
+    expect(hall.size).toEqual([22, 0.2, 9]);
     const upperHall = byId("slab:u.gallery");
     expect(upperHall.center[1]).toBeCloseTo(floorElevation("upper") - 0.1, 10);
   });
@@ -84,20 +84,20 @@ describe("planGreybox: coordinates (map x, y, z -> Babylon x, z, y)", () => {
   });
 
   it("builds cover as a block of its own height, standing on its floor", () => {
-    const planter = byId("cover:cover.planter.1"); // rect [29.5,15.4]-[30.5,16], height 0.8, grounds
-    expect(planter.floor).toBe("grounds");
-    expect(planter.center[0]).toBeCloseTo(30, 10);
-    expect(planter.center[1]).toBeCloseTo(0.4, 10);
-    expect(planter.center[2]).toBeCloseTo(15.7, 10);
-    expect(planter.size[0]).toBeCloseTo(1, 10);
-    expect(planter.size[1]).toBeCloseTo(0.8, 10);
-    expect(planter.size[2]).toBeCloseTo(0.6, 10);
-    expect(byId("cover:cover.parapet.south.west").center[1]).toBeCloseTo(floorElevation("roof") + 0.5, 10);
+    const bar = byId("cover:cover.pool-bar"); // rect [66,24]-[70,25], height 1.1, grounds
+    expect(bar.floor).toBe("grounds");
+    expect(bar.center[0]).toBeCloseTo(68, 10);
+    expect(bar.center[1]).toBeCloseTo(0.55, 10);
+    expect(bar.center[2]).toBeCloseTo(24.5, 10);
+    expect(bar.size[0]).toBeCloseTo(4, 10);
+    expect(bar.size[1]).toBeCloseTo(1.1, 10);
+    expect(bar.size[2]).toBeCloseTo(1, 10);
+    expect(byId("cover:cover.parapet.a.west").center[1]).toBeCloseTo(floorElevation("roof") + 0.5, 10);
   });
 
   it("colors cover by type: heavy blue-grey, light amber, concealment green and see-through", () => {
     expect(byId("cover:cover.suv.1").material).toBe("cover:heavy");
-    expect(byId("cover:cover.planter.1").material).toBe("cover:light");
+    expect(byId("cover:cover.pool-bar").material).toBe("cover:light");
     const [hr, , hb] = MATERIALS["cover:heavy"].color;
     expect(hb).toBeGreaterThan(hr); // blue-ish
     const [lr, lg, lb] = MATERIALS["cover:light"].color;
@@ -109,12 +109,12 @@ describe("planGreybox: coordinates (map x, y, z -> Babylon x, z, y)", () => {
   });
 
   it("lays zones as thin translucent overlays on the grounds, the pool and the sea included", () => {
-    const pool = byId("zone:zone.pool"); // the courtyard pool, [45,20]-[55,34], on the ground floor
-    expect(pool.floor).toBe("ground");
-    expect(pool.center[0]).toBe(50);
-    expect(pool.center[2]).toBe(27);
-    expect(pool.size[0]).toBe(10);
-    expect(pool.size[2]).toBe(14);
+    const pool = byId("zone:zone.pool"); // the long pool in the notch, [56,14]-[80,23], on the grounds
+    expect(pool.floor).toBe("grounds");
+    expect(pool.center[0]).toBe(68);
+    expect(pool.center[2]).toBe(18.5);
+    expect(pool.size[0]).toBe(24);
+    expect(pool.size[2]).toBe(9);
     expect(pool.size[1]).toBeLessThan(0.1);
     expect(pool.center[1]).toBeGreaterThan(0);
     const sea = byId("zone:zone.sea");
@@ -143,13 +143,13 @@ describe("planGreybox: coordinates (map x, y, z -> Babylon x, z, y)", () => {
     for (const b of steps) {
       expect(b.material).toBe("stairs");
       expect(b.floor).toBe("ground");
-      expect(b.center[0]).toBeCloseTo(40, 5); // centered on the link line x = 40
+      expect(b.center[0]).toBeCloseTo(32, 5); // centered on the link line x = 32
       expect(b.size[0]).toBeGreaterThanOrEqual(2.4); // a proper width
       expect(b.center[1] - b.size[1] / 2).toBeCloseTo(0, 5); // solid down to the floor
     }
     const first = steps[0]!;
     const last = steps[steps.length - 1]!;
-    expect(first.center[2] - first.size[2] / 2).toBeCloseTo(41, 5); // starts at the link's lower end (y = 41)
+    expect(first.center[2] - first.size[2] / 2).toBeCloseTo(41.2, 5); // starts at the link's lower end (y = 41.2)
     expect(last.center[2] + last.size[2] / 2).toBeCloseTo(50.2, 5); // and runs to its upper end (y = 50.2)
     expect(boxes.filter((b) => b.id.startsWith("stairs:link.grand-stairs.east:")).length).toBe(steps.length);
   });

@@ -86,23 +86,23 @@ describe("individual checks, by breaking a copy of charon", () => {
 
   it("a cover piece with a bad facing angle is reported", () => {
     const map = charon();
-    const planter = floorOf(map, "grounds").cover.find((c) => c.id === "cover.planter.1")!;
-    planter.facing = 400;
-    expect(find(validateMap(map), "cover.planter.1", "facing")).toBeDefined();
+    const grill = floorOf(map, "grounds").cover.find((c) => c.id === "cover.outdoor-kitchen.grill")!;
+    grill.facing = 400;
+    expect(find(validateMap(map), "cover.outdoor-kitchen.grill", "facing")).toBeDefined();
   });
 
   it("the panic room must have a door to the hall", () => {
     const map = charon();
     const g = floorOf(map, "ground");
-    g.doors = g.doors.filter((d) => d.id !== "d.g.panic-loggia");
+    g.doors = g.doors.filter((d) => d.id !== "d.g.panic-core");
     expect(find(validateMap(map), "g.panic", "hall")).toBeDefined();
   });
 
   it("the hall is any room tagged 'hall', not a naming convention", () => {
     const map = charon();
-    const loggia = floorOf(map, "ground").rooms.find((r) => r.id === "g.loggia.e")!;
-    expect(loggia.tags).toContain("hall");
-    loggia.tags = loggia.tags.filter((t) => t !== "hall");
+    const core = floorOf(map, "ground").rooms.find((r) => r.id === "g.core")!;
+    expect(core.tags).toContain("hall");
+    core.tags = core.tags.filter((t) => t !== "hall");
     expect(find(validateMap(map), "g.panic", "hall")).toBeDefined();
   });
 
@@ -155,7 +155,7 @@ describe("individual checks, by breaking a copy of charon", () => {
     map.verticalLinks = map.verticalLinks.filter((l) => l.kind !== "roof-access");
     // the ladder top is a door to "outside" on the roof, which the validator treats as a way in
     floorOf(map, "roof").doors = floorOf(map, "roof").doors.filter((d) => d.id !== "d.r.nw-ladder");
-    expect(find(validateMap(map), "r.deck.main", "cannot be reached")).toBeDefined();
+    expect(find(validateMap(map), "r.deck.a", "cannot be reached")).toBeDefined();
   });
 
   it("the roof stays reachable if one of its three access routes is lost", () => {
@@ -237,7 +237,7 @@ describe("extra levels (lower, shore, hill)", () => {
   it("a link end on the lower (indoor) level must still be inside a room", () => {
     const map = withLevel("lower", -4);
     map.verticalLinks.push({ id: "link.test", kind: "stairs", from: { floor: "lower", at: { x: 45, y: 20 } }, to: { floor: "ground", at: { x: 45, y: 20 } }, bidirectional: true });
-    expect(find(validateMap(map), "link.test", "not inside any room")).toBeDefined(); // under the open courtyard: no basement room
+    expect(find(validateMap(map), "link.test", "not inside any room")).toBeDefined(); // under the living room: no basement room
   });
 
   it("the panic-room tunnel may exit on the shore as well as on the grounds", () => {
@@ -256,13 +256,13 @@ describe("windows", () => {
 
   it("accepts an armored window in an exterior wall", () => {
     const map = charon();
-    floorOf(map, "ground").windows.push(win("w.ok", 28, 22, ["g.master", "outside"]));
+    floorOf(map, "ground").windows.push(win("w.ok", 56.5, 26, ["g.master", "outside"]));
     expect(validateMap(map)).toEqual([]);
   });
 
   it("rejects a window that is not on any wall", () => {
     const map = charon();
-    floorOf(map, "ground").windows.push(win("w.floating", 33, 22, ["g.master", "outside"]));
+    floorOf(map, "ground").windows.push(win("w.floating", 52, 30, ["g.master", "outside"]));
     expect(find(validateMap(map), "w.floating", "not on any wall")).toBeDefined();
   });
 
@@ -289,14 +289,14 @@ describe("windows", () => {
 
   it("rejects a window that overlaps a door on the same wall", () => {
     const map = charon();
-    // d.g.master-terrace is a 2 m glass door at (33,16) on the south wall
-    floorOf(map, "ground").windows.push(win("w.clash", 33.5, 16, ["g.master", "outside"], 1.2));
-    expect(find(validateMap(map), "w.clash", "d.g.master-terrace", "overlaps")).toBeDefined();
+    // d.g.lounge-garden is a 3 m glass door at (19,26) on the lounge north wall
+    floorOf(map, "ground").windows.push(win("w.clash", 19.5, 26, ["g.lounge", "outside"], 1.2));
+    expect(find(validateMap(map), "w.clash", "d.g.lounge-garden", "overlaps")).toBeDefined();
   });
 
   it("allows a window beside a door", () => {
     const map = charon();
-    floorOf(map, "ground").windows.push(win("w.beside", 29.6, 16, ["g.master", "outside"], 1.6));
+    floorOf(map, "ground").windows.push(win("w.beside", 14.5, 26, ["g.lounge", "outside"], 1.6));
     expect(validateMap(map)).toEqual([]);
   });
 });

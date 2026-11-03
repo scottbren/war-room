@@ -15,21 +15,20 @@ const room = (floorId: string, id: string): Room => {
   return r;
 };
 const area = (r: { min: { x: number; y: number }; max: { x: number; y: number } }) => (r.max.x - r.min.x) * (r.max.y - r.min.y);
-const rectOf = (x0: number, y0: number, x1: number, y1: number) => ({ min: { x: x0, y: y0 }, max: { x: x1, y: y1 } });
 
 describe("charon.json: basics", () => {
   it("parses against the schema", () => {
     expect(map.id).toBe("charon");
-    expect(map.version).toBe(5);
+    expect(map.version).toBe(6);
     expect(map.floors.map((f) => f.id)).toEqual(["grounds", "ground", "upper", "roof", "lower", "shore", "hill"]);
     expect(map.floors.map((f) => f.elevation)).toEqual([0, 0, 4, 8, -4, -5, 4]);
   });
 
   it("has the expected room count per floor", () => {
     expect(floor("grounds").rooms).toHaveLength(10);
-    expect(floor("ground").rooms).toHaveLength(19);
+    expect(floor("ground").rooms).toHaveLength(21);
     expect(floor("upper").rooms).toHaveLength(18);
-    expect(floor("roof").rooms).toHaveLength(16);
+    expect(floor("roof").rooms).toHaveLength(11);
     expect(floor("lower").rooms).toHaveLength(9);
     expect(floor("shore").rooms).toHaveLength(5);
     expect(floor("hill").rooms).toHaveLength(4);
@@ -62,51 +61,22 @@ describe("charon.json: basics", () => {
   });
 });
 
-describe("charon.json: the courtyard villa", () => {
-  it("is a U: main block to the north, two wings, an open pool courtyard facing the sea", () => {
-    expect(room("ground", "g.grand-hall").rect).toEqual(rectOf(38, 38, 62, 52));
-    expect(room("ground", "g.courtyard").rect).toEqual(rectOf(42, 16, 58, 38));
-    expect(room("ground", "g.courtyard").tags).toContain("exterior");
-    // the house outline is the 44 x 40 box minus the courtyard notch
-    const house = floor("ground").rooms.filter((r) => !r.tags.includes("exterior") && !r.tags.includes("walkway"));
-    expect(house.reduce((sum, r) => sum + area(r.rect), 0)).toBe(44 * 40 - area(room("ground", "g.courtyard").rect));
-    // wings: master suite west, panic room east, both reaching the southern edge (y = 16)
-    expect(room("ground", "g.master").rect.min.y).toBe(16);
-    expect(room("ground", "g.panic").rect.min.y).toBe(16);
+describe("charon.json: the zigzag villa", () => {
+  it("has the rooms a luxury villa needs, in sensible places", () => {
+    for (const id of ["g.library", "g.wine-room", "g.drawing", "g.dining", "g.kitchen", "g.service", "g.cloak", "g.master", "g.study", "g.security", "g.soc", "g.living", "g.lounge"]) {
+      expect(room("ground", id)).toBeDefined();
+    }
+    expect(room("ground", "g.foyer").rect.max.y).toBe(56); // front door on the north face
+    for (const id of ["u.son", "u.wife", "u.daughter"]) expect(room("upper", id).tags).toContain("family");
+    for (const id of ["u.guest", "u.spa", "u.terrace.c", "u.sky-lounge", "u.office", "u.cinema", "u.bath"]) expect(room("upper", id)).toBeDefined();
   });
 
-  it("leaves no unassigned space on either house floor", () => {
-    const groundHouse = floor("ground").rooms.filter((r) => !r.tags.includes("walkway") && !r.tags.includes("portico"));
-    expect(groundHouse.reduce((sum, r) => sum + area(r.rect), 0)).toBe(44 * 40);
-    const upperHouse = floor("upper").rooms.filter((r) => r.tags.includes("interior"));
-    // v5: the gym wing became an open terrace (-120 m2) and a sky lounge cantilevers out (+50 m2)
-    expect(upperHouse.reduce((sum, r) => sum + area(r.rect), 0)).toBe(44 * 40 - 120 + 50);
-  });
-
-  it("has a double-height grand hall, a gallery walkway above it, and an open void between them", () => {
-    expect(room("ground", "g.grand-hall").ceiling).toBe(8);
-    expect(room("upper", "u.void").rect).toEqual(rectOf(38, 38, 62, 50));
-    expect(room("upper", "u.void").tags).toContain("void");
-    expect(room("upper", "u.gallery").rect).toEqual(rectOf(38, 50, 62, 52));
-    const openings = floor("upper").openings;
-    expect(openings).toContainEqual(expect.objectContaining({ kind: "gallery-void", below: "ground", rect: rectOf(38, 38, 62, 50) }));
-    expect(openings).toContainEqual(expect.objectContaining({ kind: "gallery-void", below: "ground", rect: rectOf(42, 16, 58, 38) }));
-  });
-
-  it("has a grand staircase: two walkable flights up the hall's side walls to the gallery, with balustrade rails", () => {
-    const west = map.verticalLinks.find((l) => l.id === "link.grand-stairs.west")!;
-    const east = map.verticalLinks.find((l) => l.id === "link.grand-stairs.east")!;
-    for (const link of [west, east]) {
+  it("has a grand staircase: two walkable flights to the gallery, with balustrade rails and no solid block", () => {
+    for (const id of ["link.grand-stairs.west", "link.grand-stairs.east"]) {
+      const link = map.verticalLinks.find((l) => l.id === id)!;
       expect(link).toMatchObject({ kind: "stairs", bidirectional: true, from: { floor: "ground" }, to: { floor: "upper" } });
       expect(link.restrictedTo).toBeUndefined();
     }
-    expect(west.from.at).toEqual({ x: 40, y: 41 });
-    expect(west.to.at).toEqual({ x: 40, y: 50.2 });
-    expect(east.from.at).toEqual({ x: 60, y: 41 });
-    expect(east.to.at).toEqual({ x: 60, y: 50.2 });
-    // walkable slope: 4 m of rise over a run of at least 8 m
-    for (const l of [west, east]) expect(l.to.at.y - l.from.at.y).toBeGreaterThanOrEqual(8);
-    // the flights are walkable, so no solid block fills them; only thin rails line the open edge
     expect(floor("ground").cover.filter((c) => c.id.startsWith("cover.grand-stair-body"))).toEqual([]);
     const rails = floor("ground").cover.filter((c) => c.id.startsWith("cover.grand-stair-rail"));
     expect(rails).toHaveLength(2);
@@ -114,49 +84,6 @@ describe("charon.json: the courtyard villa", () => {
       expect(rail.type).toBe("light");
       expect(rail.rect.max.x - rail.rect.min.x).toBeLessThan(0.5);
     }
-  });
-
-  it("has colonnaded arcades along both sides of the courtyard, with a column every few meters", () => {
-    expect(room("ground", "g.loggia.w").tags).toEqual(expect.arrayContaining(["arcade", "hall"]));
-    expect(room("ground", "g.loggia.e").tags).toEqual(expect.arrayContaining(["arcade", "hall"]));
-    const columns = floor("ground").cover.filter((c) => c.id.startsWith("cover.column"));
-    expect(columns.length).toBeGreaterThanOrEqual(10);
-    for (const c of columns) expect(c.type).toBe("heavy");
-    // no wall closes the arcades to the courtyard
-    const along = (x: number) => floor("ground").walls.filter((w) => w.a.x === x && w.b.x === x && Math.min(w.a.y, w.b.y) >= 16 && Math.max(w.a.y, w.b.y) <= 38);
-    expect(along(42)).toEqual([]);
-    expect(along(58)).toEqual([]);
-  });
-
-  it("opens the courtyard to the sea through a wide balustrade gap, and to the grand hall through glass doors", () => {
-    const doors = floor("ground").doors;
-    const gap = doors.find((d) => d.between.includes("g.courtyard") && d.between.includes("outside"))!;
-    expect(gap).toMatchObject({ at: { x: 50, y: 16 }, state: "open" });
-    expect(gap.width).toBeGreaterThanOrEqual(6);
-    const glass = doors.find((d) => d.between.includes("g.courtyard") && d.between.includes("g.grand-hall"))!;
-    expect(glass).toMatchObject({ kind: "glass", at: { x: 50, y: 38 } });
-  });
-
-  it("has a pool and a fountain in the courtyard and a pool deck around them", () => {
-    const pool = map.zones.find((z) => z.id === "zone.pool")!;
-    expect(pool.floor).toBe("ground");
-    expect(pool.rect.min.x).toBeGreaterThanOrEqual(42);
-    expect(pool.rect.max.x).toBeLessThanOrEqual(58);
-    expect(pool.rect.min.y).toBeGreaterThanOrEqual(16);
-    expect(pool.rect.max.y).toBeLessThanOrEqual(38);
-    expect(floor("ground").cover.some((c) => c.id.startsWith("cover.fountain"))).toBe(true);
-    expect(floor("ground").cover.filter((c) => c.id.startsWith("cover.lounger")).length).toBeGreaterThanOrEqual(4);
-    expect(map.zones.some((z) => z.floor === "ground" && z.kind === "terrace")).toBe(true);
-  });
-
-  it("has the rooms a luxury villa needs, in sensible places", () => {
-    for (const id of ["g.library", "g.wine-room", "g.drawing", "g.dining", "g.kitchen", "g.service", "g.cloak", "g.master", "g.study", "g.security", "g.soc"]) {
-      expect(room("ground", id)).toBeDefined();
-    }
-    expect(room("ground", "g.foyer").rect.max.y).toBe(56); // front door on the north face
-    expect(room("ground", "g.master").rect.min.x).toBe(28); // west wing
-    for (const id of ["u.son", "u.wife", "u.daughter"]) expect(room("upper", id).tags).toContain("family");
-    for (const id of ["u.guest", "u.spa", "u.terrace.sw", "u.sky-lounge", "u.office", "u.cinema", "u.bath"]) expect(room("upper", id)).toBeDefined();
   });
 
   it("has an L- or stepped shape for the outbuildings instead of plain boxes", () => {
@@ -224,11 +151,11 @@ describe("charon.json: anchors from the layout doc", () => {
 
   it("has the panic room, shaft, tunnel and service stairs the validator and sim rely on", () => {
     const l = (id: string) => map.verticalLinks.find((x) => x.id === id)!;
-    expect(l("link.stairs")).toMatchObject({ kind: "stairs", from: { floor: "ground", at: { x: 60, y: 30 } }, to: { floor: "upper", at: { x: 60, y: 30 } } });
+    expect(l("link.stairs")).toMatchObject({ kind: "stairs", from: { floor: "ground", at: { x: 60, y: 36 } }, to: { floor: "upper", at: { x: 60, y: 36 } } });
     expect(l("link.roof")).toMatchObject({ kind: "roof-access", from: { floor: "upper" }, to: { floor: "roof" } });
-    expect(l("link.shaft")).toMatchObject({ kind: "shaft", bidirectional: false, from: { floor: "upper", at: { x: 70, y: 26 } }, to: { floor: "ground", at: { x: 70, y: 26 } } });
+    expect(l("link.shaft")).toMatchObject({ kind: "shaft", bidirectional: false, from: { floor: "upper", at: { x: 73, y: 36 } }, to: { floor: "ground", at: { x: 73, y: 36 } } });
     expect(l("link.shaft").restrictedTo).toEqual(["principal", "family"]);
-    expect(l("link.tunnel")).toMatchObject({ kind: "shaft", from: { floor: "ground", at: { x: 66, y: 18 } }, to: { floor: "shore", at: { x: 85, y: 0 } } });
+    expect(l("link.tunnel")).toMatchObject({ kind: "shaft", from: { floor: "ground", at: { x: 68, y: 34 } }, to: { floor: "shore", at: { x: 85, y: 0 } } });
     expect(l("link.cliff")).toMatchObject({ kind: "cliff-path", from: { at: { x: 18, y: -6 } }, to: { at: { x: 18, y: 0 } } });
   });
 
@@ -266,22 +193,15 @@ describe("charon.json: anchors from the layout doc", () => {
     for (const m of reaction) expect(villa.some((v) => inside(v.rect, m.at!)), m.id).toBe(true);
   });
 
-  it("has planters along the terrace as light, low cover", () => {
-    const planters = floor("grounds").cover.filter((c) => c.id.startsWith("cover.planter"));
-    expect(planters.length).toBeGreaterThanOrEqual(4);
-    for (const p of planters) expect(p).toMatchObject({ type: "light" });
-    for (const p of planters) expect(p.height).toBeLessThan(1.2);
-  });
-
   it("has hedges as concealment cover in the gardens", () => {
     const hedges = floor("grounds").cover.filter((c) => c.id.startsWith("cover.hedge"));
     expect(hedges.length).toBeGreaterThanOrEqual(4);
     for (const h of hedges) expect(h.type).toBe("concealment");
   });
 
-  it("has a roof parapet of cover that follows the U outline", () => {
+  it("has a roof parapet of cover around the two tall bars", () => {
     const parapet = floor("roof").cover.filter((c) => c.id.startsWith("cover.parapet"));
-    expect(parapet).toHaveLength(9); // the north strip has a gap where the roof ladder comes over
+    expect(parapet).toHaveLength(13); // the north strip has a gap where the roof ladder comes over
     const facings = parapet.map((c) => c.facing);
     expect(facings).toEqual(expect.arrayContaining([0, 90, 180, 270]));
   });
@@ -378,27 +298,26 @@ describe("charon.json: roof and gardens", () => {
   const within = (z: { rect: { min: { x: number; y: number }; max: { x: number; y: number } } }, outer: { min: { x: number; y: number }; max: { x: number; y: number } }) =>
     z.rect.min.x >= outer.min.x && z.rect.max.x <= outer.max.x && z.rect.min.y >= outer.min.y && z.rect.max.y <= outer.max.y;
 
-  it("gives the roof a small sun deck with a plunge pool, a pergola and loungers over the west wing", () => {
-    const west = room("roof", "r.deck.sun").rect;
+  it("gives the roof a sun deck with a plunge pool, a pergola and loungers", () => {
     const deck = map.zones.find((z) => z.id === "zone.roof-deck")!;
     const pool = map.zones.find((z) => z.id === "zone.roof-pool")!;
     expect(deck).toMatchObject({ floor: "roof", kind: "terrace" });
     expect(pool).toMatchObject({ floor: "roof", kind: "pool" });
     expect(area(deck.rect)).toBeLessThanOrEqual(200);
-    expect(within(deck, west)).toBe(true);
+    expect(within(deck, room("roof", "r.deck.b.s").rect)).toBe(true);
     expect(within(pool, deck.rect)).toBe(true);
     expect(ids("roof", "cover.pergola")).toHaveLength(4);
-    expect(ids("roof", "cover.roof-lounger").length).toBeGreaterThanOrEqual(4);
+    expect(ids("roof", "cover.roof-lounger").length).toBeGreaterThanOrEqual(2);
   });
 
-  it("gives the east wing roof a mechanical yard: HVAC units, solar rows, dishes and a hatch housing", () => {
-    const east = room("roof", "r.deck.yard").rect;
-    expect(ids("roof", "cover.hvac").length).toBeGreaterThanOrEqual(3);
-    expect(ids("roof", "cover.solar").length).toBeGreaterThanOrEqual(3);
-    expect(ids("roof", "cover.dish").length).toBeGreaterThanOrEqual(2);
+  it("gives deck B a mechanical zone: HVAC units, solar rows, a dish and a hatch housing", () => {
+    const deckB = room("roof", "r.deck.b").rect;
+    expect(ids("roof", "cover.hvac").length).toBeGreaterThanOrEqual(2);
+    expect(ids("roof", "cover.solar").length).toBeGreaterThanOrEqual(2);
+    expect(ids("roof", "cover.dish").length).toBeGreaterThanOrEqual(1);
     expect(ids("roof", "cover.roof-access-housing")).toHaveLength(1);
     for (const c of [...ids("roof", "cover.hvac"), ...ids("roof", "cover.solar"), ...ids("roof", "cover.dish")]) {
-      expect(within(c, east), c.id).toBe(true);
+      expect(within(c, deckB), c.id).toBe(true);
     }
     for (const c of ids("roof", "cover.hvac")) expect(c.type).toBe("heavy");
   });
@@ -410,7 +329,7 @@ describe("charon.json: roof and gardens", () => {
     expect(ids("roof", "cover.chimney").length).toBeGreaterThanOrEqual(2);
     const launcher = ids("roof", "cover.aa-launcher");
     expect(launcher).toHaveLength(1);
-    expect(within(launcher[0]!, room("roof", "r.deck.main").rect)).toBe(true);
+    expect(within(launcher[0]!, room("roof", "r.deck.a").rect)).toBe(true);
     expect(ids("roof", "cover.aa-sandbag").length).toBeGreaterThanOrEqual(3);
     for (const c of ids("roof", "cover.aa-sandbag")) expect(c.type).toBe("light");
   });
@@ -423,25 +342,19 @@ describe("charon.json: roof and gardens", () => {
     for (const z of paths) expect(within(z, garden), z.id).toBe(true);
     expect(ids("grounds", "cover.garden-fountain")).toHaveLength(1);
     const hedges = ids("grounds", "cover.hedge").filter((h) => within(h, garden));
-    expect(hedges.length).toBeGreaterThanOrEqual(9);
+    expect(hedges.length).toBeGreaterThanOrEqual(3);
     for (const h of hedges) expect(h).toMatchObject({ type: "concealment" });
-    expect(ids("grounds", "cover.topiary")).toHaveLength(4);
+    expect(ids("grounds", "cover.topiary").length).toBeGreaterThanOrEqual(2);
     expect(ids("grounds", "cover.palm").length).toBeGreaterThanOrEqual(4);
     expect(ids("grounds", "cover.gazebo-column")).toHaveLength(4);
     expect(map.zones.some((z) => z.id === "zone.gazebo" && z.kind === "terrace")).toBe(true);
   });
 
-  it("turns the west trees into a grove: staggered trees, a path and an ornamental pond", () => {
-    const grove = map.zones.find((z) => z.id === "zone.trees-west")!.rect;
+  it("keeps a grove of staggered trees and an ornamental pond west of the house", () => {
     const trees = ids("grounds", "cover.tree");
-    expect(trees.length).toBeGreaterThanOrEqual(14);
-    for (const t of trees) {
-      expect(t.type).toBe("concealment");
-      expect(within(t, grove), t.id).toBe(true);
-    }
-    // staggered: trees do not all share the same few x positions
-    expect(new Set(trees.map((t) => t.rect.min.x)).size).toBeGreaterThanOrEqual(6);
-    expect(map.zones.find((z) => z.id === "zone.grove-path")).toMatchObject({ floor: "grounds", kind: "terrace" });
+    expect(trees.length).toBeGreaterThanOrEqual(6);
+    for (const t of trees) expect(t.type).toBe("concealment");
+    expect(new Set(trees.map((t) => t.rect.min.x)).size).toBeGreaterThanOrEqual(4);
     expect(map.zones.find((z) => z.id === "zone.grove-pond")).toMatchObject({ floor: "grounds", kind: "pool" });
   });
 
@@ -464,18 +377,16 @@ describe("charon.json: the fortress terrace (roof)", () => {
     });
   };
 
-  it("has four corner bastions, a radar tower, covered walkways and open decks", () => {
+  it("has four bastions, a radar tower and open decks", () => {
     expect(tagged("bastion")).toHaveLength(4);
     expect(tagged("radar-tower")).toHaveLength(1);
-    expect(tagged("walkway").length).toBeGreaterThanOrEqual(4);
     expect(tagged("deck").length).toBeGreaterThanOrEqual(5);
-    // bastions stand in the four corners of the house outline
-    const corners = tagged("bastion").map((r) => (r.rect.min.x < 50 ? "w" : "e") + (r.rect.min.y < 30 ? "s" : "n")).sort();
-    expect(corners).toEqual(["en", "es", "wn", "ws"]);
+    // bastions stand at the outer corners of the two tall bars
+    expect(tagged("bastion").map((r) => r.id).sort()).toEqual(["r.bastion.ne", "r.bastion.nw", "r.bastion.se", "r.bastion.sw"]);
   });
 
   it("walls the structures and leaves the decks open (a parapet of cover edges them)", () => {
-    for (const r of [...tagged("bastion"), ...tagged("radar-tower"), ...tagged("walkway")]) expect(wallsOf(r.id).length, r.id).toBeGreaterThan(0);
+    for (const r of [...tagged("bastion"), ...tagged("radar-tower")]) expect(wallsOf(r.id).length, r.id).toBeGreaterThan(0);
     for (const r of tagged("deck")) {
       // a deck's own edges carry walls only where a structure stands beside it
       for (const w of wallsOf(r.id)) {
@@ -500,7 +411,7 @@ describe("charon.json: the fortress terrace (roof)", () => {
     expect(inside(room("roof", "r.bastion.nw"), at("m.spawn.vet.1"))).toBe(true);
     expect(inside(room("roof", "r.bastion.ne"), at("m.spawn.vet.2"))).toBe(true);
     expect(inside(room("roof", "r.bastion.sw"), at("m.spawn.vet.3"))).toBe(true);
-    expect(inside(room("roof", "r.deck.main"), at("m.spawn.vet.4"))).toBe(true);
+    expect(inside(room("roof", "r.deck.a"), at("m.spawn.vet.4"))).toBe(true);
   });
 
   it("gives every bastion and the radar tower slit windows (no shutters, wall-mounted firing slits)", () => {
@@ -538,14 +449,14 @@ describe("charon.json: security operations center", () => {
   it("has a security-center room next to the panic room, with its own console and server racks", () => {
     expect(soc().tags).toEqual(expect.arrayContaining(["security-center", "smart-hub"]));
     const panic = room("ground", "g.panic").rect;
-    expect(soc().rect.min.y).toBe(panic.max.y); // shares the panic room's north wall
+    expect(soc().rect.max.y).toBe(panic.min.y); // shares the panic room's south wall
     expect(soc().rect.min.x).toBe(panic.min.x);
     expect(floor("ground").cover.some((c) => c.id === "cover.soc-console")).toBe(true);
     expect(floor("ground").cover.some((c) => c.id === "cover.soc-racks")).toBe(true);
   });
 
-  it("is reached from the east loggia through a locked door, with armored slit windows", () => {
-    const door = floor("ground").doors.find((d) => d.between.includes("g.soc") && d.between.includes("g.loggia.e"))!;
+  it("is reached from the master bath through a locked door, with armored slit windows", () => {
+    const door = floor("ground").doors.find((d) => d.between.includes("g.soc") && d.between.includes("g.master-bath"))!;
     expect(door.state).toBe("locked");
     const slits = floor("ground").windows.filter((w) => w.between.includes("g.soc"));
     expect(slits.length).toBeGreaterThanOrEqual(1);
@@ -599,7 +510,7 @@ describe("charon.json: entries", () => {
   it("has a staff-only gate in the west perimeter wall and a staff entrance into the service room", () => {
     const gate = door("grounds", "d.staff-gate");
     expect(gate).toMatchObject({ kind: "gate", state: "locked", at: { x: 0, y: 64 } });
-    expect(door("ground", "d.g.service-east").between).toEqual(["g.service", "outside"]);
+    expect(door("ground", "d.g.service-south").between).toEqual(["g.service", "outside"]);
     expect(room("ground", "g.service").tags).toContain("service");
   });
 

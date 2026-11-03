@@ -1,4 +1,4 @@
-# CHARON layout (map version 5: modern courtyard villa, fortress terrace, basement, shore and hill)
+# CHARON layout (map version 6: zigzag of three bars; sections below the Version 6 note describe v5 and earlier and are superseded where they conflict)
 
 `content/maps/charon.json` implements this document. All rooms are axis-aligned rectangles, `[minX, minY] – [maxX, maxY]` in meters, in **map coordinates**. North is +y. The sea is to the south (y < 0). Non-rectangular buildings are composed from several rectangles (U, L and stepped shapes); the map format has no polygon rooms.
 
@@ -149,3 +149,17 @@ Data-only markers for now (kind `poi`, tagged `smart:*`); all report to the hub 
 - **Hill**: the four neighbor-villa rooms on raised lawns (zones `zone.hill.west`, `zone.hill.east`).
 - **Upper floor**: the gym wing is now a covered sun terrace (`u.terrace.sw`) over the master suite; the sky lounge (`u.sky-lounge`, [62,8]-[72,13]) cantilevers over the south terrace, reached through the south balcony. The gym moved to the basement.
 - **Style**: classical v4 features removed (belvedere, colonnades, parterre, balustrades, urns); the entrance has a flat canopy on two piers (`cover.canopy-pier.*`); planters on the terraces and the main roof deck.
+
+## Version 6: the zigzag of three bars (supersedes the house, ground, upper, roof and link sections above)
+
+The U-shaped courtyard house is replaced by three 42 x 15 m bars, each slid sideways from the last, so the house is a staircase with open notches rather than a ring. North is up (gate, drive, helipad).
+
+- **Bar A** (x18-60, y41-56, two storeys plus roof): library, wine room, cloak, foyer (front door at x=41 under a flat canopy on two piers), guard room, double-height grand hall (22 x 9 m, ceiling 8), dining, kitchen; covered walkway east to the garage. Upper: son, office, cinema, gallery bridge over the hall void, wife; north balcony with the roof ladder.
+- **Bar B** (x40-82, y26-41, two storeys plus roof): drawing, study, stair core, PANIC ROOM (x66-76, y31-41) with the SOC south of it, service/generator/staff entrance, stair core, master suite, master bath. Upper: guest, spa, core, SAFE LANDING (same rect as the panic room), daughter, second guest suite, bath, and the SKY LOUNGE, which cantilevers 9 m south over the pool.
+- **Bar C** (x12-54, y11-26, one storey): lounge and bar, long living room with a glass wall to the pool. Its roof is the upper-level terrace.
+- **Notches:** west garden (x12-40, y26-41); pool notch (x54-82, y11-26) with the 24 x 9 m pool.
+- **Roof** (z +8, bars A and B only): four bastions, radar tower, main deck with the air-defense site, sun deck with plunge pool, and a deck over the cantilever.
+- **Grand stairs:** two flights (x=32 and x=50, 9 m run, 4 m rise) from the hall floor to the gallery bridge; the middle of the hall stays open.
+- **Basement** (z -4, under A and B): wine cellar, armory, vault, staff rooms, gym, spa with indoor pool, plant room and two service corridors. Stairs: `link.cellar-stairs` (library) and `link.plant-stairs` (service room), each with a ground-floor opening.
+- **Links:** panic room to boathouse tunnel from (68,34); shaft at (73,36); roof hatches `link.roof` (64,38), `link.roof.west` (42,28) and the ladder at (21,58)-(21,55).
+- **Fast-rope balcony** moved to the upper level over the pool, marker at (71,23).
