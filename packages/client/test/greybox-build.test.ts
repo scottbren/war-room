@@ -40,6 +40,19 @@ describe("buildGreybox (headless Babylon)", () => {
     expect(pool?.material?.alpha).toBeLessThan(1);
   });
 
+  it("draws translucent zone layers in a fixed order (lawn, garden, path, pool, sea), whatever the camera does", () => {
+    const { greybox } = setup();
+    const order = (kind: string) => {
+      const mesh = greybox.meshes.find((m) => m.name.endsWith(`zone:${kind}`) && m.metadata.floor === "grounds");
+      if (!mesh) throw new Error(`no zone mesh for ${kind}`);
+      return mesh.alphaIndex;
+    };
+    expect(order("lawn")).toBeLessThan(order("garden"));
+    expect(order("garden")).toBeLessThan(order("terrace")); // a path over a garden must show
+    expect(order("terrace")).toBeLessThan(order("pool")); // a pond over both
+    expect(order("pool")).toBeLessThan(order("sea"));
+  });
+
   it("puts the map in Babylon space as (x, z, y): up is map z, depth is map y", () => {
     const { scene } = setup();
     let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity, minZ = Infinity, maxZ = -Infinity;
@@ -54,8 +67,8 @@ describe("buildGreybox (headless Babylon)", () => {
     expect(maxX).toBeCloseTo(140, 0);
     expect(minZ).toBeCloseTo(-40, 0); // map y = -40 (the sea)
     expect(maxZ).toBeCloseTo(94, 0); // map y = 94 (the highway)
-    expect(maxY).toBeGreaterThan(8); // the roof parapet
-    expect(maxY).toBeLessThan(12);
+    expect(maxY).toBeGreaterThan(8); // the roof parapet and everything above it
+    expect(maxY).toBeLessThan(16); // the comm mast (6 m) on the 8 m roof is the tallest thing
     expect(minY).toBeLessThan(0);
   });
 

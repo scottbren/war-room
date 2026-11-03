@@ -124,6 +124,42 @@ describe("planGreybox: coordinates (map x, y, z -> Babylon x, z, y)", () => {
     expect(MATERIALS["zone:sea"].alpha).toBeLessThan(1);
   });
 
+  it("draws path (terrace) overlays above the garden overlay they cross, and ponds (pool) above both", () => {
+    const garden = byId("zone:zone.garden-east");
+    const path = byId("zone:zone.garden-path.ns");
+    const pond = byId("zone:zone.grove-pond");
+    expect(path.center[1]).toBeGreaterThan(garden.center[1]);
+    expect(pond.center[1]).toBeGreaterThan(path.center[1]);
+  });
+
+  it("draws a stairs link as real steps: a stepped flight rising to the upper floor", () => {
+    const steps = boxes.filter((b) => b.id.startsWith("stairs:link.grand-stairs.west:"));
+    expect(steps.length).toBeGreaterThanOrEqual(14);
+    expect(steps.length).toBeLessThanOrEqual(20);
+    const tops = steps.map((b) => b.center[1] + b.size[1] / 2);
+    for (let i = 1; i < tops.length; i++) expect(tops[i]!, `step ${i}`).toBeGreaterThan(tops[i - 1]!);
+    expect(tops[0]!).toBeLessThanOrEqual(0.4); // first step is a low riser
+    expect(tops[tops.length - 1]!).toBeCloseTo(floorElevation("upper"), 5); // the last step is level with the gallery
+    for (const b of steps) {
+      expect(b.material).toBe("stairs");
+      expect(b.floor).toBe("ground");
+      expect(b.center[0]).toBeCloseTo(40, 5); // centered on the link line x = 40
+      expect(b.size[0]).toBeGreaterThanOrEqual(2.4); // a proper width
+      expect(b.center[1] - b.size[1] / 2).toBeCloseTo(0, 5); // solid down to the floor
+    }
+    const first = steps[0]!;
+    const last = steps[steps.length - 1]!;
+    expect(first.center[2] - first.size[2] / 2).toBeCloseTo(41, 5); // starts at the link's lower end (y = 41)
+    expect(last.center[2] + last.size[2] / 2).toBeCloseTo(50.2, 5); // and runs to its upper end (y = 50.2)
+    expect(boxes.filter((b) => b.id.startsWith("stairs:link.grand-stairs.east:")).length).toBe(steps.length);
+  });
+
+  it("draws no steps for a stairs link with no horizontal run (the service stair), and none for non-stair links", () => {
+    expect(boxes.filter((b) => b.id.startsWith("stairs:link.stairs:"))).toEqual([]);
+    expect(boxes.filter((b) => b.id.startsWith("stairs:link.shaft"))).toEqual([]);
+    expect(boxes.filter((b) => b.id.startsWith("stairs:link.tunnel"))).toEqual([]);
+  });
+
   it("puts one terrain plane under the whole map bounds", () => {
     const t = byId("terrain");
     expect(t.size[0]).toBe(180);

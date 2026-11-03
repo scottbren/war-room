@@ -4,7 +4,7 @@ import { Mesh } from "@babylonjs/core/Meshes/mesh";
 import { MeshBuilder } from "@babylonjs/core/Meshes/meshBuilder";
 import type { Scene } from "@babylonjs/core/scene";
 import type { FloorId, MapFile } from "@war-room/content";
-import { MATERIALS, groupBoxes, planGreybox, toggleFloor } from "./plan";
+import { MATERIALS, groupBoxes, planGreybox, toggleFloor, zoneRank } from "./plan";
 import type { FloorVisibility } from "./plan";
 
 export interface Greybox {
@@ -53,6 +53,10 @@ export function buildGreybox(scene: Scene, map: MapFile): Greybox {
     merged.name = `greybox:${group.key}`;
     merged.material = materialFor(group.material);
     merged.isPickable = false;
+    // Translucent zone layers overlap (a path over a garden). Babylon sorts transparent meshes by
+    // distance, which is not stable here, so give each kind a fixed draw order.
+    const rank = zoneRank(group.material);
+    if (rank !== undefined) merged.alphaIndex = 1 + rank;
     merged.metadata = { greybox: true, floor: group.floor, material: group.material };
     meshes.push(merged);
   }

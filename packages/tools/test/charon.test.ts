@@ -91,7 +91,7 @@ describe("charon.json: the courtyard villa", () => {
     expect(openings).toContainEqual(expect.objectContaining({ kind: "gallery-void", below: "ground", rect: rectOf(42, 16, 58, 38) }));
   });
 
-  it("has a grand staircase: two flights up the hall's side walls to the gallery, with stair bodies as cover", () => {
+  it("has a grand staircase: two walkable flights up the hall's side walls to the gallery, with balustrade rails", () => {
     const west = map.verticalLinks.find((l) => l.id === "link.grand-stairs.west")!;
     const east = map.verticalLinks.find((l) => l.id === "link.grand-stairs.east")!;
     for (const link of [west, east]) {
@@ -99,12 +99,19 @@ describe("charon.json: the courtyard villa", () => {
       expect(link.restrictedTo).toBeUndefined();
     }
     expect(west.from.at).toEqual({ x: 40, y: 41 });
-    expect(west.to.at).toEqual({ x: 40, y: 51 });
+    expect(west.to.at).toEqual({ x: 40, y: 50.2 });
     expect(east.from.at).toEqual({ x: 60, y: 41 });
-    expect(east.to.at).toEqual({ x: 60, y: 51 });
-    const bodies = floor("ground").cover.filter((c) => c.id.startsWith("cover.grand-stair"));
-    expect(bodies).toHaveLength(2);
-    for (const b of bodies) expect(b).toMatchObject({ type: "heavy" });
+    expect(east.to.at).toEqual({ x: 60, y: 50.2 });
+    // walkable slope: 4 m of rise over a run of at least 8 m
+    for (const l of [west, east]) expect(l.to.at.y - l.from.at.y).toBeGreaterThanOrEqual(8);
+    // the flights are walkable, so no solid block fills them; only thin rails line the open edge
+    expect(floor("ground").cover.filter((c) => c.id.startsWith("cover.grand-stair-body"))).toEqual([]);
+    const rails = floor("ground").cover.filter((c) => c.id.startsWith("cover.grand-stair-rail"));
+    expect(rails).toHaveLength(2);
+    for (const rail of rails) {
+      expect(rail.type).toBe("light");
+      expect(rail.rect.max.x - rail.rect.min.x).toBeLessThan(0.5);
+    }
   });
 
   it("has colonnaded arcades along both sides of the courtyard, with a column every few meters", () => {
@@ -129,7 +136,7 @@ describe("charon.json: the courtyard villa", () => {
   });
 
   it("has a pool and a fountain in the courtyard and a pool deck around them", () => {
-    const pool = map.zones.find((z) => z.kind === "pool")!;
+    const pool = map.zones.find((z) => z.id === "zone.pool")!;
     expect(pool.floor).toBe("ground");
     expect(pool.rect.min.x).toBeGreaterThanOrEqual(42);
     expect(pool.rect.max.x).toBeLessThanOrEqual(58);
@@ -271,9 +278,10 @@ describe("charon.json: anchors from the layout doc", () => {
   });
 
   it("has a roof parapet of cover that follows the U outline, and no derived roof walls", () => {
-    expect(floor("roof").cover).toHaveLength(8);
+    const parapet = floor("roof").cover.filter((c) => c.id.startsWith("cover.parapet"));
+    expect(parapet).toHaveLength(8);
     expect(floor("roof").walls).toEqual([]);
-    const facings = floor("roof").cover.map((c) => c.facing);
+    const facings = parapet.map((c) => c.facing);
     expect(facings).toEqual(expect.arrayContaining([0, 90, 180, 270]));
   });
 
@@ -310,7 +318,6 @@ describe("charon.json: nothing blocks the way", () => {
 
   it("keeps cover out of every doorway (the gap plus 0.6 m on each side)", () => {
     for (const f of map.floors) {
-      if (f.id === "roof") continue;
       for (const d of f.doors) {
         const vertical = f.walls.some((w) => w.a.x === w.b.x && w.a.x === d.at.x && Math.min(w.a.y, w.b.y) - d.width / 2 <= d.at.y && Math.max(w.a.y, w.b.y) + d.width / 2 >= d.at.y);
         const half = d.width / 2;
@@ -349,11 +356,93 @@ describe("charon.json: nothing blocks the way", () => {
     }
   });
 
+  it("keeps every hatch, shaft and tunnel end clear of solid cover (stairs end inside their own stair body)", () => {
+    for (const l of map.verticalLinks.filter((x) => x.kind !== "stairs")) {
+      for (const end of [l.from, l.to]) {
+        for (const box of blocking(floor(end.floor))) expect(inside(box, end.at), `${l.id} on ${end.floor}`).toBe(false);
+      }
+    }
+  });
+
   it("furnishes the upper floor with cover too (desk, sofa, beds)", () => {
     const ids = floor("upper").cover.map((c) => c.id);
     for (const id of ["cover.office-desk", "cover.lounge-sofa", "cover.son-bed", "cover.wife-bed", "cover.daughter-bed"]) {
       expect(ids, id).toContain(id);
     }
     expect(ids.filter((id) => id.startsWith("cover.guest-bed"))).toHaveLength(3);
+  });
+});
+
+describe("charon.json: roof and gardens", () => {
+  const ids = (floorId: string, prefix: string) => floor(floorId).cover.filter((c) => c.id.startsWith(prefix));
+  const within = (z: { rect: { min: { x: number; y: number }; max: { x: number; y: number } } }, outer: { min: { x: number; y: number }; max: { x: number; y: number } }) =>
+    z.rect.min.x >= outer.min.x && z.rect.max.x <= outer.max.x && z.rect.min.y >= outer.min.y && z.rect.max.y <= outer.max.y;
+
+  it("gives the roof a sun deck with a plunge pool, a pergola and loungers over the west wing", () => {
+    const west = room("roof", "r.roof.west").rect;
+    const deck = map.zones.find((z) => z.id === "zone.roof-deck")!;
+    const pool = map.zones.find((z) => z.id === "zone.roof-pool")!;
+    expect(deck).toMatchObject({ floor: "roof", kind: "terrace" });
+    expect(pool).toMatchObject({ floor: "roof", kind: "pool" });
+    expect(within(deck, west)).toBe(true);
+    expect(within(pool, deck.rect)).toBe(true);
+    expect(ids("roof", "cover.pergola")).toHaveLength(4);
+    expect(ids("roof", "cover.roof-lounger").length).toBeGreaterThanOrEqual(4);
+  });
+
+  it("gives the east wing roof a mechanical yard: HVAC units, solar rows, dishes and a hatch housing", () => {
+    const east = room("roof", "r.roof.east").rect;
+    expect(ids("roof", "cover.hvac").length).toBeGreaterThanOrEqual(3);
+    expect(ids("roof", "cover.solar").length).toBeGreaterThanOrEqual(3);
+    expect(ids("roof", "cover.dish").length).toBeGreaterThanOrEqual(2);
+    expect(ids("roof", "cover.roof-access-housing")).toHaveLength(1);
+    for (const c of [...ids("roof", "cover.hvac"), ...ids("roof", "cover.solar"), ...ids("roof", "cover.dish")]) {
+      expect(within(c, east), c.id).toBe(true);
+    }
+    for (const c of ids("roof", "cover.hvac")) expect(c.type).toBe("heavy");
+  });
+
+  it("gives the main roof a comm mast, chimneys and an anti-aircraft launcher, and sandbag nests at the three gun posts", () => {
+    const mast = ids("roof", "cover.mast")[0]!;
+    expect(mast.height).toBeGreaterThanOrEqual(5);
+    expect(ids("roof", "cover.chimney").length).toBeGreaterThanOrEqual(2);
+    expect(ids("roof", "cover.aa-launcher")).toHaveLength(1);
+    for (const nest of ["sniper", "mg-east", "mg-south"]) expect(ids("roof", `cover.sandbag.${nest}`).length, nest).toBeGreaterThanOrEqual(2);
+    for (const c of ids("roof", "cover.sandbag")) expect(c.type).toBe("light");
+  });
+
+  it("lays out the east garden formally: crossing gravel paths, a fountain plaza, hedge rooms, topiary, palms and a gazebo", () => {
+    const garden = map.zones.find((z) => z.id === "zone.garden-east")!.rect;
+    const paths = map.zones.filter((z) => z.id.startsWith("zone.garden-path") || z.id === "zone.garden-plaza");
+    expect(paths.length).toBeGreaterThanOrEqual(3);
+    for (const z of paths) expect(z).toMatchObject({ floor: "grounds", kind: "terrace" });
+    for (const z of paths) expect(within(z, garden), z.id).toBe(true);
+    expect(ids("grounds", "cover.garden-fountain")).toHaveLength(1);
+    const hedges = ids("grounds", "cover.hedge").filter((h) => within(h, garden));
+    expect(hedges.length).toBeGreaterThanOrEqual(9);
+    for (const h of hedges) expect(h).toMatchObject({ type: "concealment" });
+    expect(ids("grounds", "cover.topiary")).toHaveLength(4);
+    expect(ids("grounds", "cover.palm").length).toBeGreaterThanOrEqual(4);
+    expect(ids("grounds", "cover.gazebo-column")).toHaveLength(4);
+    expect(map.zones.some((z) => z.id === "zone.gazebo" && z.kind === "terrace")).toBe(true);
+  });
+
+  it("turns the west trees into a grove: staggered trees, a path and an ornamental pond", () => {
+    const grove = map.zones.find((z) => z.id === "zone.trees-west")!.rect;
+    const trees = ids("grounds", "cover.tree");
+    expect(trees.length).toBeGreaterThanOrEqual(14);
+    for (const t of trees) {
+      expect(t.type).toBe("concealment");
+      expect(within(t, grove), t.id).toBe(true);
+    }
+    // staggered: trees do not all share the same few x positions
+    expect(new Set(trees.map((t) => t.rect.min.x)).size).toBeGreaterThanOrEqual(6);
+    expect(map.zones.find((z) => z.id === "zone.grove-path")).toMatchObject({ floor: "grounds", kind: "terrace" });
+    expect(map.zones.find((z) => z.id === "zone.grove-pond")).toMatchObject({ floor: "grounds", kind: "pool" });
+  });
+
+  it("no longer uses the old straight hedge stripes", () => {
+    const stripes = ids("grounds", "cover.hedge").filter((h) => h.rect.max.x - h.rect.min.x >= 12 && h.rect.max.y - h.rect.min.y < 1.5);
+    expect(stripes).toEqual([]);
   });
 });

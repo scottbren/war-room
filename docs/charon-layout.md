@@ -21,8 +21,8 @@ Version 2 replaced the original single rectangular block (see `docs/decisions.md
 | grounds.house | Main residence | [28,16] – [72,56] | A U: main block north, wings south, open courtyard (below) |
 | grounds.terrace | Terrace along the south front | [28,10] – [72,16] | Zone `terrace`; six planters along y = 16 are light cover |
 | grounds.lawn | Lawn | three zones: [0,0] – [28,16], [72,0] – [100,16], [28,0] – [72,10] | Zone `lawn` |
-| grounds.garden-east | Garden, hedge rows | [72,16] – [96,50] | Zone `garden` (concealment); four hedge rows are concealment cover |
-| grounds.trees-west | Trees and hedges | [4,20] – [28,50] | Zone `garden`; two hedge rows |
+| grounds.garden-east | Formal garden | [72,16] – [96,50] | Zone `garden`. Gravel paths cross at a fountain plaza ([80,29]–[88,37]); three quadrants hold C-shaped hedge rooms (concealment, open toward the path) with topiary at the plaza corners and palms along the main path; the fourth holds a columned gazebo with a bench. Gravel paths and the plaza are `terrace` zones |
+| grounds.trees-west | Grove | [4,20] – [28,50] | Zone `garden`. Eighteen trees in staggered rows (concealment), a gravel path down the middle (x 14–16.4), and an ornamental pond with a bench at [6,38]–[12,44] |
 | grounds.marina | Marina and dock | [78,-12] – [100,0] | Zone `marina`; approach D at the dock (88,-2) |
 | grounds.boathouse (+ .store) | Boathouse, **L-shaped** (tunnel exit) | [80,-4] – [90,2] and store [76,-4] – [80,0] | Tunnel exit point (85,0) |
 | grounds.yacht (+ .bow) | His armed yacht, with a **stepped bow** | [84,-12] – [94,-6] and bow [94,-10] – [98,-8] | Escape option; can be disabled |
@@ -57,7 +57,7 @@ The house footprint is x 28–72, y 16–56 (44 x 40 m). The main block (y 38–
 | g.foyer | Entrance foyer | [46,52] – [54,56] | Main doors at (50,56), approach A side |
 | g.cloak | Cloakroom and powder room | [38,52] – [46,56] | Off the foyer |
 | g.security | Security office | [54,52] – [62,56] | CCTV and alarm servers; guard post |
-| g.grand-hall | Grand hall | [38,38] – [62,52] | Double height (ceiling 8). Piano (light cover). **Twin grand staircases** up the west and east walls (heavy cover blocks at [38,40]–[42,50] and [58,40]–[62,50]) rise to the gallery. Glass doors to the courtyard at (50,38) |
+| g.grand-hall | Grand hall | [38,38] – [62,52] | Double height (ceiling 8). Piano (light cover). **Twin grand staircases**: two walkable marble flights, 3 m wide and 9.2 m long, run up the west and east walls from y = 41 and rise 4 m to the gallery (x = 40 and x = 60). A balustrade rail (light cover) lines each flight's open edge. The flights are drawn as real steps from the `stairs` links, not as solid blocks. Glass doors to the courtyard at (50,38) |
 | g.library | Library | [28,46] – [38,56] | |
 | g.drawing | Drawing room | [28,38] – [38,46] | Sofas: light cover |
 | g.dining | Formal dining room | [62,46] – [72,56] | Long table: light cover |
@@ -96,14 +96,17 @@ Rooms tagged `hall` (grand hall, both loggias, the gallery and the upper galleri
 - Three connected sections over the house outline: west wing [28,16]–[42,38], main block [28,38]–[72,56], east wing [58,16]–[72,38]; open 6 m gaps join them at (35,38) and (65,38).
 - A 1 m parapet (light cover, facing outward) runs around the whole U outline and around the courtyard's rim (eight strips). The roof has no derived walls.
 - Roof access hatch above the east gallery at (60,24).
-- Defender positions: sniper at (30,54), machine gun at (70,54), machine gun at (33,18), anti-aircraft missile team at (50,46).
+- Defender positions: sniper at (30,54), machine gun at (70,54), machine gun at (33,18), anti-aircraft missile team at (50,46). Each gun post has a sandbag nest (light cover); the AA team has its launcher (heavy cover).
+- West wing roof: a sun deck (zone `terrace`, [29,22]–[41,37]) with a plunge pool ([31,30]–[39,36]), a four-post pergola and four loungers.
+- East wing roof: a mechanical yard with three HVAC units (heavy cover), three rows of solar panels, two satellite dishes, and a housing around the roof hatch ((60,24); the housing starts at x = 60.8).
+- Main roof: a 6 m comm mast, two chimney stacks and the AA launcher.
 
 ## Vertical links
 | Id | Kind | From | To |
 | --- | --- | --- | --- |
-| link.grand-stairs.west | stairs | ground (40,41) | upper (40,51) |
-| link.grand-stairs.east | stairs | ground (60,41) | upper (60,51) |
-| link.stairs | stairs (service) | ground (60,30) | upper (60,30) |
+| link.grand-stairs.west | stairs | ground (40,41) | upper (40,50.2) |
+| link.grand-stairs.east | stairs | ground (60,41) | upper (60,50.2) |
+| link.stairs | stairs (service) | ground (60,30) | upper (60,30) (straight up; not drawn as steps yet) |
 | link.roof | roof-access | upper (60,24) | roof (60,24) |
 | link.shaft | shaft | upper (70,26) | ground (70,26), one way down; principal and family only until breached |
 | link.tunnel | shaft | ground (66,18) | grounds (85,0) boathouse; long tunnel, about 60 s on foot |

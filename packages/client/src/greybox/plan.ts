@@ -13,6 +13,7 @@ export type ZoneKind = Zone["kind"];
 export type MaterialKey =
   | "terrain"
   | "slab"
+  | "stairs"
   | "wall:reinforced"
   | "wall:stone"
   | "wall:plaster"
@@ -32,6 +33,7 @@ export interface Material {
 export const MATERIALS: Record<MaterialKey, Material> = {
   terrain: { color: [0.18, 0.22, 0.16], alpha: 1 },
   slab: { color: [0.45, 0.45, 0.47], alpha: 1 },
+  stairs: { color: [0.78, 0.74, 0.66], alpha: 1 }, // pale marble
   "wall:reinforced": { color: [0.35, 0.37, 0.42], alpha: 1 },
   "wall:stone": { color: [0.55, 0.52, 0.47], alpha: 1 },
   "wall:plaster": { color: [0.82, 0.8, 0.75], alpha: 1 },
@@ -67,7 +69,17 @@ const TERRAIN_THICKNESS = 0.2;
 const TERRAIN_TOP = -0.05;
 const EDGE_EPS = 1e-6;
 
-const ZONE_ORDER: readonly ZoneKind[] = ["exposed", "lawn", "terrace", "garden", "road", "marina", "pool", "sea"];
+// Drawn bottom to top, so a path (terrace) over a garden shows, and a pond (pool) over both.
+const ZONE_ORDER: readonly ZoneKind[] = ["exposed", "lawn", "garden", "terrace", "road", "marina", "pool", "sea"];
+
+/** Draw rank of a zone material (0 = bottom layer), or undefined for anything that is not a zone. */
+export function zoneRank(material: MaterialKey): number | undefined {
+  if (!material.startsWith("zone:")) return undefined;
+  return ZONE_ORDER.indexOf(material.slice("zone:".length) as ZoneKind);
+}
+
+const STAIR_WIDTH = 3;
+const STAIR_STEP_RISE = 0.25;
 
 /** Axis-aligned map rectangle to a box standing on `elevation`. */
 function rectBox(
@@ -115,6 +127,43 @@ function wallBox(floor: Floor, w: Floor["walls"][number]): Box {
   };
 }
 
+/**
+ * A stairs link as a solid stepped flight, centered on the line between its two ends.
+ * Only axis-aligned flights with a real horizontal run are drawn (a link that goes
+ * straight up, like the service stair, has nothing to draw yet).
+ */
+function stairBoxes(link: MapFile["verticalLinks"][number], elevationOf: Map<FloorId, number>): Box[] {
+  const [lo, hi] = [link.from, link.to].sort((a, b) => (elevationOf.get(a.floor) ?? 0) - (elevationOf.get(b.floor) ?? 0)) as [
+    MapFile["verticalLinks"][number]["from"],
+    MapFile["verticalLinks"][number]["from"],
+  ];
+  const base = elevationOf.get(lo.floor) ?? 0;
+  const rise = (elevationOf.get(hi.floor) ?? 0) - base;
+  const dx = hi.at.x - lo.at.x;
+  const dy = hi.at.y - lo.at.y;
+  const run = Math.abs(dx) + Math.abs(dy);
+  if (rise <= 0 || run < 2 || (dx !== 0 && dy !== 0)) return [];
+
+  const n = Math.ceil(rise / STAIR_STEP_RISE);
+  const stepRun = run / n;
+  const along = dx !== 0 ? "x" : "y";
+  const sign = (dx !== 0 ? dx : dy) > 0 ? 1 : -1;
+  const boxes: Box[] = [];
+  for (let i = 0; i < n; i++) {
+    const height = ((i + 1) * rise) / n;
+    const start = (along === "x" ? lo.at.x : lo.at.y) + sign * i * stepRun;
+    const mid = start + (sign * stepRun) / 2;
+    boxes.push({
+      id: `stairs:${link.id}:${String(i).padStart(2, "0")}`,
+      floor: lo.floor,
+      material: "stairs",
+      center: along === "y" ? [lo.at.x, base + height / 2, mid] : [mid, base + height / 2, lo.at.y],
+      size: along === "y" ? [STAIR_WIDTH, height, stepRun] : [stepRun, height, STAIR_WIDTH],
+    });
+  }
+  return boxes;
+}
+
 export function planGreybox(map: MapFile): Box[] {
   const boxes: Box[] = [];
   const elevationOf = new Map<FloorId, number>(map.floors.map((f) => [f.id, f.elevation]));
@@ -137,6 +186,10 @@ export function planGreybox(map: MapFile): Box[] {
       material: `zone:${zone.kind}`,
       ...rectBox(zone.rect, base, ZONE_THICKNESS),
     });
+  }
+
+  for (const link of map.verticalLinks) {
+    if (link.kind === "stairs") boxes.push(...stairBoxes(link, elevationOf));
   }
 
   for (const floor of map.floors) {
