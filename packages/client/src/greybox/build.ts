@@ -5,6 +5,7 @@ import { MeshBuilder } from "@babylonjs/core/Meshes/meshBuilder";
 import type { Scene } from "@babylonjs/core/scene";
 import type { FloorId, MapFile } from "@war-room/content";
 import { MATERIALS, groupBoxes, planGreybox, toggleFloor, zoneRank } from "./plan";
+import { allFloorsVisible } from "./plan";
 import type { FloorVisibility } from "./plan";
 
 export interface Greybox {
@@ -61,7 +62,7 @@ export function buildGreybox(scene: Scene, map: MapFile): Greybox {
     meshes.push(merged);
   }
 
-  let visibility: FloorVisibility = { grounds: true, ground: true, upper: true, roof: true };
+  let visibility: FloorVisibility = allFloorsVisible();
   const apply = (): void => {
     for (const mesh of meshes) mesh.setEnabled(visibility[mesh.metadata.floor as FloorId]);
   };

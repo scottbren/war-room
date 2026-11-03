@@ -12,7 +12,8 @@ export const Rect = z
   });
 export type Rect = z.infer<typeof Rect>;
 
-export const FloorId = z.enum(["grounds", "ground", "upper", "roof"]);
+// "lower" is a basement under the house; "shore" (below the lawn) and "hill" (above it) are open-air levels.
+export const FloorId = z.enum(["grounds", "ground", "upper", "roof", "lower", "shore", "hill"]);
 export type FloorId = z.infer<typeof FloorId>;
 
 /** Integer degrees 0-359, clockwise from north. */

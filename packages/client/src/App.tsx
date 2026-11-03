@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { MapFile } from "@war-room/content";
 import type { FloorId } from "@war-room/content";
 import charonJson from "../../content/maps/charon.json";
-import { FLOOR_KEYS } from "./greybox/plan";
+import { FLOOR_KEYS, allFloorsVisible } from "./greybox/plan";
 import type { FloorVisibility } from "./greybox/plan";
 import { createViewer } from "./viewer";
 import type { Viewer } from "./viewer";
@@ -14,6 +14,9 @@ const FLOOR_LABELS: Record<FloorId, string> = {
   ground: "Ground floor",
   upper: "Upper floor",
   roof: "Roof",
+  lower: "Basement",
+  shore: "Shore",
+  hill: "Hill",
 };
 
 /** [key, floor] pairs in key order, from the same table the keyboard handler uses. */
@@ -29,7 +32,7 @@ declare global {
 export function App() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const viewerRef = useRef<Viewer | null>(null);
-  const [floors, setFloors] = useState<FloorVisibility>({ grounds: true, ground: true, upper: true, roof: true });
+  const [floors, setFloors] = useState<FloorVisibility>(allFloorsVisible);
   const [fps, setFps] = useState(0);
 
   useEffect(() => {

@@ -6,7 +6,7 @@ These are the starting shapes for T1. Refine names and add fields where needed, 
 - Meters. Map plane is x (east) and y (north). Height is `z`. In Babylon (y-up), map (x, y, z) renders as (x, z, y).
 - Positions in simulation state are quantized to 1 cm (store as integer centimeters internally, or round on snapshot).
 - Angles are integer degrees 0–359, measured clockwise from north. Never radians in gameplay code.
-- Floors: `grounds` (outdoor, z = 0), `ground` (house ground floor, z = 0), `upper` (z = 4), `roof` (z = 8). `grounds` and `ground` share elevation but are separate floor ids so the house interior is its own layer.
+- Floors: `grounds` (outdoor, z = 0), `ground` (house ground floor, z = 0), `upper` (z = 4), `roof` (z = 8), plus three levels added in v4 (user-approved, see decisions.md): `lower` (basement under the house, indoor), `shore` (open-air, below the lawn) and `hill` (open-air, raised). `grounds` and `ground` share elevation but are separate floor ids so the house interior is its own layer.
 
 ## Map file (`content/src/schemas/map.ts`)
 ```ts
@@ -22,7 +22,7 @@ MapFile {
 Vec2 { x: number, y: number }
 
 Floor {
-  id: "grounds" | "ground" | "upper" | "roof"
+  id: "grounds" | "ground" | "upper" | "roof" | "lower" | "shore" | "hill"
   elevation: number               // meters
   rooms: Room[]
   walls: Wall[]                   // derived by tools/derive-walls, then committed
@@ -116,7 +116,7 @@ Effect    = { kind: string, params: Record<string, unknown> }
 ```ts
 type Tick = number                      // integer, 10 per second
 type EntityId = string                  // stable and readable: "op.alpha.1", "def.vet.3", "fam.son"
-type FloorId = "grounds" | "ground" | "upper" | "roof"
+type FloorId = "grounds" | "ground" | "upper" | "roof" | "lower" | "shore" | "hill"
 type Pos = { floor: FloorId, x: number, y: number }
 
 type Command =

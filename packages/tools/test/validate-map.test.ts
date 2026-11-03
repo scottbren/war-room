@@ -212,6 +212,44 @@ describe("required rooms and link ends", () => {
   });
 });
 
+describe("extra levels (lower, shore, hill)", () => {
+  const withLevel = (id: "lower" | "shore" | "hill", elevation: number): MapFile => {
+    const map = charon();
+    map.floors.push({ id, elevation, rooms: [], walls: [], doors: [], windows: [], openings: [], cover: [] });
+    return map;
+  };
+
+  it("the schema accepts the three extra floor ids", () => {
+    for (const [id, elevation] of [["lower", -4], ["shore", -5], ["hill", 3]] as const) {
+      expect(MapFile.safeParse(withLevel(id, elevation)).success, id).toBe(true);
+    }
+  });
+
+  it("a link end on the open shore or hill may be outdoors, like the grounds", () => {
+    for (const [id, elevation] of [["shore", -5], ["hill", 3]] as const) {
+      const map = withLevel(id, elevation);
+      map.verticalLinks.push({ id: "link.test", kind: "cliff-path", from: { floor: id, at: { x: 18, y: -6 } }, to: { floor: "grounds", at: { x: 18, y: 0 } }, bidirectional: true });
+      expect(validateMap(map), id).toEqual([]);
+    }
+  });
+
+  it("a link end on the lower (indoor) level must still be inside a room", () => {
+    const map = withLevel("lower", -4);
+    map.verticalLinks.push({ id: "link.test", kind: "stairs", from: { floor: "lower", at: { x: 40, y: 30 } }, to: { floor: "ground", at: { x: 40, y: 30 } }, bidirectional: true });
+    expect(find(validateMap(map), "link.test", "not inside any room")).toBeDefined();
+  });
+
+  it("the panic-room tunnel may exit on the shore as well as on the grounds", () => {
+    const map = withLevel("shore", -5);
+    const shore = floorOf(map, "shore");
+    shore.rooms.push({ id: "shore.cave", name: "Tunnel cave", rect: { min: { x: 0, y: -30 }, max: { x: 4, y: -26 } }, ceiling: 3, tags: ["tunnel-exit"] });
+    const boathouse = floorOf(map, "grounds").rooms.find((r) => r.id === "grounds.boathouse")!;
+    boathouse.tags = boathouse.tags.filter((t) => t !== "tunnel-exit");
+    map.verticalLinks.find((l) => l.id === "link.tunnel")!.to = { floor: "shore", at: { x: 2, y: -28 } };
+    expect(validateMap(map)).toEqual([]);
+  });
+});
+
 describe("windows", () => {
   const win = (id: string, x: number, y: number, between: [string, string], width = 1.8) => ({ id, at: { x, y }, width, between, shutter: true, blastRated: true });
 

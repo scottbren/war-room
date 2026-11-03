@@ -289,8 +289,13 @@ export function groupBoxes(boxes: readonly Box[]): BoxGroup[] {
 
 export type FloorVisibility = Record<FloorId, boolean>;
 
-/** Keys 1-4 show and hide the grounds, ground floor, upper floor and roof. */
-export const FLOOR_KEYS = { "1": "grounds", "2": "ground", "3": "upper", "4": "roof" } as const satisfies Record<string, FloorId>;
+/** Keys 1-7 show and hide the grounds, ground floor, upper floor, roof, basement, shore and hill. */
+export const FLOOR_KEYS = { "1": "grounds", "2": "ground", "3": "upper", "4": "roof", "5": "lower", "6": "shore", "7": "hill" } as const satisfies Record<string, FloorId>;
+
+/** Every floor shown: the starting state. */
+export function allFloorsVisible(): FloorVisibility {
+  return Object.fromEntries(Object.values(FLOOR_KEYS).map((id) => [id, true])) as FloorVisibility;
+}
 
 export function toggleFloor(visibility: FloorVisibility, floor: FloorId): FloorVisibility {
   return { ...visibility, [floor]: !visibility[floor] };

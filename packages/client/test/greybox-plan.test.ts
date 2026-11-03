@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { MapFile } from "@war-room/content";
 import charonJson from "../../content/maps/charon.json";
-import { FLOOR_KEYS, MATERIALS, groupBoxes, planGreybox, toggleFloor } from "../src/greybox/plan";
+import { FLOOR_KEYS, MATERIALS, allFloorsVisible, groupBoxes, planGreybox, toggleFloor } from "../src/greybox/plan";
 import type { Box } from "../src/greybox/plan";
 
 const map = MapFile.parse(charonJson);
@@ -243,14 +243,16 @@ describe("groupBoxes", () => {
 });
 
 describe("floor toggles", () => {
-  it("maps keys 1-4 to grounds, ground, upper, roof", () => {
-    expect(FLOOR_KEYS).toEqual({ "1": "grounds", "2": "ground", "3": "upper", "4": "roof" });
+  it("maps keys 1-7 to grounds, ground, upper, roof, lower, shore, hill", () => {
+    expect(FLOOR_KEYS).toEqual({ "1": "grounds", "2": "ground", "3": "upper", "4": "roof", "5": "lower", "6": "shore", "7": "hill" });
   });
 
   it("toggles one floor without touching the others, and never mutates its input", () => {
-    const all = { grounds: true, ground: true, upper: true, roof: true };
+    const all = allFloorsVisible();
+    expect(Object.keys(all).sort()).toEqual(["ground", "grounds", "hill", "lower", "roof", "shore", "upper"]);
+    expect(Object.values(all).every(Boolean)).toBe(true);
     const next = toggleFloor(all, "upper");
-    expect(next).toEqual({ grounds: true, ground: true, upper: false, roof: true });
+    expect(next).toEqual({ ...all, upper: false });
     expect(all.upper).toBe(true);
     expect(toggleFloor(next, "upper")).toEqual(all);
   });

@@ -88,8 +88,9 @@ describe("buildGreybox (headless Babylon)", () => {
 
   it("toggles via toggleFloor and reports the new state of all floors", () => {
     const { greybox } = setup();
-    expect(greybox.toggleFloor("roof")).toEqual({ grounds: true, ground: true, upper: true, roof: false });
-    expect(greybox.toggleFloor("roof")).toEqual({ grounds: true, ground: true, upper: true, roof: true });
+    const all = { grounds: true, ground: true, upper: true, roof: true, lower: true, shore: true, hill: true };
+    expect(greybox.toggleFloor("roof")).toEqual({ ...all, roof: false });
+    expect(greybox.toggleFloor("roof")).toEqual(all);
   });
 
   it("dispose removes every mesh it made", () => {

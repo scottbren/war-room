@@ -27,3 +27,7 @@ Format: `YYYY-MM-DD — Decision — Why — Approved by`
 ## 2026-11-03: CHARON v4 (grander front and grounds)
 
 User feedback on v3: remove the emergency stair, make it feel more like a luxury villa. Changes: removed `link.fire-stair`, `u.fire-escape`, `d.u.gym-fire-escape` (the staff gate and staff entrance stay); `d.g.main` now joins `g.foyer` to the new `g.portico`; added forecourt, colonnades, belvedere, reflecting pool, parterre, balustrade, infinity pool, cabana, dock lounge, two cameras. No contract change. Not done: tennis court (no room on the lot), bay windows, arched openings and projecting wings (the map is rectangles only; revisit with polygon rooms).
+
+## 2026-11-03: Contract change (APPROVED by the user): three more floor ids
+
+`FloorId` in `packages/content/src/schemas/common.ts` grows from four ids to seven: added `lower` (basement, indoor), `shore` (open-air, below the lawn) and `hill` (open-air, raised). Reason: the user wants a modern stacked-volume villa and a terraced site (hill, house, shore) with a basement; one flat elevation per floor could not express that. Nothing else in the schemas changed and existing maps stay valid. Tooling follows: the validator treats `grounds`, `shore` and `hill` as open-air (link ends may be outdoors; a tunnel may exit there), the greybox gets keys 5-7 and a shared `allFloorsVisible()`. Still open: window shutter and smart-home runtime state (see the v3 entry).

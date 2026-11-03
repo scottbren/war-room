@@ -1,5 +1,5 @@
 import { createRng, createSim } from "@war-room/sim";
-import type { MapFile } from "@war-room/content";
+import type { FloorId, MapFile } from "@war-room/content";
 import { createRecorder } from "./replay";
 import type { Recording } from "./replay";
 
@@ -15,8 +15,8 @@ export interface ScriptedRun {
 /** Every this-many ticks each unit may get a new random destination. */
 const ORDER_INTERVAL = 20;
 
-function spawnsOf(map: MapFile): { id: string; floor: "grounds" | "ground" | "upper" | "roof" }[] {
-  const out: { id: string; floor: "grounds" | "ground" | "upper" | "roof" }[] = [];
+function spawnsOf(map: MapFile): { id: string; floor: FloorId }[] {
+  const out: { id: string; floor: FloorId }[] = [];
   for (const m of map.markers) {
     if (m.kind !== "spawn") continue;
     const id = m.tags.find((t) => t.startsWith("entity:"))?.slice("entity:".length);

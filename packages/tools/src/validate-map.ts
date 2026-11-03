@@ -23,8 +23,8 @@ import type { Floor, Room, Vec2, VerticalLink } from "@war-room/content";
  *   - the map "charon" must contain rooms tagged "panic-room", "safe-landing",
  *     "tunnel-exit" and "security-center", so those checks cannot pass by finding
  *     nothing to check
- *   - every vertical-link end on a floor other than "grounds" lies inside a room
- *     (ends on the open grounds may be outdoors, e.g. the cliff path)
+ *   - every vertical-link end on an indoor floor lies inside a room (ends on the open-air
+ *     levels "grounds", "shore" and "hill" may be outdoors, e.g. the cliff path)
  */
 
 export interface Issue {
@@ -75,6 +75,10 @@ function pathLabel(raw: unknown, path: readonly PropertyKey[]): string {
 }
 
 // ---------- geometry helpers ----------
+
+/** Open-air levels: a link may end on them outside any room. */
+const OUTDOOR_FLOORS: ReadonlySet<string> = new Set(["grounds", "shore", "hill"]);
+const isOutdoor = (floorId: string): boolean => OUTDOOR_FLOORS.has(floorId);
 
 const contains = (r: Rect, p: Vec2): boolean => p.x >= r.min.x && p.x <= r.max.x && p.y >= r.min.y && p.y <= r.max.y;
 
@@ -213,21 +217,21 @@ function checkPanicRooms(map: MapFile, out: Issue[]): void {
         out.push({ check: "panic-shaft", message: `Panic room ${panic.id} has no shaft up to a safe landing on the upper floor` });
       }
 
-      // Tunnel to the grounds, exiting at the boathouse
+      // Tunnel to the open grounds (or the shore), exiting at the boathouse
       const tunnels = map.verticalLinks.filter((l) => {
         const ends = [l.from, l.to];
-        return ends.some((e) => e.floor === floor.id && inRoom(floor.id, e.at, panic)) && ends.some((e) => e.floor === "grounds");
+        return ends.some((e) => e.floor === floor.id && inRoom(floor.id, e.at, panic)) && ends.some((e) => isOutdoor(e.floor));
       });
       if (tunnels.length === 0) {
         out.push({ check: "panic-tunnel", message: `Panic room ${panic.id} has no tunnel link to the grounds` });
       }
       for (const t of tunnels) {
-        const far = [t.from, t.to].find((e) => e.floor === "grounds");
-        const exit = roomsOn("grounds").some((r) => r.tags.includes("tunnel-exit") && far && contains(r.rect, far.at));
+        const far = [t.from, t.to].find((e) => isOutdoor(e.floor));
+        const exit = !!far && roomsOn(far.floor).some((r) => r.tags.includes("tunnel-exit") && contains(r.rect, far.at));
         if (!exit) {
           out.push({
             check: "tunnel-exit",
-            message: `Tunnel link ${t.id} does not exit at the boathouse (its grounds end is not inside a room tagged "tunnel-exit")`,
+            message: `Tunnel link ${t.id} does not exit at the boathouse (its outdoor end is not inside a room tagged "tunnel-exit")`,
           });
         }
       }
@@ -286,7 +290,7 @@ function checkRequiredRooms(map: MapFile, out: Issue[]): void {
 function checkLinkEnds(map: MapFile, out: Issue[]): void {
   for (const link of map.verticalLinks) {
     for (const [label, end] of [["from", link.from], ["to", link.to]] as const) {
-      if (end.floor === "grounds") continue;
+      if (isOutdoor(end.floor)) continue;
       if (roomAt(map, end.floor, end.at) === "outside") {
         out.push({
           check: "link-end",
