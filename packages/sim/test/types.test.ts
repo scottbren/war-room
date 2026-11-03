@@ -1,11 +1,14 @@
 import { describe, expect, it } from "vitest";
 import { createSim } from "../src";
-import type { MapFile } from "@war-room/content";
-import type { Command } from "../src";
+import type { Command, Sim } from "../src";
+import { makeTestMap } from "./helpers/testMap";
 
 describe("sim contract", () => {
-  it("createSim is a stub that throws until T3", () => {
-    expect(() => createSim({ seed: 1, map: {} as MapFile })).toThrow("not implemented");
+  it("createSim returns an object implementing the Sim interface", () => {
+    const sim: Sim = createSim({ seed: 1, map: makeTestMap() });
+    for (const method of ["enqueue", "step", "hash", "serialize", "restore"] as const) {
+      expect(typeof sim[method]).toBe("function");
+    }
   });
 
   it("Command union is constructible", () => {

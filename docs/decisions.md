@@ -4,6 +4,7 @@ Record every decision that changes or clarifies the technical design. Newest fir
 
 Format: `YYYY-MM-DD — Decision — Why — Approved by`
 
+- 2026-11-02 — T3 sim conventions: spawn markers use tags `entity:<id>` and `side:<side>` plus `at` (createSim throws otherwise); `world.tick` counts completed ticks, a command with tick N applies in the step that completes tick N+1 and past ticks are rejected with `commandRejected`; week-1 speeds are fixed per side in `sim/src/defaults.ts` (operator 2.0 m/s, defender 1.5, others 1.2) until unit types are wired in; cross-floor moves and week-2 commands (issuePlan, decide, intervene) are rejected with an event; sim state is stored in integer cm and serialized as canonical JSON, `hash()` is FNV-1a of that string; restore fully validates input and is atomic — implementer (T3), pending Scott review in T13
 - 2026-11-02 — T1 contracts approved and frozen (content schemas; sim types). Changes from draft: stricter validation (rect order, integer angles, probability range, complicationsPerRun order, defaultOptionId must exist, positive dimensions); `commandRejected` event; `Sim.restore`; named `EventTrigger`/`DecisionOption`/`PlanTask`/`DoorState` — Scott
 - 2026-11-02 — Sim contract hardening from determinism review: same-tick commands apply in enqueue order; `Snapshot.doors` is an array sorted by id; positions documented as 1 cm quantized; `side`, entity `state` and door event `state` are unions; event ids derive from tick + per-tick counter — Scott
 
