@@ -14,9 +14,11 @@ import type { Floor, Room, Wall } from "@war-room/content";
  * walls: its parapet is cover.
  *
  * Material rules, first match wins (tags come from the room's `tags`):
+ *   "arcade" room shared with an "exterior" room -> no wall (an open colonnade)
  *   panic-room / safe-landing on either side  -> reinforced, 0.5 m, indestructible
- *   void on one side of a shared edge         -> glass railing, 1.1 m
- *   lone edge of an "exterior" room (balcony) -> glass railing, 1.1 m
+ *   lone edge of a "void" room                -> glass railing, 1.1 m
+ *   void shared with a "hall" (walkway) room  -> glass railing, 1.1 m
+ *   lone edge of an "exterior" room (balcony, courtyard) -> glass railing, 1.1 m
  *   shared edge with an "exterior" room       -> reinforced, 0.4 m (house exterior)
  *   shared edge, both "interior"              -> plaster, 0.2 m
  *   shared edge otherwise (outbuildings)      -> stone, 0.3 m
@@ -120,13 +122,17 @@ function houseOutline(floor: Floor): Rect4 | undefined {
 
 type Spec = Pick<Wall, "material" | "thickness" | "destructible"> & { height?: number };
 
-function classify(run: Run, outline: Rect4 | undefined): Spec {
+/** Wall spec for a run, or undefined when the run should have no wall at all. */
+function classify(run: Run, outline: Rect4 | undefined): Spec | undefined {
   const { owners } = run;
   const has = (tag: string) => owners.some((o) => o.tags.includes(tag));
   const shared = owners.length >= 2;
 
+  if (shared && has("arcade") && has("exterior")) return undefined;
+
   if (has("panic-room") || has("safe-landing")) return { material: "reinforced", thickness: 0.5, destructible: false };
-  if (shared && has("void")) return { material: "glass", thickness: 0.1, destructible: true, height: RAILING_HEIGHT };
+  if (!shared && has("void")) return { material: "glass", thickness: 0.1, destructible: true, height: RAILING_HEIGHT };
+  if (shared && has("void") && has("hall")) return { material: "glass", thickness: 0.1, destructible: true, height: RAILING_HEIGHT };
   if (!shared && has("exterior")) return { material: "glass", thickness: 0.1, destructible: true, height: RAILING_HEIGHT };
   if (shared && has("exterior")) return { material: "reinforced", thickness: 0.4, destructible: true };
   if (shared) {
@@ -194,6 +200,7 @@ function deriveFloor(floor: Floor): Floor {
   const derived: Wall[] = [];
   for (const run of runs) {
     const spec = classify(run, outline);
+    if (!spec) continue;
     const height = spec.height ?? Math.max(...run.owners.map((o) => o.ceiling));
     let pieces: [number, number][] = [[run.from, run.to]];
     for (const gap of (cuts.get(run) ?? []).sort((a, b) => a.lo - b.lo)) {

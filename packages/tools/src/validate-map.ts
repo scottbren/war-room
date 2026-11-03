@@ -9,11 +9,12 @@ import type { Door, Floor, Room, Vec2, VerticalLink } from "@war-room/content";
  * Checks (in order): cover facing on the raw data, then the schema, then
  *   - no two rooms on a floor overlap (touching edges are fine)
  *   - every door joins two different rooms (or a room and "outside") and sits
- *     on a wall; a "gate" may join outside to outside
+ *     on a wall; a "gate" may join outside to outside; doors on the roof need no
+ *     wall because the roof has only a parapet of cover
  *   - every room is reachable from approach A through doors and vertical links,
  *     counting locked doors and restricted links as passable (breachable);
  *     rooms tagged "void" are not walkable and are exempt
- *   - each room tagged "panic-room" has a door to a hall (room id ending ".hall"),
+ *   - each room tagged "panic-room" has a door to a room tagged "hall",
  *     a shaft up to a room tagged "safe-landing" on the upper floor, and a tunnel
  *     whose far end is inside a room tagged "tunnel-exit"
  *   - rooms tagged "family" are on the upper floor
@@ -124,7 +125,7 @@ function checkDoors(map: MapFile, out: Issue[]): void {
       if (a === b && !gateOutside) {
         out.push({ check: "door-joins-itself", message: `Door ${door.id} (floor ${floor.id}) joins ${a} to itself` });
       }
-      if (!onWall(door, floor)) {
+      if (floor.id !== "roof" && !onWall(door, floor)) {
         out.push({ check: "door-on-wall", message: `Door ${door.id} (floor ${floor.id}) is not on any wall` });
       }
     }
@@ -190,9 +191,10 @@ function checkPanicRooms(map: MapFile, out: Issue[]): void {
   for (const floor of map.floors) {
     for (const panic of floor.rooms.filter((r) => r.tags.includes("panic-room"))) {
       // Door to the hall
-      const hallDoor = floor.doors.some((d) => d.between.includes(panic.id) && d.between.some((s) => s !== panic.id && s.endsWith(".hall")));
+      const hallIds = new Set(floor.rooms.filter((r) => r.tags.includes("hall")).map((r) => r.id));
+      const hallDoor = floor.doors.some((d) => d.between.includes(panic.id) && d.between.some((s) => s !== panic.id && hallIds.has(s)));
       if (!hallDoor) {
-        out.push({ check: "panic-hall-door", message: `Panic room ${panic.id} has no door to the hall (a room whose id ends in ".hall")` });
+        out.push({ check: "panic-hall-door", message: `Panic room ${panic.id} has no door to the hall (a room tagged "hall")` });
       }
 
       // Shaft up to a safe landing on the upper floor

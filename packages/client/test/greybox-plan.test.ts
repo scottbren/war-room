@@ -37,10 +37,10 @@ describe("planGreybox: basics", () => {
 
 describe("planGreybox: coordinates (map x, y, z -> Babylon x, z, y)", () => {
   it("lays a room slab so its top is at the floor elevation", () => {
-    const hall = byId("slab:g.hall"); // map rect [48,16]-[52,52], floor ground at z = 0
-    expect(hall.center).toEqual([50, -0.1, 34]);
-    expect(hall.size).toEqual([4, 0.2, 36]);
-    const upperHall = byId("slab:u.hall");
+    const hall = byId("slab:g.grand-hall"); // map rect [38,38]-[62,52], floor ground at z = 0
+    expect(hall.center).toEqual([50, -0.1, 45]);
+    expect(hall.size).toEqual([24, 0.2, 14]);
+    const upperHall = byId("slab:u.gallery");
     expect(upperHall.center[1]).toBeCloseTo(floorElevation("upper") - 0.1, 10);
   });
 
@@ -84,15 +84,15 @@ describe("planGreybox: coordinates (map x, y, z -> Babylon x, z, y)", () => {
   });
 
   it("builds cover as a block of its own height, standing on its floor", () => {
-    const planter = byId("cover:cover.planter.1"); // rect [34.5,15.4]-[35.5,16], height 0.8, grounds
+    const planter = byId("cover:cover.planter.1"); // rect [29.5,15.4]-[30.5,16], height 0.8, grounds
     expect(planter.floor).toBe("grounds");
-    expect(planter.center[0]).toBeCloseTo(35, 10);
+    expect(planter.center[0]).toBeCloseTo(30, 10);
     expect(planter.center[1]).toBeCloseTo(0.4, 10);
     expect(planter.center[2]).toBeCloseTo(15.7, 10);
     expect(planter.size[0]).toBeCloseTo(1, 10);
     expect(planter.size[1]).toBeCloseTo(0.8, 10);
     expect(planter.size[2]).toBeCloseTo(0.6, 10);
-    expect(byId("cover:cover.parapet.south").center[1]).toBeCloseTo(floorElevation("roof") + 0.5, 10);
+    expect(byId("cover:cover.parapet.south.west").center[1]).toBeCloseTo(floorElevation("roof") + 0.5, 10);
   });
 
   it("colors cover by type: heavy blue-grey, light amber, concealment green and see-through", () => {
@@ -109,12 +109,12 @@ describe("planGreybox: coordinates (map x, y, z -> Babylon x, z, y)", () => {
   });
 
   it("lays zones as thin translucent overlays on the grounds, the pool and the sea included", () => {
-    const pool = byId("zone:zone.pool"); // [40,3]-[60,9]
-    expect(pool.floor).toBe("grounds");
+    const pool = byId("zone:zone.pool"); // the courtyard pool, [45,20]-[55,34], on the ground floor
+    expect(pool.floor).toBe("ground");
     expect(pool.center[0]).toBe(50);
-    expect(pool.center[2]).toBe(6);
-    expect(pool.size[0]).toBe(20);
-    expect(pool.size[2]).toBe(6);
+    expect(pool.center[2]).toBe(27);
+    expect(pool.size[0]).toBe(10);
+    expect(pool.size[2]).toBe(14);
     expect(pool.size[1]).toBeLessThan(0.1);
     expect(pool.center[1]).toBeGreaterThan(0);
     const sea = byId("zone:zone.sea");

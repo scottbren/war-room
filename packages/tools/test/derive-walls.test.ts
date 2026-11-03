@@ -138,6 +138,53 @@ describe("deriveWalls", () => {
   });
 });
 
+describe("deriveWalls: courtyards, arcades and voids", () => {
+  const twoRooms = (a: Room, b: Room): MapFile => {
+    const map = fixture();
+    map.floors[0]!.rooms = [a, b];
+    map.floors[0]!.doors = [];
+    return map;
+  };
+  const between = (map: MapFile, x: number) => wallsOf(deriveWalls(map), "ground").filter((w) => w.a.x === x && w.b.x === x);
+
+  it("leaves an arcade open to the courtyard: no wall on the shared edge, columns stand there instead", () => {
+    const map = twoRooms(
+      room("g.loggia", rect(0, 0, 4, 4), ["interior", "hall", "arcade"]),
+      room("g.court", rect(4, 0, 8, 4), ["exterior", "courtyard"]),
+    );
+    expect(between(map, 4)).toEqual([]);
+    // the arcade's other sides are still walled
+    expect(wallsOf(deriveWalls(map), "ground").some((w) => w.a.x === 0 && w.b.x === 0)).toBe(true);
+  });
+
+  it("walls a non-arcade room against the courtyard as house exterior (reinforced)", () => {
+    const map = twoRooms(room("g.hall", rect(0, 0, 4, 4), ["interior", "hall"]), room("g.court", rect(4, 0, 8, 4), ["exterior", "courtyard"]));
+    for (const w of between(map, 4)) expect(w).toMatchObject({ material: "reinforced", destructible: true });
+    expect(between(map, 4).length).toBeGreaterThan(0);
+  });
+
+  it("puts a low glass balustrade on the courtyard's own open edges", () => {
+    const map = twoRooms(room("g.hall", rect(0, 0, 4, 4), ["interior", "hall"]), room("g.court", rect(4, 0, 8, 4), ["exterior", "courtyard"]));
+    const east = between(map, 8);
+    expect(east.length).toBe(1);
+    expect(east[0]).toMatchObject({ material: "glass", height: 1.1 });
+  });
+
+  it("uses a railing between a void and a walkway (hall), but a solid wall between a void and a bedroom", () => {
+    const walkway = twoRooms(room("u.gallery", rect(0, 0, 4, 4), ["interior", "hall"]), room("u.void", rect(4, 0, 8, 4), ["interior", "void"]));
+    for (const w of between(walkway, 4)) expect(w).toMatchObject({ material: "glass", height: 1.1 });
+    const bedroom = twoRooms(room("u.bed", rect(0, 0, 4, 4), ["interior"]), room("u.void", rect(4, 0, 8, 4), ["interior", "void"]));
+    for (const w of between(bedroom, 4)) expect(w).toMatchObject({ material: "plaster", height: 3 });
+  });
+
+  it("puts a railing on a void's own open edge on the outline instead of a full wall", () => {
+    const map = twoRooms(room("u.bed", rect(0, 0, 4, 4), ["interior"]), room("u.void", rect(4, 0, 8, 4), ["interior", "void"]));
+    const east = between(map, 8);
+    expect(east).toHaveLength(1);
+    expect(east[0]).toMatchObject({ material: "glass", height: 1.1 });
+  });
+});
+
 describe("formatMap", () => {
   it("is valid JSON that round-trips, ends with a newline, and keeps small objects on one line", () => {
     const map = deriveWalls(fixture());

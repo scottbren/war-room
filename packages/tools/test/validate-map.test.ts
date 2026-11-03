@@ -64,17 +64,15 @@ describe("individual checks, by breaking a copy of charon", () => {
 
   it("a door moved off its wall is reported by id", () => {
     const map = charon();
-    floorOf(map, "ground").doors.find((d) => d.id === "d.g.hall-study")!.at = { x: 49.5, y: 29 };
-    expect(find(validateMap(map), "d.g.hall-study", "not on any wall")).toBeDefined();
+    floorOf(map, "ground").doors.find((d) => d.id === "d.g.drawing-study")!.at = { x: 34.3, y: 42 };
+    expect(find(validateMap(map), "d.g.drawing-study", "not on any wall")).toBeDefined();
   });
 
   it("overlapping rooms are reported, touching rooms are not", () => {
     const map = charon();
     const g = floorOf(map, "ground");
-    const hall = g.rooms.find((r) => r.id === "g.hall")!;
-    g.rooms.push({ id: "g.extra", name: "Extra", rect: { min: { x: 49, y: 20 }, max: { x: 51, y: 22 } }, ceiling: 4, tags: [] });
-    expect(find(validateMap(map), "g.hall", "g.extra", "overlap")).toBeDefined();
-    expect(hall.id).toBe("g.hall");
+    g.rooms.push({ id: "g.extra", name: "Extra", rect: { min: { x: 49, y: 40 }, max: { x: 51, y: 42 } }, ceiling: 4, tags: [] });
+    expect(find(validateMap(map), "g.grand-hall", "g.extra", "overlap")).toBeDefined();
   });
 
   it("a cover piece with no facing is reported by id (checked before the schema rejects it)", () => {
@@ -96,8 +94,24 @@ describe("individual checks, by breaking a copy of charon", () => {
   it("the panic room must have a door to the hall", () => {
     const map = charon();
     const g = floorOf(map, "ground");
-    g.doors = g.doors.filter((d) => d.id !== "d.g.hall-panic");
+    g.doors = g.doors.filter((d) => d.id !== "d.g.panic-loggia");
     expect(find(validateMap(map), "g.panic", "hall")).toBeDefined();
+  });
+
+  it("the hall is any room tagged 'hall', not a naming convention", () => {
+    const map = charon();
+    const loggia = floorOf(map, "ground").rooms.find((r) => r.id === "g.loggia.e")!;
+    expect(loggia.tags).toContain("hall");
+    loggia.tags = loggia.tags.filter((t) => t !== "hall");
+    expect(find(validateMap(map), "g.panic", "hall")).toBeDefined();
+  });
+
+  it("doors between roof sections need no wall (the roof has only a parapet of cover)", () => {
+    const map = charon();
+    const roof = floorOf(map, "roof");
+    expect(roof.doors.length).toBeGreaterThan(0);
+    expect(roof.walls).toEqual([]);
+    expect(validateMap(map)).toEqual([]);
   });
 
   it("the panic room must be reachable from the upper-floor shaft", () => {
@@ -195,12 +209,13 @@ describe("schema problems", () => {
     const raw = structuredClone(readJson("../../content/maps/charon.json")) as {
       floors: { id: string; rooms: { id: string; ceiling: number }[] }[];
     };
+    const roomId = raw.floors[1]!.rooms[0]!.id;
     raw.floors[1]!.rooms[0]!.ceiling = -1;
     const issues = validateMap(raw);
     expect(issues).toHaveLength(1);
     expect(issues[0]!.message).toMatch(/Schema/);
     expect(issues[0]!.message).toContain("ground");
-    expect(issues[0]!.message).toContain("g.hall");
+    expect(issues[0]!.message).toContain(roomId);
     expect(issues[0]!.message).toContain("ceiling");
   });
 

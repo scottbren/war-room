@@ -1,94 +1,117 @@
-# CHARON layout (dimensions for T5)
+# CHARON layout (map version 2: the courtyard villa)
 
-Use these coordinates to author `content/maps/charon.json`. All rooms are axis-aligned rectangles: `[minX, minY] – [maxX, maxY]` in meters. North is +y. The sea is to the south (y < 0).
+`content/maps/charon.json` implements this document. All rooms are axis-aligned rectangles, `[minX, minY] – [maxX, maxY]` in meters, in **map coordinates**. North is +y. The sea is to the south (y < 0). Non-rectangular buildings are composed from several rectangles (U, L and stepped shapes); the map format has no polygon rooms.
+
+Version 2 replaced the original single rectangular block (see `docs/decisions.md`). Everything gameplay depends on is unchanged: the approach points, gate, helipad, marina, the panic room / shaft / tunnel roles, family rooms upstairs, the guard counts, and the reaction force in the guest villa.
 
 ## Compound (floor `grounds`, z = 0)
 | Id | What | Rect | Notes |
 | --- | --- | --- | --- |
-| grounds.estate | Walled estate | [0,0] – [100,80] | Perimeter wall on west, north, east sides (material `perimeter`, 3 m high, 0.6 m thick, heavy cover) |
-| grounds.cliff | Seawall and cliff edge | along y = 0, x 0–100 | 6 m drop to the beach; `cliff-path` vertical link at x 18 for divers (approach E) |
-| grounds.highway | Coastal highway (outside) | [-20,84] – [120,94] | Zone `road`; reaction force and host police arrive along it |
-| grounds.gate | Main gate | door at (69,80), width 6, kind `gate` | Approach A |
-| grounds.guardhouse | Gate guardhouse | [72,76] – [76,80] | Guard post: outer ring |
-| grounds.guest-villa | Guest villa (reaction force) | [74,60] – [94,74] | 8 reaction force spawn points |
-| grounds.garage | Garage with armored SUVs | [74,52] – [94,60] | Vehicles are heavy cover |
-| grounds.staff | Staff quarters | [6,60] – [24,74] | Civilian staff spawn |
+| grounds.estate | Walled estate | [0,0] – [100,80] | Perimeter wall on west, north, east (material `perimeter`, 3 m high, 0.6 m thick); hand-authored `w.fixed.*` walls, with a 6 m gap for the gate |
+| grounds.cliff | Seawall and cliff edge | along y = 0, x 0–100 | 6 m drop to the beach; `cliff-path` link at x 18 for divers (approach E) |
+| grounds.highway | Coastal highway (outside) | [-20,84] – [120,94] | Zone `road` |
+| grounds.gate | Main gate | door at (69,80), width 6, kind `gate` | Approach A. Joins outside to outside (it sits in the perimeter wall, not between rooms) |
+| grounds.guardhouse | Gate guardhouse | [72,76] – [76,80] | Outer-ring guard post |
+| grounds.gate-lodge | Gate lodge | [62,76] – [66,80] | Mirrors the guardhouse on the other side of the gate |
+| grounds.guest-villa (+ .wing) | Guest villa, **L-shaped** (reaction force) | [74,60] – [94,68] and wing [84,68] – [94,74] | 8 reaction-force posts |
+| grounds.garage | Garage with armored SUVs | [74,52] – [94,60] | SUVs are heavy cover |
+| grounds.staff (+ .wing) | Staff quarters, **L-shaped** | [6,60] – [24,68] and wing [6,68] – [14,74] | Civilian staff spawn |
 | grounds.helipad | Helipad | [40,60] – [56,76] | `lz` marker; approach C |
-| grounds.drive | Driveway | from gate (69,80) to house front (50,56) | Zone `exposed` |
-| grounds.house | Main residence footprint | [32,16] – [68,56] | See ground and upper floors |
-| grounds.terrace | Terrace | [32,10] – [68,16] | Zone `terrace`; planters along y = 16 are light cover |
-| grounds.pool | Pool | [40,3] – [60,9] | Zone `pool` (exposed) |
-| grounds.lawn | Lawn | [0,0] – [100,16] minus terrace and pool | Zone `exposed` |
-| grounds.garden-east | Garden, hedges, palms | [72,16] – [96,50] | Zone `garden` (concealment) |
-| grounds.trees-west | Trees | [4,20] – [28,50] | Zone `garden` (concealment) |
-| grounds.marina | Marina and dock | [78,-12] – [96,0] | Zone `marina`; approach D at dock (88,-2) |
-| grounds.boathouse | Boathouse (tunnel exit) | [80,-4] – [90,2] | Tunnel exit point (85,0) |
-| grounds.yacht | His armed yacht | [84,-12] – [96,-6] | Escape option; can be disabled |
+| grounds.drive | Driveway | zones [66,56] – [72,80] and [50,56] – [72,60] | Zone `exposed` |
+| grounds.house | Main residence | [28,16] – [72,56] | A U: main block north, wings south, open courtyard (below) |
+| grounds.terrace | Terrace along the south front | [28,10] – [72,16] | Zone `terrace`; six planters along y = 16 are light cover |
+| grounds.lawn | Lawn | three zones: [0,0] – [28,16], [72,0] – [100,16], [28,0] – [72,10] | Zone `lawn` |
+| grounds.garden-east | Garden, hedge rows | [72,16] – [96,50] | Zone `garden` (concealment); four hedge rows are concealment cover |
+| grounds.trees-west | Trees and hedges | [4,20] – [28,50] | Zone `garden`; two hedge rows |
+| grounds.marina | Marina and dock | [78,-12] – [100,0] | Zone `marina`; approach D at the dock (88,-2) |
+| grounds.boathouse (+ .store) | Boathouse, **L-shaped** (tunnel exit) | [80,-4] – [90,2] and store [76,-4] – [80,0] | Tunnel exit point (85,0) |
+| grounds.yacht (+ .bow) | His armed yacht, with a **stepped bow** | [84,-12] – [94,-6] and bow [94,-10] – [98,-8] | Escape option; can be disabled |
 | grounds.sea | Black Sea | [-20,-40] – [120,0] | Zone `sea`; boat approach |
 
-Approach markers: A gate (69,81); B west wall breach (0,40); C helipad (48,68) or roof fast-rope; D dock (88,-2); E cliff path (18,0).
+Approach markers: A gate (69,81); B west wall breach (0,40); C helipad (48,68) or fast-rope onto the south balcony (67,14.5); D dock (88,-2); E cliff path (18,0).
 
-Neighboring villas (outside the walls, collateral risk): west [-40,20] – [-10,60], east [110,20] – [140,60].
+Neighboring villas (outside the walls, collateral risk), each **L-shaped**: west [-40,20] – [-10,50] plus wing [-30,50] – [-10,60]; east [110,20] – [140,50] plus wing [110,50] – [130,60].
 
-## Ground floor (floor `ground`, z = 0), house-relative offset: add (32,16)
-House-local coordinates below run x 0–36, y 0–40. Add 32 to x and 16 to y for map coordinates.
+## The house: a courtyard villa
+The house footprint is x 28–72, y 16–56 (44 x 40 m). The main block (y 38–56) stands to the north; two wings (y 16–38) run south either side of a pool courtyard (x 42–58) that opens to the terrace and the sea. Each wing has a loggia (a covered arcade) along the courtyard, open to it and lined with columns.
 
-| Id | Room | Local rect | Notes |
+```
+ N (gate / drive / helipad)
+ +----------------------------------------------+ y=56
+ | Library | Cloak | Foyer | Security | Dining   |
+ +---------+-------+-------+----------+          |
+ | Drawing |     GRAND HALL (8 m)     | Kitchen  | y=38
+ +---------+--+--------------------+--+----------+
+ | Master  |LW|     courtyard      |LE| Panic    |
+ |  suite  |  |     pool, fountain |  |  room    |
+ +---------+  |                    |  +----------+
+ | Study   |  |                    |  | Generator|
+ |         |  |                    |  | Pantry   | y=16
+ +---------+--+   (open to sea)  --+--+----------+
+ S (terrace, lawn, sea)        LW/LE = west/east loggia
+```
+
+## Ground floor (floor `ground`, z = 0)
+| Id | Room | Rect | Notes |
 | --- | --- | --- | --- |
-| g.hall | Central hall | [16,0] – [20,36] | The long hallway; south end has glass doors to the terrace at (18,0) |
-| g.foyer | Foyer | [16,36] – [20,40] | Main doors at (18,40), approach A side |
-| g.great | Great room | [0,24] – [16,40] | Double height (ceiling 8); under the upper gallery void |
-| g.dining | Dining room | [0,16] – [16,24] | Long table: light cover |
-| g.study | Study | [0,8] – [16,16] | Desk: heavy cover. Possible drive location |
-| g.master | Master suite | [0,0] – [16,8] | Door to hall; glass door to terrace at (8,0) |
-| g.kitchen | Kitchen | [20,30] – [36,40] | Island: heavy cover |
-| g.pantry | Pantry | [20,25] – [28,30] | |
-| g.mud | Mud room | [28,25] – [36,30] | Exterior side door on east wall at (36,27.5) |
-| g.security | Security office | [20,18] – [36,25] | CCTV and alarm servers; guard post |
-| g.stairs | Stairwell | [20,12] – [28,18] | Stairs to upper floor and roof |
-| g.wc | Guest WC | [28,12] – [36,18] | |
-| g.panic | Panic room | [20,0] – [30,12] | Reinforced walls; blast door on the hall at (20,6); floor hatch to tunnel at (25,2); shaft up at (28,10) |
-| g.generator | Generator and utility | [30,0] – [36,12] | Backup power; target for the power cut |
+| g.foyer | Entrance foyer | [46,52] – [54,56] | Main doors at (50,56), approach A side |
+| g.cloak | Cloakroom and powder room | [38,52] – [46,56] | Off the foyer |
+| g.security | Security office | [54,52] – [62,56] | CCTV and alarm servers; guard post |
+| g.grand-hall | Grand hall | [38,38] – [62,52] | Double height (ceiling 8). Piano (light cover). **Twin grand staircases** up the west and east walls (heavy cover blocks at [38,40]–[42,50] and [58,40]–[62,50]) rise to the gallery. Glass doors to the courtyard at (50,38) |
+| g.library | Library | [28,46] – [38,56] | |
+| g.drawing | Drawing room | [28,38] – [38,46] | Sofas: light cover |
+| g.dining | Formal dining room | [62,46] – [72,56] | Long table: light cover |
+| g.kitchen | Kitchen | [62,38] – [72,46] | Island: heavy cover |
+| g.master | Master suite | [28,16] – [38,28] | West wing; glass door to the terrace at (33,16). Principal option |
+| g.study | Study | [28,28] – [38,38] | Desk: heavy cover. Possible drive location. Principal option |
+| g.loggia.w | West loggia | [38,16] – [42,38] | Arcade; five columns along its courtyard edge |
+| g.courtyard | Pool courtyard | [42,16] – [58,38] | Open air (tag `exterior`). Pool, fountain, four loungers. A low glass balustrade closes its south edge, with an 8 m gap at (50,16) |
+| g.loggia.e | East loggia | [58,16] – [62,38] | Arcade; five columns; service stairs at (60,30) |
+| g.panic | Panic room | [62,16] – [72,28] | East wing. Reinforced walls, not destructible; blast door on the loggia at (62,22); floor hatch to the tunnel at (66,18); shaft up at (70,26) |
+| g.generator | Generator and utility | [62,28] – [72,33] | Backup power; target for the power cut. Exterior door (72,30.5) |
+| g.pantry | Pantry and service entry | [62,33] – [72,38] | Exterior service door (72,35.5); connects to the kitchen |
 
-Doors: every room opens to `g.hall` on its hall-facing wall, centered unless noted. Great room also opens to the foyer. Kitchen connects to pantry; pantry connects to mud room. Generator room opens to the mud-room side via an exterior door at (36,6).
+Rooms tagged `hall` (grand hall, both loggias, the gallery and the upper galleries) are the circulation spaces; the panic room's door opens to one of them. Interior walls are `plaster`; exterior walls `reinforced`; panic room and safe landing walls `reinforced` and not destructible. Glass doors (kind `glass`) face the terrace from the master suite and the courtyard from the grand hall. There are no windows: it is a fortified home, with shutters and blast-rated glass doors only.
 
-Exterior walls: `reinforced`. Interior walls: `plaster`, except panic room walls (`reinforced`, not destructible). South wall of the hall and master suite has glass doors (kind `glass`).
-
-## Upper floor (floor `upper`, z = 4), same house-relative offset
-| Id | Room | Local rect | Notes |
+## Upper floor (floor `upper`, z = 4)
+| Id | Room | Rect | Notes |
 | --- | --- | --- | --- |
-| u.hall | Upper hall | [16,0] – [20,36] | Runs the length of the floor |
-| u.gallery | Gallery walkway | [12,24] – [16,40] | Railing on its west edge; sees down into the great room |
-| u.void | Great room void | [0,24] – [12,40] | Opening (`gallery-void`) to `ground` |
-| u.office | Private office | [0,16] – [16,24] | Safe: possible second drive |
-| u.guest | Guest room | [0,8] – [16,16] | |
-| u.son | Son's room | [0,0] – [16,8] | Tag `family` |
-| u.wife | Wife's suite | [20,28] – [36,40] | Tag `family` |
-| u.bath | Bathroom | [20,18] – [28,28] | |
-| u.linen | Linen | [28,18] – [36,28] | |
-| u.stairs | Stair landing | [20,12] – [28,18] | Stairs down and up to the roof |
-| u.safe | Safe landing | [20,0] – [30,12] | Reinforced; shaft down to the panic room at (28,10); door from hall at (20,6) |
-| u.daughter | Daughter's room | [30,0] – [36,12] | Tag `family`; next to the safe landing |
-| u.balcony | Balcony (exterior) | [0,-3] – [36,0] | Glass doors from son's room and safe landing; fast-rope point (approach C) |
+| u.void | Grand hall void | [38,38] – [62,50] | Open to the ground floor (`gallery-void` opening) |
+| u.gallery | Gallery walkway | [38,50] – [62,52] | Where both grand staircases arrive; glass railing along the void. Doors to the office, lounge, son's room and wife's suite |
+| u.office | Private office | [38,52] – [50,56] | Safe: possible second drive |
+| u.lounge | Upper lounge | [50,52] – [62,56] | |
+| u.son | Son's room | [28,46] – [38,56] | Tag `family`; glass door to the north balcony |
+| u.guest.1 / .2 / .3 | Guest suites | [28,38]–[38,46], [28,28]–[38,38], [28,16]–[38,28] | West wing, in a row |
+| u.loggia.w | West gallery | [38,16] – [42,38] | Railing onto the open courtyard |
+| u.court-void | Courtyard void | [42,16] – [58,38] | Open air above the courtyard (`gallery-void` opening) |
+| u.loggia.e | East gallery | [58,16] – [62,38] | Service stairs down at (60,30); roof hatch at (60,24) |
+| u.wife | Wife's suite | [62,38] – [72,56] | Tag `family` |
+| u.safe | Safe landing | [62,16] – [72,28] | Directly over the panic room. Reinforced; shaft down at (70,26); glass door to the south balcony |
+| u.daughter | Daughter's room | [62,28] – [72,34] | Tag `family`; next to the safe landing |
+| u.bath | Bathroom | [62,34] – [72,38] | |
+| u.balcony.e | South balcony | [62,13] – [72,16] | Exterior; fast-rope point (approach C) |
+| u.balcony.n | North balcony | [28,56] – [38,59] | Exterior, off the son's room |
 
 ## Roof (floor `roof`, z = 8)
-- Flat roof over the whole house footprint, local [0,0] – [36,40], with a 1 m parapet (light cover, facing outward).
-- Roof access hatch above the stairwell at local (24,15).
-- Defender positions: sniper at local (2,38), machine gun at (34,38), machine gun at (18,2), anti-aircraft missile team at (18,20).
+- Three connected sections over the house outline: west wing [28,16]–[42,38], main block [28,38]–[72,56], east wing [58,16]–[72,38]; open 6 m gaps join them at (35,38) and (65,38).
+- A 1 m parapet (light cover, facing outward) runs around the whole U outline and around the courtyard's rim (eight strips). The roof has no derived walls.
+- Roof access hatch above the east gallery at (60,24).
+- Defender positions: sniper at (30,54), machine gun at (70,54), machine gun at (33,18), anti-aircraft missile team at (50,46).
 
-## Key vertical links
+## Vertical links
 | Id | Kind | From | To |
 | --- | --- | --- | --- |
-| link.stairs | stairs | ground (24,15) | upper (24,15) |
-| link.roof | roof-access | upper (24,15) | roof (24,15) |
-| link.shaft | shaft | upper (28,10) | ground (28,10) — principal and family only until breached |
-| link.tunnel | shaft | ground (25,2) | grounds (85,0) boathouse — long tunnel, about 60 s on foot |
+| link.grand-stairs.west | stairs | ground (40,41) | upper (40,51) |
+| link.grand-stairs.east | stairs | ground (60,41) | upper (60,51) |
+| link.stairs | stairs (service) | ground (60,30) | upper (60,30) |
+| link.roof | roof-access | upper (60,24) | roof (60,24) |
+| link.shaft | shaft | upper (70,26) | ground (70,26), one way down; principal and family only until breached |
+| link.tunnel | shaft | ground (66,18) | grounds (85,0) boathouse; long tunnel, about 60 s on foot |
 | link.cliff | cliff-path | grounds (18,-6) | grounds (18,0) |
-All "local" coordinates above are house-relative: add (32,16) when writing map coordinates.
 
 ## Guard and spawn defaults (seeded variation added later)
 - Outer ring (hired, 6): guardhouse (2), patrol along the inner perimeter (2), marina (1), terrace (1).
-- REQUIEM veterans (12): roof positions (4), security office (2), hall (2), garden-east (2), helipad edge (2).
+- REQUIEM veterans (12): roof positions (4), security office (2), grand hall (2), garden-east (2), helipad edge (2).
 - Inner circle (6): near the principal at all times.
 - Reaction force (8): guest villa.
 - Principal at night: master suite or study (seeded). Drive: study desk, office safe, or on his person (seeded).
