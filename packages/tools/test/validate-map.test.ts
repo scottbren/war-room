@@ -155,6 +155,41 @@ describe("individual checks, by breaking a copy of charon", () => {
   });
 });
 
+describe("required rooms and link ends", () => {
+  it("CHARON must have a panic room, a safe landing and a tunnel exit (the checks cannot pass vacuously)", () => {
+    for (const [floorId, roomId, tag] of [
+      ["ground", "g.panic", "panic-room"],
+      ["upper", "u.safe", "safe-landing"],
+      ["grounds", "grounds.boathouse", "tunnel-exit"],
+    ] as const) {
+      const map = charon();
+      const room = floorOf(map, floorId).rooms.find((r) => r.id === roomId)!;
+      room.tags = room.tags.filter((t) => t !== tag);
+      expect(find(validateMap(map), "charon", `"${tag}"`, "must have"), tag).toBeDefined();
+    }
+  });
+
+  it("other maps are not forced to have a panic room", () => {
+    const issues = validateMap(readJson("./fixtures/broken-unreachable.json"));
+    expect(find(issues, "panic-room")).toBeUndefined();
+  });
+
+  it("a link end on an indoor floor must be inside a room", () => {
+    const map = charon();
+    map.verticalLinks.find((l) => l.id === "link.stairs")!.to.at = { x: 33, y: 3 };
+    const issue = find(validateMap(map), "link.stairs", "not inside any room");
+    expect(issue).toBeDefined();
+    expect(issue!.message).toContain("upper");
+  });
+
+  it("a link end on the open grounds may be outdoors (cliff path, tunnel exit)", () => {
+    const map = charon();
+    const cliff = map.verticalLinks.find((l) => l.id === "link.cliff")!;
+    expect(cliff.from.floor).toBe("grounds");
+    expect(validateMap(map)).toEqual([]);
+  });
+});
+
 describe("schema problems", () => {
   it("reports schema errors with ids in the path, and skips the semantic checks", () => {
     const raw = structuredClone(readJson("../../content/maps/charon.json")) as {

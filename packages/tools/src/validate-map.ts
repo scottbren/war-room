@@ -17,6 +17,10 @@ import type { Door, Floor, Room, Vec2, VerticalLink } from "@war-room/content";
  *     a shaft up to a room tagged "safe-landing" on the upper floor, and a tunnel
  *     whose far end is inside a room tagged "tunnel-exit"
  *   - rooms tagged "family" are on the upper floor
+ *   - the map "charon" must contain rooms tagged "panic-room", "safe-landing" and
+ *     "tunnel-exit", so the panic-room checks cannot pass by finding nothing to check
+ *   - every vertical-link end on a floor other than "grounds" lies inside a room
+ *     (ends on the open grounds may be outdoors, e.g. the cliff path)
  */
 
 export interface Issue {
@@ -226,6 +230,32 @@ function checkPanicRooms(map: MapFile, out: Issue[]): void {
   }
 }
 
+const REQUIRED_TAGS_BY_MAP: Record<string, readonly string[]> = {
+  charon: ["panic-room", "safe-landing", "tunnel-exit"],
+};
+
+function checkRequiredRooms(map: MapFile, out: Issue[]): void {
+  for (const tag of REQUIRED_TAGS_BY_MAP[map.id] ?? []) {
+    if (!map.floors.some((f) => f.rooms.some((r) => r.tags.includes(tag)))) {
+      out.push({ check: "required-room", message: `Map ${map.id} must have a room tagged "${tag}" but none was found` });
+    }
+  }
+}
+
+function checkLinkEnds(map: MapFile, out: Issue[]): void {
+  for (const link of map.verticalLinks) {
+    for (const [label, end] of [["from", link.from], ["to", link.to]] as const) {
+      if (end.floor === "grounds") continue;
+      if (roomAt(map, end.floor, end.at) === "outside") {
+        out.push({
+          check: "link-end",
+          message: `Vertical link ${link.id} (${label} end, floor ${end.floor} at ${end.at.x},${end.at.y}) is not inside any room`,
+        });
+      }
+    }
+  }
+}
+
 function checkFamily(map: MapFile, out: Issue[]): void {
   for (const floor of map.floors) {
     if (floor.id === "upper") continue;
@@ -254,6 +284,8 @@ export function validateMap(input: unknown): Issue[] {
   checkOverlaps(map, issues);
   checkDoors(map, issues);
   checkReachability(map, issues);
+  checkLinkEnds(map, issues);
+  checkRequiredRooms(map, issues);
   checkPanicRooms(map, issues);
   checkFamily(map, issues);
   return issues;
