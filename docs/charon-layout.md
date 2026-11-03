@@ -1,8 +1,8 @@
-# CHARON layout (map version 3: the courtyard villa, fortress terrace)
+# CHARON layout (map version 4: the courtyard villa, fortress terrace, formal grounds)
 
 `content/maps/charon.json` implements this document. All rooms are axis-aligned rectangles, `[minX, minY] – [maxX, maxY]` in meters, in **map coordinates**. North is +y. The sea is to the south (y < 0). Non-rectangular buildings are composed from several rectangles (U, L and stepped shapes); the map format has no polygon rooms.
 
-Version 3 added the fortress roof, the security operations center, windows, extra entries, the pool house and a smart-home layer (see `docs/decisions.md`, 2026-11-03). Version 2 replaced the original single rectangular block (see `docs/decisions.md`). Everything gameplay depends on is unchanged: the approach points, gate, helipad, marina, the panic room / shaft / tunnel roles, family rooms upstairs, the guard counts, and the reaction force in the guest villa.
+Version 4 removed the external emergency stair (it spoiled the front) and added a columned porte-cochere (`g.portico`, in front of the main door, which now opens into it), a forecourt fountain, colonnades, a domed belvedere (`grounds.belvedere`) on the garden axis, a reflecting pool, parterre beds, a balustraded upper terrace, an infinity pool with a cabana (`grounds.cabana`) and a covered dock lounge (`grounds.dock-lounge`). Version 3 added the fortress roof, the security operations center, windows, extra entries, the pool house and a smart-home layer (see `docs/decisions.md`, 2026-11-03). Version 2 replaced the original single rectangular block (see `docs/decisions.md`). Everything gameplay depends on is unchanged: the approach points, gate, helipad, marina, the panic room / shaft / tunnel roles, family rooms upstairs, the guard counts, and the reaction force in the guest villa.
 
 ## Compound (floor `grounds`, z = 0)
 | Id | What | Rect | Notes |
@@ -87,7 +87,7 @@ Rooms tagged `hall` (grand hall, both loggias, the gallery and the upper galleri
 | u.son | Son's room | [28,46] – [38,56] | Tag `family`; glass door to the north balcony |
 | u.guest | Guest suite | [28,38] – [38,46] | West wing |
 | u.spa | Spa and sauna | [28,28] – [38,38] | |
-| u.gym | Gym | [28,16] – [38,28] | Rack (heavy cover). Locked door to the emergency stair landing at (30,16) |
+| u.gym | Gym | [28,16] – [38,28] | Rack (heavy cover) |
 | u.loggia.w | West gallery | [38,16] – [42,38] | Railing onto the open courtyard |
 | u.court-void | Courtyard void | [42,16] – [58,38] | Open air above the courtyard (`gallery-void` opening) |
 | u.loggia.e | East gallery | [58,16] – [62,38] | Service stairs down at (60,30); roof hatch at (60,24) |
@@ -97,7 +97,6 @@ Rooms tagged `hall` (grand hall, both loggias, the gallery and the upper galleri
 | u.bath | Bathroom | [62,34] – [72,38] | |
 | u.balcony.e | South balcony | [62,13] – [72,16] | Exterior; fast-rope point (approach C) |
 | u.balcony.n | North balcony | [28,56] – [38,59] | Exterior, off the son's room. The roof ladder (`link.roof-ladder`) climbs from (30,58) |
-| u.fire-escape | Emergency stair landing | [28,13] – [32,16] | Exterior. `link.fire-stair` runs down to the lawn at (30,7), a walkable 6.5 m flight |
 
 ## Roof: the fortress terrace (floor `roof`, z = 8)
 Four corner bastions, a radar tower and four covered walkways are walled structures; the rest are open decks edged by a 1 m parapet of cover (nine strips: the U outline, the courtyard rim, and a gap for the ladder).
@@ -130,7 +129,6 @@ Data-only markers for now (kind `poi`, tagged `smart:*`); all report to the hub 
 | link.roof | roof-access | upper (60,24) | roof (60,24) |
 | link.roof.west | roof-access | upper (40,19) | roof (40,19) |
 | link.roof-ladder | roof-access | upper (30,58) | roof (30,55) |
-| link.fire-stair | stairs | grounds (30,7) | upper (30,13.5) |
 | link.shaft | shaft | upper (70,26) | ground (70,26), one way down; principal and family only until breached |
 | link.tunnel | shaft | ground (66,18) | grounds (85,0) boathouse; long tunnel, about 60 s on foot |
 | link.cliff | cliff-path | grounds (18,-6) | grounds (18,0) |
@@ -142,3 +140,4 @@ Data-only markers for now (kind `poi`, tagged `smart:*`); all report to the hub 
 - Reaction force (8): guest villa.
 - Principal at night: master suite or study (seeded). Drive: study desk, office safe, or on his person (seeded).
 - Family (if present): wife in her suite, son and daughter in their rooms.
+

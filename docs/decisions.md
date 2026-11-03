@@ -23,3 +23,7 @@ Format: `YYYY-MM-DD — Decision — Why — Approved by`
 - 2026-11-02 — One navmesh covers all floors (recast handles stacked levels); stairs and the panic shaft are off-mesh connections — simpler than per-floor meshes with links — Scott (starter kit)
 - 2026-11-02 — `sim` may depend on the recast-navigation WebAssembly packages (no DOM, deterministic for identical input) — needed for pathfinding in the worker and Node — Scott (starter kit)
 - 2026-11-02 — Walls are derived from room rectangles by a tool, then committed into the map JSON — hand-authoring every wall is error-prone — Scott (starter kit)
+
+## 2026-11-03: CHARON v4 (grander front and grounds)
+
+User feedback on v3: remove the emergency stair, make it feel more like a luxury villa. Changes: removed `link.fire-stair`, `u.fire-escape`, `d.u.gym-fire-escape` (the staff gate and staff entrance stay); `d.g.main` now joins `g.foyer` to the new `g.portico`; added forecourt, colonnades, belvedere, reflecting pool, parterre, balustrade, infinity pool, cabana, dock lounge, two cameras. No contract change. Not done: tennis court (no room on the lot), bay windows, arched openings and projecting wings (the map is rectangles only; revisit with polygon rooms).

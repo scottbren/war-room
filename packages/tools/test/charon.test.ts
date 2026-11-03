@@ -20,15 +20,15 @@ const rectOf = (x0: number, y0: number, x1: number, y1: number) => ({ min: { x: 
 describe("charon.json: basics", () => {
   it("parses against the schema", () => {
     expect(map.id).toBe("charon");
-    expect(map.version).toBe(3);
+    expect(map.version).toBe(4);
     expect(map.floors.map((f) => f.id)).toEqual(["grounds", "ground", "upper", "roof"]);
     expect(map.floors.map((f) => f.elevation)).toEqual([0, 0, 4, 8]);
   });
 
   it("has the expected room count per floor", () => {
-    expect(floor("grounds").rooms).toHaveLength(17);
-    expect(floor("ground").rooms).toHaveLength(18);
-    expect(floor("upper").rooms).toHaveLength(18);
+    expect(floor("grounds").rooms).toHaveLength(20);
+    expect(floor("ground").rooms).toHaveLength(19);
+    expect(floor("upper").rooms).toHaveLength(17);
     expect(floor("roof").rooms).toHaveLength(16);
   });
 
@@ -73,7 +73,7 @@ describe("charon.json: the courtyard villa", () => {
   });
 
   it("leaves no unassigned space on either house floor", () => {
-    const groundHouse = floor("ground").rooms.filter((r) => !r.tags.includes("walkway"));
+    const groundHouse = floor("ground").rooms.filter((r) => !r.tags.includes("walkway") && !r.tags.includes("portico"));
     expect(groundHouse.reduce((sum, r) => sum + area(r.rect), 0)).toBe(44 * 40);
     const upperHouse = floor("upper").rooms.filter((r) => r.tags.includes("interior"));
     expect(upperHouse.reduce((sum, r) => sum + area(r.rect), 0)).toBe(44 * 40);
@@ -584,12 +584,12 @@ describe("charon.json: windows", () => {
 describe("charon.json: entries", () => {
   const door = (floorId: string, id: string) => floor(floorId).doors.find((d) => d.id === id)!;
 
-  it("has an external emergency stair from the upper floor down to the grounds", () => {
-    const stair = map.verticalLinks.find((l) => l.id === "link.fire-stair")!;
-    expect(stair).toMatchObject({ kind: "stairs", bidirectional: true, from: { floor: "grounds" }, to: { floor: "upper" } });
-    expect(room("upper", "u.fire-escape").tags).toContain("exterior");
-    expect(door("upper", "d.u.gym-fire-escape").between).toEqual(["u.gym", "u.fire-escape"]);
-    expect(stair.to.at.y - stair.from.at.y).toBeGreaterThanOrEqual(6); // walkable slope for 4 m of rise
+  it("has no external emergency stair (removed in v4: it spoiled the front of the villa)", () => {
+    expect(map.verticalLinks.some((l) => l.id === "link.fire-stair")).toBe(false);
+    expect(floor("upper").rooms.some((r) => r.id === "u.fire-escape")).toBe(false);
+    expect(floor("upper").doors.some((d) => d.id === "d.u.gym-fire-escape")).toBe(false);
+    // the only stairs that reach the grounds floor are none: every stair joins the house floors
+    expect(map.verticalLinks.filter((l) => l.kind === "stairs").every((l) => l.from.floor !== "grounds" && l.to.floor !== "grounds")).toBe(true);
   });
 
   it("has a staff-only gate in the west perimeter wall and a staff entrance into the service room", () => {

@@ -1,6 +1,6 @@
 {
   "id": "charon",
-  "version": 3,
+  "version": 4,
   "bounds": { "min": { "x": -40, "y": -40 }, "max": { "x": 140, "y": 94 } },
   "floors": [
     {
@@ -90,6 +90,27 @@
           "rect": { "min": { "x": 74, "y": 4 }, "max": { "x": 88, "y": 12 } },
           "ceiling": 3,
           "tags": ["outbuilding", "pool-house"]
+        },
+        {
+          "id": "grounds.belvedere",
+          "name": "Domed belvedere (rotunda)",
+          "rect": { "min": { "x": 46, "y": 3 }, "max": { "x": 54, "y": 9 } },
+          "ceiling": 7,
+          "tags": ["outbuilding", "rotunda"]
+        },
+        {
+          "id": "grounds.cabana",
+          "name": "Poolside cabana",
+          "rect": { "min": { "x": 19, "y": 4 }, "max": { "x": 26, "y": 10 } },
+          "ceiling": 3,
+          "tags": ["outbuilding", "cabana"]
+        },
+        {
+          "id": "grounds.dock-lounge",
+          "name": "Covered dock lounge",
+          "rect": { "min": { "x": 93, "y": -4 }, "max": { "x": 99, "y": 1 } },
+          "ceiling": 3,
+          "tags": ["outbuilding", "dock-lounge"]
         },
         {
           "id": "grounds.power-house",
@@ -282,6 +303,24 @@
           "destructible": true
         },
         {
+          "id": "w.grounds.x19:4-6.4",
+          "a": { "x": 19, "y": 4 },
+          "b": { "x": 19, "y": 6.4 },
+          "thickness": 0.3,
+          "height": 3,
+          "material": "stone",
+          "destructible": true
+        },
+        {
+          "id": "w.grounds.x19:7.6-10",
+          "a": { "x": 19, "y": 7.6 },
+          "b": { "x": 19, "y": 10 },
+          "thickness": 0.3,
+          "height": 3,
+          "material": "stone",
+          "destructible": true
+        },
+        {
           "id": "w.grounds.x24:60-63.5",
           "a": { "x": 24, "y": 60 },
           "b": { "x": 24, "y": 63.5 },
@@ -300,11 +339,38 @@
           "destructible": true
         },
         {
+          "id": "w.grounds.x26:4-10",
+          "a": { "x": 26, "y": 4 },
+          "b": { "x": 26, "y": 10 },
+          "thickness": 0.3,
+          "height": 3,
+          "material": "stone",
+          "destructible": true
+        },
+        {
+          "id": "w.grounds.x46:3-9",
+          "a": { "x": 46, "y": 3 },
+          "b": { "x": 46, "y": 9 },
+          "thickness": 0.3,
+          "height": 7,
+          "material": "stone",
+          "destructible": true
+        },
+        {
           "id": "w.grounds.x4:8-14",
           "a": { "x": 4, "y": 8 },
           "b": { "x": 4, "y": 14 },
           "thickness": 0.3,
           "height": 3,
+          "material": "stone",
+          "destructible": true
+        },
+        {
+          "id": "w.grounds.x54:3-9",
+          "a": { "x": 54, "y": 3 },
+          "b": { "x": 54, "y": 9 },
+          "thickness": 0.3,
+          "height": 7,
           "material": "stone",
           "destructible": true
         },
@@ -498,6 +564,24 @@
           "destructible": true
         },
         {
+          "id": "w.grounds.x93:-1.75-1",
+          "a": { "x": 93, "y": -1.75 },
+          "b": { "x": 93, "y": 1 },
+          "thickness": 0.3,
+          "height": 3,
+          "material": "stone",
+          "destructible": true
+        },
+        {
+          "id": "w.grounds.x93:-4--3.25",
+          "a": { "x": 93, "y": -4 },
+          "b": { "x": 93, "y": -3.25 },
+          "thickness": 0.3,
+          "height": 3,
+          "material": "stone",
+          "destructible": true
+        },
+        {
           "id": "w.grounds.x94:-10--9.5",
           "a": { "x": 94, "y": -10 },
           "b": { "x": 94, "y": -9.5 },
@@ -570,6 +654,15 @@
           "destructible": true
         },
         {
+          "id": "w.grounds.x99:-4-1",
+          "a": { "x": 99, "y": -4 },
+          "b": { "x": 99, "y": 1 },
+          "thickness": 0.3,
+          "height": 3,
+          "material": "stone",
+          "destructible": true
+        },
+        {
           "id": "w.grounds.y-10:94-98",
           "a": { "x": 94, "y": -10 },
           "b": { "x": 98, "y": -10 },
@@ -606,6 +699,15 @@
           "destructible": true
         },
         {
+          "id": "w.grounds.y-4:93-99",
+          "a": { "x": 93, "y": -4 },
+          "b": { "x": 99, "y": -4 },
+          "thickness": 0.3,
+          "height": 3,
+          "material": "stone",
+          "destructible": true
+        },
+        {
           "id": "w.grounds.y-6:84-89.5",
           "a": { "x": 84, "y": -6 },
           "b": { "x": 89.5, "y": -6 },
@@ -636,6 +738,15 @@
           "id": "w.grounds.y0:76-80",
           "a": { "x": 76, "y": 0 },
           "b": { "x": 80, "y": 0 },
+          "thickness": 0.3,
+          "height": 3,
+          "material": "stone",
+          "destructible": true
+        },
+        {
+          "id": "w.grounds.y10:19-26",
+          "a": { "x": 19, "y": 10 },
+          "b": { "x": 26, "y": 10 },
           "thickness": 0.3,
           "height": 3,
           "material": "stone",
@@ -678,6 +789,15 @@
           "destructible": true
         },
         {
+          "id": "w.grounds.y1:93-99",
+          "a": { "x": 93, "y": 1 },
+          "b": { "x": 99, "y": 1 },
+          "thickness": 0.3,
+          "height": 3,
+          "material": "stone",
+          "destructible": true
+        },
+        {
           "id": "w.grounds.y20:-40--10",
           "a": { "x": -40, "y": 20 },
           "b": { "x": -10, "y": 20 },
@@ -710,6 +830,33 @@
           "b": { "x": 90, "y": 2 },
           "thickness": 0.3,
           "height": 4,
+          "material": "stone",
+          "destructible": true
+        },
+        {
+          "id": "w.grounds.y3:46-48.8",
+          "a": { "x": 46, "y": 3 },
+          "b": { "x": 48.8, "y": 3 },
+          "thickness": 0.3,
+          "height": 7,
+          "material": "stone",
+          "destructible": true
+        },
+        {
+          "id": "w.grounds.y3:51.2-54",
+          "a": { "x": 51.2, "y": 3 },
+          "b": { "x": 54, "y": 3 },
+          "thickness": 0.3,
+          "height": 7,
+          "material": "stone",
+          "destructible": true
+        },
+        {
+          "id": "w.grounds.y4:19-26",
+          "a": { "x": 19, "y": 4 },
+          "b": { "x": 26, "y": 4 },
+          "thickness": 0.3,
+          "height": 3,
           "material": "stone",
           "destructible": true
         },
@@ -955,6 +1102,24 @@
           "height": 3,
           "material": "stone",
           "destructible": true
+        },
+        {
+          "id": "w.grounds.y9:46-48.8",
+          "a": { "x": 46, "y": 9 },
+          "b": { "x": 48.8, "y": 9 },
+          "thickness": 0.3,
+          "height": 7,
+          "material": "stone",
+          "destructible": true
+        },
+        {
+          "id": "w.grounds.y9:51.2-54",
+          "a": { "x": 51.2, "y": 9 },
+          "b": { "x": 54, "y": 9 },
+          "thickness": 0.3,
+          "height": 7,
+          "material": "stone",
+          "destructible": true
         }
       ],
       "doors": [
@@ -1029,6 +1194,42 @@
           "kind": "standard",
           "state": "closed",
           "breach": ["manual", "shotgun", "explosive"]
+        },
+        {
+          "id": "d.belvedere.north",
+          "at": { "x": 50, "y": 9 },
+          "width": 2.4,
+          "between": ["grounds.belvedere", "outside"],
+          "kind": "standard",
+          "state": "open",
+          "breach": []
+        },
+        {
+          "id": "d.belvedere.south",
+          "at": { "x": 50, "y": 3 },
+          "width": 2.4,
+          "between": ["grounds.belvedere", "outside"],
+          "kind": "standard",
+          "state": "open",
+          "breach": []
+        },
+        {
+          "id": "d.cabana",
+          "at": { "x": 19, "y": 7 },
+          "width": 1.2,
+          "between": ["grounds.cabana", "outside"],
+          "kind": "standard",
+          "state": "closed",
+          "breach": ["manual", "shotgun", "explosive"]
+        },
+        {
+          "id": "d.dock-lounge",
+          "at": { "x": 93, "y": -2.5 },
+          "width": 1.5,
+          "between": ["grounds.dock-lounge", "outside"],
+          "kind": "standard",
+          "state": "open",
+          "breach": []
         },
         {
           "id": "d.power-house",
@@ -1592,6 +1793,286 @@
           "destructible": true
         },
         {
+          "id": "cover.colonnade.south.1",
+          "rect": { "min": { "x": 29.5, "y": 14.2 }, "max": { "x": 30.1, "y": 14.8 } },
+          "type": "heavy",
+          "height": 4,
+          "facing": "all",
+          "destructible": false
+        },
+        {
+          "id": "cover.colonnade.south.2",
+          "rect": { "min": { "x": 31.099999999999998, "y": 14.2 }, "max": { "x": 31.7, "y": 14.8 } },
+          "type": "heavy",
+          "height": 4,
+          "facing": "all",
+          "destructible": false
+        },
+        {
+          "id": "cover.colonnade.south.3",
+          "rect": { "min": { "x": 34.300000000000004, "y": 14.2 }, "max": { "x": 34.9, "y": 14.8 } },
+          "type": "heavy",
+          "height": 4,
+          "facing": "all",
+          "destructible": false
+        },
+        {
+          "id": "cover.colonnade.south.4",
+          "rect": { "min": { "x": 35.900000000000006, "y": 14.2 }, "max": { "x": 36.5, "y": 14.8 } },
+          "type": "heavy",
+          "height": 4,
+          "facing": "all",
+          "destructible": false
+        },
+        {
+          "id": "cover.colonnade.south.5",
+          "rect": { "min": { "x": 62.7, "y": 14.2 }, "max": { "x": 63.3, "y": 14.8 } },
+          "type": "heavy",
+          "height": 4,
+          "facing": "all",
+          "destructible": false
+        },
+        {
+          "id": "cover.colonnade.south.6",
+          "rect": { "min": { "x": 64.7, "y": 14.2 }, "max": { "x": 65.3, "y": 14.8 } },
+          "type": "heavy",
+          "height": 4,
+          "facing": "all",
+          "destructible": false
+        },
+        {
+          "id": "cover.colonnade.south.7",
+          "rect": { "min": { "x": 66.7, "y": 14.2 }, "max": { "x": 67.3, "y": 14.8 } },
+          "type": "heavy",
+          "height": 4,
+          "facing": "all",
+          "destructible": false
+        },
+        {
+          "id": "cover.colonnade.south.8",
+          "rect": { "min": { "x": 68.7, "y": 14.2 }, "max": { "x": 69.3, "y": 14.8 } },
+          "type": "heavy",
+          "height": 4,
+          "facing": "all",
+          "destructible": false
+        },
+        {
+          "id": "cover.colonnade.north.1",
+          "rect": { "min": { "x": 29.2, "y": 58.1 }, "max": { "x": 29.8, "y": 58.699999999999996 } },
+          "type": "heavy",
+          "height": 4,
+          "facing": "all",
+          "destructible": false
+        },
+        {
+          "id": "cover.colonnade.north.2",
+          "rect": { "min": { "x": 32.7, "y": 58.1 }, "max": { "x": 33.3, "y": 58.699999999999996 } },
+          "type": "heavy",
+          "height": 4,
+          "facing": "all",
+          "destructible": false
+        },
+        {
+          "id": "cover.colonnade.north.3",
+          "rect": { "min": { "x": 36.2, "y": 58.1 }, "max": { "x": 36.8, "y": 58.699999999999996 } },
+          "type": "heavy",
+          "height": 4,
+          "facing": "all",
+          "destructible": false
+        },
+        {
+          "id": "cover.forecourt-fountain",
+          "rect": { "min": { "x": 59, "y": 64 }, "max": { "x": 63, "y": 68 } },
+          "type": "light",
+          "height": 1,
+          "facing": "all",
+          "destructible": true
+        },
+        {
+          "id": "cover.forecourt-urn.1",
+          "rect": { "min": { "x": 57.1, "y": 62.1 }, "max": { "x": 57.9, "y": 62.9 } },
+          "type": "light",
+          "height": 1,
+          "facing": "all",
+          "destructible": true
+        },
+        {
+          "id": "cover.forecourt-urn.2",
+          "rect": { "min": { "x": 64.1, "y": 62.1 }, "max": { "x": 64.9, "y": 62.9 } },
+          "type": "light",
+          "height": 1,
+          "facing": "all",
+          "destructible": true
+        },
+        {
+          "id": "cover.forecourt-urn.3",
+          "rect": { "min": { "x": 57.1, "y": 69.1 }, "max": { "x": 57.9, "y": 69.9 } },
+          "type": "light",
+          "height": 1,
+          "facing": "all",
+          "destructible": true
+        },
+        {
+          "id": "cover.forecourt-urn.4",
+          "rect": { "min": { "x": 64.1, "y": 69.1 }, "max": { "x": 64.9, "y": 69.9 } },
+          "type": "light",
+          "height": 1,
+          "facing": "all",
+          "destructible": true
+        },
+        {
+          "id": "cover.balustrade.west",
+          "rect": { "min": { "x": 28, "y": 9.85 }, "max": { "x": 46, "y": 10.15 } },
+          "type": "light",
+          "height": 1,
+          "facing": "all",
+          "destructible": false
+        },
+        {
+          "id": "cover.balustrade.east",
+          "rect": { "min": { "x": 54, "y": 9.85 }, "max": { "x": 72, "y": 10.15 } },
+          "type": "light",
+          "height": 1,
+          "facing": "all",
+          "destructible": false
+        },
+        {
+          "id": "cover.parterre.west.s1",
+          "rect": { "min": { "x": 32, "y": 3 }, "max": { "x": 36.7, "y": 3.3 } },
+          "type": "light",
+          "height": 0.7,
+          "facing": "all",
+          "destructible": true
+        },
+        {
+          "id": "cover.parterre.west.s2",
+          "rect": { "min": { "x": 38.3, "y": 3 }, "max": { "x": 43, "y": 3.3 } },
+          "type": "light",
+          "height": 0.7,
+          "facing": "all",
+          "destructible": true
+        },
+        {
+          "id": "cover.parterre.west.n1",
+          "rect": { "min": { "x": 32, "y": 8.7 }, "max": { "x": 36.7, "y": 9 } },
+          "type": "light",
+          "height": 0.7,
+          "facing": "all",
+          "destructible": true
+        },
+        {
+          "id": "cover.parterre.west.n2",
+          "rect": { "min": { "x": 38.3, "y": 8.7 }, "max": { "x": 43, "y": 9 } },
+          "type": "light",
+          "height": 0.7,
+          "facing": "all",
+          "destructible": true
+        },
+        {
+          "id": "cover.parterre.west.w1",
+          "rect": { "min": { "x": 32, "y": 3.3 }, "max": { "x": 32.3, "y": 5.2 } },
+          "type": "light",
+          "height": 0.7,
+          "facing": "all",
+          "destructible": true
+        },
+        {
+          "id": "cover.parterre.west.w2",
+          "rect": { "min": { "x": 32, "y": 6.8 }, "max": { "x": 32.3, "y": 8.7 } },
+          "type": "light",
+          "height": 0.7,
+          "facing": "all",
+          "destructible": true
+        },
+        {
+          "id": "cover.parterre.west.e1",
+          "rect": { "min": { "x": 42.7, "y": 3.3 }, "max": { "x": 43, "y": 5.2 } },
+          "type": "light",
+          "height": 0.7,
+          "facing": "all",
+          "destructible": true
+        },
+        {
+          "id": "cover.parterre.west.e2",
+          "rect": { "min": { "x": 42.7, "y": 6.8 }, "max": { "x": 43, "y": 8.7 } },
+          "type": "light",
+          "height": 0.7,
+          "facing": "all",
+          "destructible": true
+        },
+        {
+          "id": "cover.parterre.east.s1",
+          "rect": { "min": { "x": 57, "y": 3 }, "max": { "x": 61.7, "y": 3.3 } },
+          "type": "light",
+          "height": 0.7,
+          "facing": "all",
+          "destructible": true
+        },
+        {
+          "id": "cover.parterre.east.s2",
+          "rect": { "min": { "x": 63.3, "y": 3 }, "max": { "x": 68, "y": 3.3 } },
+          "type": "light",
+          "height": 0.7,
+          "facing": "all",
+          "destructible": true
+        },
+        {
+          "id": "cover.parterre.east.n1",
+          "rect": { "min": { "x": 57, "y": 8.7 }, "max": { "x": 61.7, "y": 9 } },
+          "type": "light",
+          "height": 0.7,
+          "facing": "all",
+          "destructible": true
+        },
+        {
+          "id": "cover.parterre.east.n2",
+          "rect": { "min": { "x": 63.3, "y": 8.7 }, "max": { "x": 68, "y": 9 } },
+          "type": "light",
+          "height": 0.7,
+          "facing": "all",
+          "destructible": true
+        },
+        {
+          "id": "cover.parterre.east.w1",
+          "rect": { "min": { "x": 57, "y": 3.3 }, "max": { "x": 57.3, "y": 5.2 } },
+          "type": "light",
+          "height": 0.7,
+          "facing": "all",
+          "destructible": true
+        },
+        {
+          "id": "cover.parterre.east.w2",
+          "rect": { "min": { "x": 57, "y": 6.8 }, "max": { "x": 57.3, "y": 8.7 } },
+          "type": "light",
+          "height": 0.7,
+          "facing": "all",
+          "destructible": true
+        },
+        {
+          "id": "cover.parterre.east.e1",
+          "rect": { "min": { "x": 67.7, "y": 3.3 }, "max": { "x": 68, "y": 5.2 } },
+          "type": "light",
+          "height": 0.7,
+          "facing": "all",
+          "destructible": true
+        },
+        {
+          "id": "cover.parterre.east.e2",
+          "rect": { "min": { "x": 67.7, "y": 6.8 }, "max": { "x": 68, "y": 8.7 } },
+          "type": "light",
+          "height": 0.7,
+          "facing": "all",
+          "destructible": true
+        },
+        {
+          "id": "cover.cabana-bar",
+          "rect": { "min": { "x": 20, "y": 5 }, "max": { "x": 25, "y": 5.8 } },
+          "type": "light",
+          "height": 1.1,
+          "facing": "all",
+          "destructible": true
+        },
+        {
           "id": "cover.floodlight-post.1",
           "rect": { "min": { "x": 67.8, "y": 61.8 }, "max": { "x": 68.2, "y": 62.2 } },
           "type": "heavy",
@@ -1627,6 +2108,13 @@
           "rect": { "min": { "x": 46, "y": 52 }, "max": { "x": 54, "y": 56 } },
           "ceiling": 4,
           "tags": ["interior"]
+        },
+        {
+          "id": "g.portico",
+          "name": "Porte-cochere",
+          "rect": { "min": { "x": 45, "y": 56 }, "max": { "x": 55, "y": 60 } },
+          "ceiling": 6,
+          "tags": ["exterior", "portico"]
         },
         {
           "id": "g.cloak",
@@ -1885,6 +2373,15 @@
           "destructible": true
         },
         {
+          "id": "w.ground.x45:56-60",
+          "a": { "x": 45, "y": 56 },
+          "b": { "x": 45, "y": 60 },
+          "thickness": 0.1,
+          "height": 1.1,
+          "material": "glass",
+          "destructible": true
+        },
+        {
           "id": "w.ground.x46:52-53.5",
           "a": { "x": 46, "y": 52 },
           "b": { "x": 46, "y": 53.5 },
@@ -1918,6 +2415,15 @@
           "thickness": 0.2,
           "height": 4,
           "material": "plaster",
+          "destructible": true
+        },
+        {
+          "id": "w.ground.x55:56-60",
+          "a": { "x": 55, "y": 56 },
+          "b": { "x": 55, "y": 60 },
+          "thickness": 0.1,
+          "height": 1.1,
+          "material": "glass",
           "destructible": true
         },
         {
@@ -2425,11 +2931,20 @@
           "destructible": true
         },
         {
-          "id": "w.ground.y56:38-46",
+          "id": "w.ground.y56:38-45",
           "a": { "x": 38, "y": 56 },
-          "b": { "x": 46, "y": 56 },
+          "b": { "x": 45, "y": 56 },
           "thickness": 0.4,
           "height": 4,
+          "material": "reinforced",
+          "destructible": true
+        },
+        {
+          "id": "w.ground.y56:45-46",
+          "a": { "x": 45, "y": 56 },
+          "b": { "x": 46, "y": 56 },
+          "thickness": 0.4,
+          "height": 6,
           "material": "reinforced",
           "destructible": true
         },
@@ -2438,7 +2953,7 @@
           "a": { "x": 46, "y": 56 },
           "b": { "x": 48.5, "y": 56 },
           "thickness": 0.4,
-          "height": 4,
+          "height": 6,
           "material": "reinforced",
           "destructible": true
         },
@@ -2447,13 +2962,22 @@
           "a": { "x": 51.5, "y": 56 },
           "b": { "x": 54, "y": 56 },
           "thickness": 0.4,
-          "height": 4,
+          "height": 6,
           "material": "reinforced",
           "destructible": true
         },
         {
-          "id": "w.ground.y56:54-62",
+          "id": "w.ground.y56:54-55",
           "a": { "x": 54, "y": 56 },
+          "b": { "x": 55, "y": 56 },
+          "thickness": 0.4,
+          "height": 6,
+          "material": "reinforced",
+          "destructible": true
+        },
+        {
+          "id": "w.ground.y56:55-62",
+          "a": { "x": 55, "y": 56 },
           "b": { "x": 62, "y": 56 },
           "thickness": 0.4,
           "height": 4,
@@ -2477,6 +3001,24 @@
           "height": 4,
           "material": "stone",
           "destructible": true
+        },
+        {
+          "id": "w.ground.y60:45-46",
+          "a": { "x": 45, "y": 60 },
+          "b": { "x": 46, "y": 60 },
+          "thickness": 0.1,
+          "height": 1.1,
+          "material": "glass",
+          "destructible": true
+        },
+        {
+          "id": "w.ground.y60:54-55",
+          "a": { "x": 54, "y": 60 },
+          "b": { "x": 55, "y": 60 },
+          "thickness": 0.1,
+          "height": 1.1,
+          "material": "glass",
+          "destructible": true
         }
       ],
       "doors": [
@@ -2484,10 +3026,19 @@
           "id": "d.g.main",
           "at": { "x": 50, "y": 56 },
           "width": 3,
-          "between": ["g.foyer", "outside"],
+          "between": ["g.foyer", "g.portico"],
           "kind": "standard",
           "state": "locked",
           "breach": ["manual", "shotgun", "explosive"]
+        },
+        {
+          "id": "d.g.portico-drive",
+          "at": { "x": 50, "y": 60 },
+          "width": 8,
+          "between": ["g.portico", "outside"],
+          "kind": "standard",
+          "state": "open",
+          "breach": []
         },
         {
           "id": "d.g.foyer-hall",
@@ -2875,6 +3426,38 @@
       "openings": [],
       "cover": [
         {
+          "id": "cover.portico-column.1",
+          "rect": { "min": { "x": 45.300000000000004, "y": 57.900000000000006 }, "max": { "x": 45.9, "y": 58.5 } },
+          "type": "heavy",
+          "height": 5,
+          "facing": "all",
+          "destructible": false
+        },
+        {
+          "id": "cover.portico-column.2",
+          "rect": { "min": { "x": 47.300000000000004, "y": 57.900000000000006 }, "max": { "x": 47.9, "y": 58.5 } },
+          "type": "heavy",
+          "height": 5,
+          "facing": "all",
+          "destructible": false
+        },
+        {
+          "id": "cover.portico-column.3",
+          "rect": { "min": { "x": 52.1, "y": 57.900000000000006 }, "max": { "x": 52.699999999999996, "y": 58.5 } },
+          "type": "heavy",
+          "height": 5,
+          "facing": "all",
+          "destructible": false
+        },
+        {
+          "id": "cover.portico-column.4",
+          "rect": { "min": { "x": 54.1, "y": 57.900000000000006 }, "max": { "x": 54.699999999999996, "y": 58.5 } },
+          "type": "heavy",
+          "height": 5,
+          "facing": "all",
+          "destructible": false
+        },
+        {
           "id": "cover.armory-rack",
           "rect": { "min": { "x": 58, "y": 52.4 }, "max": { "x": 61, "y": 53.4 } },
           "type": "heavy",
@@ -3222,25 +3805,9 @@
           "rect": { "min": { "x": 28, "y": 56 }, "max": { "x": 38, "y": 59 } },
           "ceiling": 4,
           "tags": ["exterior"]
-        },
-        {
-          "id": "u.fire-escape",
-          "name": "Emergency stair landing",
-          "rect": { "min": { "x": 28, "y": 13 }, "max": { "x": 32, "y": 16 } },
-          "ceiling": 4,
-          "tags": ["exterior", "fire-escape"]
         }
       ],
       "walls": [
-        {
-          "id": "w.upper.x28:13-16",
-          "a": { "x": 28, "y": 13 },
-          "b": { "x": 28, "y": 16 },
-          "thickness": 0.1,
-          "height": 1.1,
-          "material": "glass",
-          "destructible": true
-        },
         {
           "id": "w.upper.x28:16-28",
           "a": { "x": 28, "y": 16 },
@@ -3281,15 +3848,6 @@
           "id": "w.upper.x28:56-59",
           "a": { "x": 28, "y": 56 },
           "b": { "x": 28, "y": 59 },
-          "thickness": 0.1,
-          "height": 1.1,
-          "material": "glass",
-          "destructible": true
-        },
-        {
-          "id": "w.upper.x32:13-16",
-          "a": { "x": 32, "y": 13 },
-          "b": { "x": 32, "y": 16 },
           "thickness": 0.1,
           "height": 1.1,
           "material": "glass",
@@ -3557,15 +4115,6 @@
           "destructible": true
         },
         {
-          "id": "w.upper.y13:28-32",
-          "a": { "x": 28, "y": 13 },
-          "b": { "x": 32, "y": 13 },
-          "thickness": 0.1,
-          "height": 1.1,
-          "material": "glass",
-          "destructible": true
-        },
-        {
           "id": "w.upper.y13:62-72",
           "a": { "x": 62, "y": 13 },
           "b": { "x": 72, "y": 13 },
@@ -3575,26 +4124,8 @@
           "destructible": true
         },
         {
-          "id": "w.upper.y16:28-29.4",
+          "id": "w.upper.y16:28-38",
           "a": { "x": 28, "y": 16 },
-          "b": { "x": 29.4, "y": 16 },
-          "thickness": 0.4,
-          "height": 4,
-          "material": "reinforced",
-          "destructible": true
-        },
-        {
-          "id": "w.upper.y16:30.6-32",
-          "a": { "x": 30.6, "y": 16 },
-          "b": { "x": 32, "y": 16 },
-          "thickness": 0.4,
-          "height": 4,
-          "material": "reinforced",
-          "destructible": true
-        },
-        {
-          "id": "w.upper.y16:32-38",
-          "a": { "x": 32, "y": 16 },
           "b": { "x": 38, "y": 16 },
           "thickness": 0.4,
           "height": 4,
@@ -3952,15 +4483,6 @@
           "between": ["u.gym", "u.loggia.w"],
           "kind": "standard",
           "state": "closed",
-          "breach": ["manual", "shotgun", "explosive"]
-        },
-        {
-          "id": "d.u.gym-fire-escape",
-          "at": { "x": 30, "y": 16 },
-          "width": 1.2,
-          "between": ["u.gym", "u.fire-escape"],
-          "kind": "standard",
-          "state": "locked",
           "breach": ["manual", "shotgun", "explosive"]
         },
         {
@@ -5559,13 +6081,6 @@
       "bidirectional": true
     },
     {
-      "id": "link.fire-stair",
-      "kind": "stairs",
-      "from": { "floor": "grounds", "at": { "x": 30, "y": 7 } },
-      "to": { "floor": "upper", "at": { "x": 30, "y": 13.5 } },
-      "bidirectional": true
-    },
-    {
       "id": "link.roof.west",
       "kind": "roof-access",
       "from": { "floor": "upper", "at": { "x": 40, "y": 19 } },
@@ -5718,6 +6233,24 @@
       "id": "zone.roof-pool",
       "floor": "roof",
       "rect": { "min": { "x": 32, "y": 30 }, "max": { "x": 40, "y": 36 } },
+      "kind": "pool"
+    },
+    {
+      "id": "zone.forecourt",
+      "floor": "grounds",
+      "rect": { "min": { "x": 56, "y": 60 }, "max": { "x": 66, "y": 76 } },
+      "kind": "terrace"
+    },
+    {
+      "id": "zone.reflecting-pool",
+      "floor": "grounds",
+      "rect": { "min": { "x": 47, "y": 10.5 }, "max": { "x": 53, "y": 12.5 } },
+      "kind": "pool"
+    },
+    {
+      "id": "zone.infinity-pool",
+      "floor": "grounds",
+      "rect": { "min": { "x": 4, "y": 1.5 }, "max": { "x": 16, "y": 6.5 } },
       "kind": "pool"
     },
     {
@@ -6172,6 +6705,20 @@
       "kind": "poi",
       "at": { "x": 48.5, "y": 52 },
       "tags": ["smart:camera", "feeds:g.soc", "covers:roof"]
+    },
+    {
+      "id": "m.smart.camera.portico",
+      "floor": "ground",
+      "kind": "poi",
+      "at": { "x": 50, "y": 59.6 },
+      "tags": ["smart:camera", "feeds:g.soc", "covers:portico"]
+    },
+    {
+      "id": "m.smart.camera.forecourt",
+      "floor": "grounds",
+      "kind": "poi",
+      "at": { "x": 61, "y": 61 },
+      "tags": ["smart:camera", "feeds:g.soc", "covers:forecourt"]
     },
     {
       "id": "m.smart.floodlight.1",
