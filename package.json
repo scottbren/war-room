@@ -1,0 +1,29 @@
+{
+  "name": "war-room",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@12.16.1",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "typecheck": "pnpm -r run typecheck",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "dev": "pnpm --filter @war-room/client dev",
+    "run:headless": "pnpm --filter @war-room/tools run headless",
+    "validate-map": "pnpm --filter @war-room/tools run validate-map",
+    "derive-walls": "pnpm --filter @war-room/tools run derive-walls",
+    "bake-navmesh": "pnpm --filter @war-room/tools run bake-navmesh",
+    "smoke": "pnpm --filter @war-room/client run smoke"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.14.0",
+    "prettier": "^3.9.10",
+    "tsx": "^4.23.15",
+    "typescript": "~6.0.3",
+    "typescript-eslint": "^8.72.1",
+    "vitest": "^5.0.5"
+  }
+}
