@@ -402,3 +402,41 @@ describe("utilities, power and network checks", () => {
     expect(find(issues, "circuit")).toBeUndefined();
   });
 });
+
+describe("access control checks", () => {
+  const reader = (map: MapFile, id: string) => map.markers.find((m) => m.id === id)!;
+  const firstReader = (map: MapFile) => map.markers.find((m) => m.tags.some((t) => t.startsWith("auth:")))!;
+
+  it("a reader that names a door that does not exist is reported by marker and door", () => {
+    const map = charon();
+    const r = firstReader(map);
+    r.tags = r.tags.map((t) => (t.startsWith("door:") ? "door:d.nowhere" : t));
+    expect(find(validateMap(map), r.id, "d.nowhere")).toBeDefined();
+  });
+
+  it("a reader far from its door is reported", () => {
+    const map = charon();
+    const r = firstReader(map);
+    r.at = { x: r.at!.x + 40, y: r.at!.y };
+    expect(find(validateMap(map), r.id, "far from")).toBeDefined();
+  });
+
+  it("a networked reader with no circuit is reported", () => {
+    const map = charon();
+    const r = map.markers.find((m) => m.tags.includes("auth:badge"))!;
+    r.tags = r.tags.filter((t) => !t.startsWith("circuit:"));
+    expect(find(validateMap(map), r.id, "circuit")).toBeDefined();
+  });
+
+  it("a panic-room door with no biometric reader is reported", () => {
+    const map = charon();
+    const bio = map.markers.find((m) => m.tags.includes("door:d.g.panic-core") && m.tags.includes("auth:biometric"))!;
+    bio.tags = bio.tags.map((t) => (t === "auth:biometric" ? "auth:keypad" : t));
+    expect(find(validateMap(map), "d.g.panic-core", "biometric")).toBeDefined();
+  });
+
+  it("the real map passes", () => {
+    expect(messages(validateMap(charon()))).toEqual([]);
+    expect(reader(charon(), "m.smart.lock.panic")).toBeDefined();
+  });
+});

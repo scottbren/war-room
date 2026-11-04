@@ -402,6 +402,7 @@ export function validateMap(input: unknown): Issue[] {
   checkPanicRooms(map, issues);
   checkFamily(map, issues);
   checkUtilities(map, issues);
+  checkAccess(map, issues);
   return issues;
 }
 
@@ -432,5 +433,38 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
   } catch (error) {
     console.error(error instanceof Error ? error.message : error);
     process.exitCode = 1;
+  }
+}
+
+/** Access control: readers (`auth:<method>` + `door:<id>`) must stand beside a real door; panic doors need biometrics. Opt-in. */
+function checkAccess(map: MapFile, out: Issue[]): void {
+  const tag = (m: { tags: string[] }, prefix: string): string[] =>
+    m.tags.filter((t) => t.startsWith(`${prefix}:`)).map((t) => t.slice(prefix.length + 1));
+  const readers = [...map.markers].filter((m) => tag(m, "auth").length > 0).sort(byId);
+  if (readers.length === 0) return;
+  const panicRooms = new Set(map.floors.flatMap((f) => f.rooms.filter((r) => r.tags.includes("panic-room")).map((r) => r.id)));
+  const methodsByDoor = new Map<string, string[]>();
+  for (const r of readers) {
+    const doorId = tag(r, "door")[0];
+    const floor = map.floors.find((f) => f.id === r.floor);
+    const door = floor?.doors.find((d) => d.id === doorId);
+    if (!doorId || !door) {
+      out.push({ check: "reader-door", message: `Reader ${r.id} (floor ${r.floor}) names door ${doorId ?? "(none)"} which does not exist on that floor` });
+      continue;
+    }
+    if (r.at && Math.hypot(r.at.x - door.at.x, r.at.y - door.at.y) > 4) {
+      out.push({ check: "reader-far", message: `Reader ${r.id} is far from its door ${doorId} (more than 4 m)` });
+    }
+    const mechanical = ["dial", "key"].includes(tag(r, "auth")[0]!);
+    if (!mechanical && tag(r, "circuit").length === 0) {
+      out.push({ check: "reader-circuit", message: `Networked reader ${r.id} has no circuit; it cannot run without power` });
+    }
+    methodsByDoor.set(doorId, [...(methodsByDoor.get(doorId) ?? []), tag(r, "auth")[0]!]);
+  }
+  for (const doorId of [...methodsByDoor.keys()].sort()) {
+    const door = map.floors.flatMap((f) => f.doors).find((d) => d.id === doorId);
+    if (door?.between.some((b) => panicRooms.has(b)) && !methodsByDoor.get(doorId)!.includes("biometric")) {
+      out.push({ check: "panic-door-biometric", message: `Door ${doorId} leads into the panic room but has no biometric reader` });
+    }
   }
 }

@@ -1,4 +1,4 @@
-# CHARON layout (map version 9: zigzag of three bars; sections below the Version 6 note describe v5 and earlier and are superseded where they conflict)
+# CHARON layout (map version 10: zigzag of three bars; sections below the Version 6 note describe v5 and earlier and are superseded where they conflict)
 
 `content/maps/charon.json` implements this document. All rooms are axis-aligned rectangles, `[minX, minY] – [maxX, maxY]` in meters, in **map coordinates**. North is +y. The sea is to the south (y < 0). Non-rectangular buildings are composed from several rectangles (U, L and stepped shapes); the map format has no polygon rooms.
 
@@ -184,3 +184,10 @@ Tag conventions (no geometry changes):
 - Intel: `intel:item` with `id:`, `type:` (digital|paper|physical), `value:`, optional `wipe:yes`.
 - Network: `net:<router|dvr|sat-modem|wifi|keypad|entry>`; entry nodes have `access:<physical|wifi|remote>`. No wifi in the panic room (air gap).
 - Do not use the `smart:` prefix for non-devices; the sim throws on unknown kinds.
+
+## v10: access control and security fixtures (markers only)
+
+- Readers: `auth:<keypad|biometric|badge|key|dial>` + `door:<doorId>` + `level:<1-4>`. Networked readers (keypad, biometric, badge) also carry `circuit:` and `vlan:`; keys and dials are mechanical and carry neither, so they work with no power or network.
+- Panic room doors (`d.g.panic-core`, `d.u.safe-core`): biometric + keypad on circuit c.panic, vlan panic. The vault door has a mechanical dial plus a biometric reader.
+- Fixtures `sec:<alarm-panel|panic-button|metal-detector|key-cabinet|monitor|laser-grid|suppression|ground-sensor|barrier-control|safe|armory-rack>`.
+- Validator `checkAccess`: reader must name a real door on its floor, stand within 4 m of it, networked readers need a circuit, panic-room doors need a biometric reader.

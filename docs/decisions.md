@@ -54,3 +54,6 @@ User asked for more work on the roof after v7. Added: warm slab color for deck/t
 
 ## Map v9: utilities layer (tier 1)
 Added power, comms, intel and network markers and validator checks (`checkUtilities`). Data only; no sim or contract change. Runtime (power graph, comms status, cyber actions) awaits a written spec and approval.
+
+## Map v10: access control (tier 1)
+Added 24 door readers and security fixtures as markers plus `checkAccess` validator. No sim or contract change.

@@ -1,6 +1,6 @@
 {
   "id": "charon",
-  "version": 9,
+  "version": 10,
   "bounds": { "min": { "x": -40, "y": -40 }, "max": { "x": 140, "y": 94 } },
   "floors": [
     {
@@ -8046,6 +8046,344 @@
       "kind": "poi",
       "at": { "x": 68, "y": 79 },
       "tags": ["net:keypad", "net:entry", "access:physical", "vlan:house", "circuit:c.gate"]
+    },
+    {
+      "id": "m.auth.gate.badge",
+      "floor": "grounds",
+      "kind": "poi",
+      "at": { "x": 70, "y": 80.75 },
+      "tags": ["auth:badge", "door:d.gate", "level:1", "circuit:c.gate", "vlan:security"]
+    },
+    {
+      "id": "m.auth.gate-lodge.keypad",
+      "floor": "grounds",
+      "kind": "poi",
+      "at": { "x": 65, "y": 76.75 },
+      "tags": ["auth:keypad", "door:d.gate-lodge", "level:1", "circuit:c.gate", "vlan:security"]
+    },
+    {
+      "id": "m.auth.staff-gate.keypad",
+      "floor": "grounds",
+      "kind": "poi",
+      "at": { "x": 1, "y": 64.75 },
+      "tags": ["auth:keypad", "door:d.staff-gate", "level:1", "circuit:c.perimeter", "vlan:security"]
+    },
+    {
+      "id": "m.auth.garage.badge",
+      "floor": "grounds",
+      "kind": "poi",
+      "at": { "x": 75, "y": 56.75 },
+      "tags": ["auth:badge", "door:d.garage", "level:1", "circuit:c.perimeter", "vlan:security"]
+    },
+    {
+      "id": "m.auth.g.main.keypad",
+      "floor": "ground",
+      "kind": "poi",
+      "at": { "x": 42, "y": 56.75 },
+      "tags": ["auth:keypad", "door:d.g.main", "level:1", "circuit:c.house.a", "vlan:house"]
+    },
+    {
+      "id": "m.auth.g.garage-link-garage.badge",
+      "floor": "ground",
+      "kind": "poi",
+      "at": { "x": 75, "y": 54.75 },
+      "tags": ["auth:badge", "door:d.g.garage-link-garage", "level:1", "circuit:c.house.a", "vlan:security"]
+    },
+    {
+      "id": "m.auth.g.service-south.badge",
+      "floor": "ground",
+      "kind": "poi",
+      "at": { "x": 78, "y": 26.75 },
+      "tags": ["auth:badge", "door:d.g.service-south", "level:2", "circuit:c.house.b", "vlan:security"]
+    },
+    {
+      "id": "m.auth.g.foyer-security.badge",
+      "floor": "ground",
+      "kind": "poi",
+      "at": { "x": 47, "y": 53.75 },
+      "tags": ["auth:badge", "door:d.g.foyer-security", "level:2", "circuit:c.house.a", "vlan:security"]
+    },
+    {
+      "id": "m.auth.g.security-hall.badge",
+      "floor": "ground",
+      "kind": "poi",
+      "at": { "x": 50, "y": 50.75 },
+      "tags": ["auth:badge", "door:d.g.security-hall", "level:2", "circuit:c.house.a", "vlan:security"]
+    },
+    {
+      "id": "m.auth.g.drawing-study.biometric",
+      "floor": "ground",
+      "kind": "poi",
+      "at": { "x": 51, "y": 37.5 },
+      "tags": ["auth:biometric", "door:d.g.drawing-study", "level:3", "circuit:c.house.b", "vlan:security"]
+    },
+    {
+      "id": "m.auth.g.kitchen-study.keypad",
+      "floor": "ground",
+      "kind": "poi",
+      "at": { "x": 56, "y": 41.75 },
+      "tags": ["auth:keypad", "door:d.g.kitchen-study", "level:3", "circuit:c.house.a", "vlan:security"]
+    },
+    {
+      "id": "m.auth.g.soc-bath.biometric",
+      "floor": "ground",
+      "kind": "poi",
+      "at": { "x": 67, "y": 29.25 },
+      "tags": ["auth:biometric", "door:d.g.soc-bath", "level:4", "circuit:c.soc", "vlan:security"]
+    },
+    {
+      "id": "m.auth.g.soc-service.badge",
+      "floor": "ground",
+      "kind": "poi",
+      "at": { "x": 77, "y": 29.25 },
+      "tags": ["auth:badge", "door:d.g.soc-service", "level:3", "circuit:c.house.b", "vlan:security"]
+    },
+    {
+      "id": "m.auth.g.panic-core.biometric",
+      "floor": "ground",
+      "kind": "poi",
+      "at": { "x": 67, "y": 37.75 },
+      "tags": ["auth:biometric", "door:d.g.panic-core", "level:4", "circuit:c.panic", "vlan:panic"]
+    },
+    {
+      "id": "m.auth.g.panic-core.keypad",
+      "floor": "ground",
+      "kind": "poi",
+      "at": { "x": 65, "y": 36.25 },
+      "tags": ["auth:keypad", "door:d.g.panic-core", "level:4", "circuit:c.panic", "vlan:panic"]
+    },
+    {
+      "id": "m.auth.u.safe-core.biometric",
+      "floor": "upper",
+      "kind": "poi",
+      "at": { "x": 67, "y": 38.75 },
+      "tags": ["auth:biometric", "door:d.u.safe-core", "level:4", "circuit:c.panic", "vlan:panic"]
+    },
+    {
+      "id": "m.auth.u.safe-core.keypad",
+      "floor": "upper",
+      "kind": "poi",
+      "at": { "x": 65, "y": 37.25 },
+      "tags": ["auth:keypad", "door:d.u.safe-core", "level:4", "circuit:c.panic", "vlan:panic"]
+    },
+    {
+      "id": "m.auth.u.gallery-office.keypad",
+      "floor": "upper",
+      "kind": "poi",
+      "at": { "x": 37, "y": 52.75 },
+      "tags": ["auth:keypad", "door:d.u.gallery-office", "level:3", "circuit:c.house.a", "vlan:security"]
+    },
+    {
+      "id": "m.auth.l.vault-corridor.dial",
+      "floor": "lower",
+      "kind": "poi",
+      "at": { "x": 48, "y": 50.75 },
+      "tags": ["auth:dial", "door:d.l.vault-corridor", "level:4"]
+    },
+    {
+      "id": "m.auth.l.vault-corridor.biometric",
+      "floor": "lower",
+      "kind": "poi",
+      "at": { "x": 46, "y": 49.25 },
+      "tags": ["auth:biometric", "door:d.l.vault-corridor", "level:4", "circuit:c.house.a", "vlan:security"]
+    },
+    {
+      "id": "m.auth.l.armory-corridor.badge",
+      "floor": "lower",
+      "kind": "poi",
+      "at": { "x": 37, "y": 50.75 },
+      "tags": ["auth:badge", "door:d.l.armory-corridor", "level:3", "circuit:c.house.a", "vlan:security"]
+    },
+    {
+      "id": "m.auth.l.armory-vault.badge",
+      "floor": "lower",
+      "kind": "poi",
+      "at": { "x": 43, "y": 46.25 },
+      "tags": ["auth:badge", "door:d.l.armory-vault", "level:3", "circuit:c.house.a", "vlan:security"]
+    },
+    {
+      "id": "m.auth.l.mech-corridor.key",
+      "floor": "lower",
+      "kind": "poi",
+      "at": { "x": 67, "y": 29.75 },
+      "tags": ["auth:key", "door:d.l.mech-corridor", "level:2"]
+    },
+    {
+      "id": "m.auth.r.b-plant.key",
+      "floor": "roof",
+      "kind": "poi",
+      "at": { "x": 69, "y": 38.75 },
+      "tags": ["auth:key", "door:d.r.b-plant", "level:2"]
+    },
+    {
+      "id": "m.sec.alarm.lodge",
+      "floor": "grounds",
+      "kind": "poi",
+      "at": { "x": 63, "y": 78 },
+      "tags": ["sec:alarm-panel", "circuit:c.gate", "vlan:security"]
+    },
+    {
+      "id": "m.sec.alarm.soc",
+      "floor": "ground",
+      "kind": "poi",
+      "at": { "x": 73.5, "y": 29 },
+      "tags": ["sec:alarm-panel", "circuit:c.soc", "vlan:security"]
+    },
+    {
+      "id": "m.sec.alarm.foyer",
+      "floor": "ground",
+      "kind": "poi",
+      "at": { "x": 39, "y": 54 },
+      "tags": ["sec:alarm-panel", "circuit:c.house.a", "vlan:security"]
+    },
+    {
+      "id": "m.sec.panic-button.master",
+      "floor": "ground",
+      "kind": "poi",
+      "at": { "x": 52, "y": 32 },
+      "tags": ["sec:panic-button", "circuit:c.house.b", "vlan:security"]
+    },
+    {
+      "id": "m.sec.panic-button.study",
+      "floor": "ground",
+      "kind": "poi",
+      "at": { "x": 54, "y": 37.5 },
+      "tags": ["sec:panic-button", "circuit:c.house.b", "vlan:security"]
+    },
+    {
+      "id": "m.sec.panic-button.security",
+      "floor": "ground",
+      "kind": "poi",
+      "at": { "x": 47, "y": 52 },
+      "tags": ["sec:panic-button", "circuit:c.house.a", "vlan:security"]
+    },
+    {
+      "id": "m.sec.panic-button.soc",
+      "floor": "ground",
+      "kind": "poi",
+      "at": { "x": 70, "y": 29 },
+      "tags": ["sec:panic-button", "circuit:c.soc", "vlan:security"]
+    },
+    {
+      "id": "m.sec.panic-button.panic",
+      "floor": "ground",
+      "kind": "poi",
+      "at": { "x": 70, "y": 35 },
+      "tags": ["sec:panic-button", "circuit:c.panic", "vlan:panic"]
+    },
+    {
+      "id": "m.sec.metal-detector",
+      "floor": "ground",
+      "kind": "poi",
+      "at": { "x": 41, "y": 54 },
+      "tags": ["sec:metal-detector", "circuit:c.house.a", "vlan:security"]
+    },
+    {
+      "id": "m.sec.key-cabinet",
+      "floor": "ground",
+      "kind": "poi",
+      "at": { "x": 47, "y": 54.25 },
+      "tags": ["sec:key-cabinet"]
+    },
+    {
+      "id": "m.sec.monitor.security",
+      "floor": "ground",
+      "kind": "poi",
+      "at": { "x": 48, "y": 51 },
+      "tags": ["sec:monitor", "circuit:c.house.a", "vlan:security"]
+    },
+    {
+      "id": "m.sec.monitor.soc",
+      "floor": "ground",
+      "kind": "poi",
+      "at": { "x": 70, "y": 27.25 },
+      "tags": ["sec:monitor", "circuit:c.soc", "vlan:security"]
+    },
+    {
+      "id": "m.sec.laser-grid",
+      "floor": "lower",
+      "kind": "poi",
+      "at": { "x": 47, "y": 43.5 },
+      "tags": ["sec:laser-grid", "circuit:c.house.a", "vlan:security"]
+    },
+    {
+      "id": "m.sec.suppression",
+      "floor": "lower",
+      "kind": "poi",
+      "at": { "x": 44, "y": 48 },
+      "tags": ["sec:suppression", "circuit:c.house.a", "vlan:security"]
+    },
+    {
+      "id": "m.sec.barrier-control",
+      "floor": "grounds",
+      "kind": "poi",
+      "at": { "x": 65, "y": 77.25 },
+      "tags": ["sec:barrier-control", "circuit:c.gate", "vlan:security"]
+    },
+    { "id": "m.sec.safe.study", "floor": "ground", "kind": "poi", "at": { "x": 54.5, "y": 39 }, "tags": ["sec:safe"] },
+    { "id": "m.sec.safe.office", "floor": "upper", "kind": "poi", "at": { "x": 31, "y": 53 }, "tags": ["sec:safe"] },
+    {
+      "id": "m.sec.armory-rack",
+      "floor": "lower",
+      "kind": "poi",
+      "at": { "x": 34, "y": 44 },
+      "tags": ["sec:armory-rack"]
+    },
+    {
+      "id": "m.sec.ground-sensor.1",
+      "floor": "grounds",
+      "kind": "poi",
+      "at": { "x": 2, "y": 20 },
+      "tags": ["sec:ground-sensor", "circuit:c.perimeter", "vlan:security"]
+    },
+    {
+      "id": "m.sec.ground-sensor.2",
+      "floor": "grounds",
+      "kind": "poi",
+      "at": { "x": 2, "y": 45 },
+      "tags": ["sec:ground-sensor", "circuit:c.perimeter", "vlan:security"]
+    },
+    {
+      "id": "m.sec.ground-sensor.3",
+      "floor": "grounds",
+      "kind": "poi",
+      "at": { "x": 2, "y": 70 },
+      "tags": ["sec:ground-sensor", "circuit:c.perimeter", "vlan:security"]
+    },
+    {
+      "id": "m.sec.ground-sensor.4",
+      "floor": "grounds",
+      "kind": "poi",
+      "at": { "x": 98, "y": 19.5 },
+      "tags": ["sec:ground-sensor", "circuit:c.perimeter", "vlan:security"]
+    },
+    {
+      "id": "m.sec.ground-sensor.5",
+      "floor": "grounds",
+      "kind": "poi",
+      "at": { "x": 98, "y": 45 },
+      "tags": ["sec:ground-sensor", "circuit:c.perimeter", "vlan:security"]
+    },
+    {
+      "id": "m.sec.ground-sensor.6",
+      "floor": "grounds",
+      "kind": "poi",
+      "at": { "x": 98, "y": 70 },
+      "tags": ["sec:ground-sensor", "circuit:c.perimeter", "vlan:security"]
+    },
+    {
+      "id": "m.sec.ground-sensor.7",
+      "floor": "grounds",
+      "kind": "poi",
+      "at": { "x": 30, "y": 78 },
+      "tags": ["sec:ground-sensor", "circuit:c.perimeter", "vlan:security"]
+    },
+    {
+      "id": "m.sec.ground-sensor.8",
+      "floor": "grounds",
+      "kind": "poi",
+      "at": { "x": 88, "y": 78 },
+      "tags": ["sec:ground-sensor", "circuit:c.perimeter", "vlan:security"]
     }
   ]
 }
