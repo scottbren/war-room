@@ -61,6 +61,10 @@ export async function createViewer(canvas: HTMLCanvasElement, map: MapFile, call
   sky.intensity = 0.85;
   const sun = new DirectionalLight("sun", new Vector3(-0.5, -1, 0.4), scene);
   sun.intensity = 0.55;
+  // The sun shines toward +z, so a wall that faces +z (the front of the house) gets none of it and renders black.
+  // A soft fill from the opposite side keeps those faces readable without flattening the sun's shading.
+  const fill = new DirectionalLight("fill", new Vector3(0.35, -0.5, -0.8), scene);
+  fill.intensity = 0.55;
 
   const greybox = buildGreybox(scene, map);
 

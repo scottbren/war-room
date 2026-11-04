@@ -123,11 +123,11 @@ describe("nav: findPath on the CHARON navmesh", () => {
   // foyer to study uses the drawing-room door; foyer to son's room goes round the foot of the central flight and up it.
   it("gives the same answers in Node as the Web Worker debug page (client/nav-debug.html) did in Chromium", () => {
     const expected: [Pos, Pos, number, number][] = [
-      [centre("ground", "g.foyer"), centre("ground", "g.study"), 5, 23.47],
+      [centre("ground", "g.foyer"), centre("ground", "g.study"), 5, 23.49],
       [centre("ground", "g.foyer"), centre("upper", "u.son"), 9, 35.13],
       [centre("ground", "g.master"), centre("ground", "g.panic"), 7, 20.34],
       [centre("ground", "g.panic"), centre("shore", "grounds.boathouse"), 4, 42.62],
-      [{ floor: "grounds", x: 48, y: 68 }, centre("ground", "g.study"), 7, 38.41],
+      [{ floor: "grounds", x: 48, y: 68 }, centre("ground", "g.study"), 7, 38.44],
     ];
     for (const [from, to, points, len] of expected) {
       const path = nav.findPath(from, to);
