@@ -88,3 +88,58 @@ describe("charon.json: the entrance, the grand hall and the garden side", () => 
     }
   });
 });
+
+describe("charon.json: quality audit (every floor)", () => {
+  const tall = (c: { type: string; height: number }): boolean => c.type !== "concealment" && c.height > 0.4;
+
+  it("keeps 1.4 m in front of every door with a room on one side free of furniture, on every floor", () => {
+    const APPROACH = 1.4;
+    const problems: string[] = [];
+    for (const f of map.floors) {
+      for (const d of f.doors) {
+        const owner = d.between.map((id) => f.rooms.find((r) => r.id === id)).find((r) => r !== undefined);
+        if (!owner) continue;
+        const vertical = d.at.x === owner.rect.min.x || d.at.x === owner.rect.max.x;
+        const half = d.width / 2;
+        const z = vertical ? { x0: d.at.x - APPROACH, x1: d.at.x + APPROACH, y0: d.at.y - half, y1: d.at.y + half } : { x0: d.at.x - half, x1: d.at.x + half, y0: d.at.y - APPROACH, y1: d.at.y + APPROACH };
+        for (const c of f.cover) {
+          if (tall(c) && c.rect.min.x < z.x1 && c.rect.max.x > z.x0 && c.rect.min.y < z.y1 && c.rect.max.y > z.y0) problems.push(`${f.id}: ${c.id} stands in front of ${d.id}`);
+        }
+      }
+    }
+    expect(problems).toEqual([]);
+  });
+
+  it("puts every window wholly on its own wall: a window that says outside does not look into another room", () => {
+    const problems: string[] = [];
+    for (const f of map.floors) {
+      for (const w of f.windows) {
+        if (!w.between.includes("outside")) continue;
+        const own = f.rooms.find((r) => w.between.includes(r.id));
+        if (!own) continue;
+        const vertical = w.at.x === own.rect.min.x || w.at.x === own.rect.max.x;
+        const lo = (vertical ? w.at.y : w.at.x) - w.width / 2, hi = (vertical ? w.at.y : w.at.x) + w.width / 2;
+        for (const o of f.rooms) {
+          if (o === own || o.tags.includes("exterior") || o.tags.includes("void")) continue;
+          const onEdge = vertical ? w.at.x === o.rect.min.x || w.at.x === o.rect.max.x : w.at.y === o.rect.min.y || w.at.y === o.rect.max.y;
+          if (!onEdge) continue;
+          const a = vertical ? o.rect.min.y : o.rect.min.x, b = vertical ? o.rect.max.y : o.rect.max.x;
+          if (lo < b && hi > a) problems.push(`${f.id}: ${w.id} opens onto ${o.id}`);
+        }
+      }
+    }
+    expect(problems).toEqual([]);
+  });
+
+  it("starts every person and spawn on open floor, not inside furniture", () => {
+    const problems: string[] = [];
+    for (const k of map.markers) {
+      if (!k.at || !(k.kind === "spawn" || k.tags.some((t) => t.startsWith("principal-start") || t.startsWith("family:")))) continue;
+      const f = floor(k.floor);
+      for (const c of f.cover) {
+        if (tall(c) && k.at.x >= c.rect.min.x - 0.3 && k.at.x <= c.rect.max.x + 0.3 && k.at.y >= c.rect.min.y - 0.3 && k.at.y <= c.rect.max.y + 0.3) problems.push(`${k.id} is in or against ${c.id}`);
+      }
+    }
+    expect(problems).toEqual([]);
+  });
+});

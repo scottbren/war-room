@@ -2908,7 +2908,7 @@
         },
         {
           "id": "win.g.master.s",
-          "at": { "x": 54, "y": 26 },
+          "at": { "x": 56, "y": 26 },
           "width": 1.8,
           "between": ["g.master", "outside"],
           "shutter": true,
@@ -3100,7 +3100,7 @@
         },
         {
           "id": "cover.soc-racks",
-          "rect": { "min": { "x": 74, "y": 27.2 }, "max": { "x": 75, "y": 29 } },
+          "rect": { "min": { "x": 74, "y": 26.2 }, "max": { "x": 75, "y": 27.9 } },
           "type": "heavy",
           "height": 2,
           "facing": "all",
@@ -4480,7 +4480,7 @@
         },
         {
           "id": "cover.daughter-bed",
-          "rect": { "min": { "x": 68, "y": 27 }, "max": { "x": 73, "y": 29 } },
+          "rect": { "min": { "x": 68, "y": 27.6 }, "max": { "x": 73, "y": 29.6 } },
           "type": "light",
           "height": 0.6,
           "facing": "all",
@@ -5506,7 +5506,7 @@
         },
         {
           "id": "cover.roof-access-housing",
-          "rect": { "min": { "x": 65, "y": 36 }, "max": { "x": 67, "y": 39 } },
+          "rect": { "min": { "x": 65, "y": 36 }, "max": { "x": 67, "y": 37.2 } },
           "type": "heavy",
           "height": 2.2,
           "facing": "all",
@@ -5538,7 +5538,7 @@
         },
         {
           "id": "cover.dish.1",
-          "rect": { "min": { "x": 80, "y": 35 }, "max": { "x": 81, "y": 36 } },
+          "rect": { "min": { "x": 80.4, "y": 35.2 }, "max": { "x": 81.4, "y": 36.2 } },
           "type": "heavy",
           "height": 2.5,
           "facing": "all",
@@ -5610,7 +5610,7 @@
         },
         {
           "id": "cover.roof-planter.3",
-          "rect": { "min": { "x": 48, "y": 36 }, "max": { "x": 52, "y": 37.2 } },
+          "rect": { "min": { "x": 50.1, "y": 36 }, "max": { "x": 52, "y": 37.2 } },
           "type": "light",
           "height": 0.6,
           "facing": "all",
@@ -5642,7 +5642,7 @@
         },
         {
           "id": "cover.roof-garden.2",
-          "rect": { "min": { "x": 26, "y": 43.2 }, "max": { "x": 32, "y": 44.4 } },
+          "rect": { "min": { "x": 26, "y": 43.8 }, "max": { "x": 32, "y": 45 } },
           "type": "concealment",
           "height": 1.2,
           "facing": "all",
@@ -5658,7 +5658,7 @@
         },
         {
           "id": "cover.hvac.1",
-          "rect": { "min": { "x": 52, "y": 37 }, "max": { "x": 55.5, "y": 40 } },
+          "rect": { "min": { "x": 52, "y": 36.4 }, "max": { "x": 55.5, "y": 39.4 } },
           "type": "heavy",
           "height": 1.6,
           "facing": "all",
@@ -7487,7 +7487,7 @@
       "id": "m.principal.master",
       "floor": "ground",
       "kind": "poi",
-      "at": { "x": 53, "y": 29.5 },
+      "at": { "x": 54.5, "y": 29.5 },
       "tags": ["principal-start:master"]
     },
     {
