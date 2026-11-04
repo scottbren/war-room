@@ -35,6 +35,32 @@ describe("planGreybox: basics", () => {
   });
 });
 
+describe("planGreybox: raised ground", () => {
+  it("puts a solid block under each hill lawn, from the terrain up to just below the hill floor", () => {
+    const hillZones = map.zones.filter((z) => z.floor === "hill");
+    expect(hillZones.length).toBeGreaterThan(0);
+    for (const zone of hillZones) {
+      const block = byId(`plinth:${zone.id}`);
+      const hillTop = floorElevation("hill");
+      expect(block.floor).toBe("hill");
+      expect(block.material).toBe("terrain");
+      expect(block.center[1] + block.size[1] / 2).toBeCloseTo(hillTop - 0.01, 10); // top just under the villa slabs
+      expect(block.center[1] - block.size[1] / 2).toBeLessThanOrEqual(0); // reaches down to the ground
+      expect(block.center[0]).toBeCloseTo((zone.rect.min.x + zone.rect.max.x) / 2, 10);
+      expect(block.size[0]).toBeCloseTo(zone.rect.max.x - zone.rect.min.x, 10);
+    }
+  });
+
+  it("every hill room lies on a plinth, so no villa floats", () => {
+    const blocks = boxes.filter((b) => b.id.startsWith("plinth:"));
+    for (const room of map.floors.find((f) => f.id === "hill")!.rooms) {
+      const cx = (room.rect.min.x + room.rect.max.x) / 2, cz = (room.rect.min.y + room.rect.max.y) / 2;
+      const under = blocks.some((b) => Math.abs(cx - b.center[0]) <= b.size[0] / 2 && Math.abs(cz - b.center[2]) <= b.size[2] / 2);
+      expect(under, room.id).toBe(true);
+    }
+  });
+});
+
 describe("planGreybox: coordinates (map x, y, z -> Babylon x, z, y)", () => {
   it("lays a room slab so its top is at the floor elevation", () => {
     const hall = byId("slab:g.grand-hall"); // map rect [30,41]-[52,50], floor ground at z = 0

@@ -3,8 +3,9 @@ import { StandardMaterial } from "@babylonjs/core/Materials/standardMaterial";
 import { Color3 } from "@babylonjs/core/Maths/math.color";
 import type { Mesh } from "@babylonjs/core/Meshes/mesh";
 import type { Scene } from "@babylonjs/core/scene";
-import type { FloorId } from "@war-room/content";
+import type { FloorId, MapFile } from "@war-room/content";
 import type { RenderUnit } from "./bridge";
+import { stairLift } from "./stairs";
 
 const SIDE_COLORS: Record<string, [number, number, number]> = {
   operator: [0.2, 0.6, 1],
@@ -14,7 +15,12 @@ const SIDE_COLORS: Record<string, [number, number, number]> = {
 const HEIGHT = 1.8;
 
 /** Capsules for units, colored by side, created on first sight and moved each frame. */
-export function createUnitLayer(scene: Scene, elevations: Readonly<Record<FloorId, number>>, floorVisible: (f: FloorId) => boolean) {
+export function createUnitLayer(
+  scene: Scene,
+  elevations: Readonly<Record<FloorId, number>>,
+  floorVisible: (f: FloorId) => boolean,
+  links: readonly MapFile["verticalLinks"][number][] = [],
+) {
   const meshes = new Map<string, Mesh>();
   const materials = new Map<string, StandardMaterial>();
   const material = (side: string): StandardMaterial => {
@@ -40,7 +46,7 @@ export function createUnitLayer(scene: Scene, elevations: Readonly<Record<FloorI
           meshes.set(u.id, mesh);
         }
         // Map (x, y) -> Babylon (x, z); capsule origin is its centre.
-        mesh.position.set(u.x, elevations[u.floor] + HEIGHT / 2, u.y);
+        mesh.position.set(u.x, elevations[u.floor] + stairLift(links, elevations, u.floor, u.x, u.y) + HEIGHT / 2, u.y);
         mesh.setEnabled(floorVisible(u.floor));
       }
       for (const [id, mesh] of meshes) {

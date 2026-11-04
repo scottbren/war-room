@@ -108,3 +108,9 @@ Approved by the user: building services, lift and fire alarm, camera coverage, p
 ## T13 review fixes (found by clicking the panic room with a real mouse)
 - The click-to-move picking ray needed `import "@babylonjs/core/Culling/ray"` (Babylon side effect); without it every click threw. Added, and `e2e/click-move.e2e.ts` now tests a real click in Chromium and Firefox.
 - `Nav.isWalkable` now requires the point to belong to the floor it names. Floors at one height share navmesh cells (hill and upper, grounds and ground), so a click on the visible hill plane over the house used to resolve to the hidden upper floor. Pinned path results are unchanged.
+
+## Week-1 review fixes (2026-11-04, after Scott's walkthrough)
+- **Approved by Scott:** `CreateSimOptions.nav?: Nav` stays as an optional field on the public sim type (no `createSimWithNav`).
+- **Floating villas:** the neighbor villas are on the `hill` floor (+4 m) and had nothing under them. The greybox now builds a solid terrain block (`plinth:<zone id>`) under each hill zone, from the ground up to just below the hill floor. Render only; no map or contract change.
+- **"Capsule walks through walls":** traced tick by tick (`packages/tools/test/nav-walls.test.ts`, 20 samples per tick). Routes to the panic room, study, kitchen and dining room never enter a wall. The one crossing is the grand stair: the sim walks a flight as a horizontal line on the lower floor and pops on arrival, so the capsule crossed the hall's south wall at ground height. The client now lifts the capsule along the flight (`stairLift` in `packages/client/src/stairs.ts`, from map links only). The stair lane is exempt in the wall test.
+- **Open map item (interiors pass):** the grand stair's top meets the hall's 8 m south wall (`w.ground.y50:30-32.5`); the stair arrives in the upper gallery through it. Needs an opening or a lower wall there.

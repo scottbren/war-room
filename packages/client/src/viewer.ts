@@ -113,7 +113,7 @@ export async function createViewer(canvas: HTMLCanvasElement, map: MapFile, call
   bridge.onError = callbacks.onError;
   bridge.start(1);
   const elevations = Object.fromEntries(map.floors.map((f) => [f.id, f.elevation])) as Record<FloorId, number>;
-  const unitLayer = createUnitLayer(scene, elevations, (f) => greybox.floorVisible(f));
+  const unitLayer = createUnitLayer(scene, elevations, (f) => greybox.floorVisible(f), map.verticalLinks);
   let lastTick = -1;
   scene.onBeforeRenderObservable.add(() => {
     unitLayer.update(bridge.units(performance.now()));

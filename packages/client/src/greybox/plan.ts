@@ -228,6 +228,18 @@ export function planGreybox(map: MapFile): Box[] {
     ...rectBox(map.bounds, TERRAIN_TOP - TERRAIN_THICKNESS, TERRAIN_THICKNESS),
   });
 
+  // The hill floor is raised ground: a solid block under each of its zones, so the neighbor villas stand on earth, not in the air.
+  for (const zone of map.zones) {
+    const top = (elevationOf.get(zone.floor) ?? 0) - 0.01;
+    if (zone.floor !== "hill" || top <= TERRAIN_TOP) continue;
+    boxes.push({
+      id: `plinth:${zone.id}`,
+      floor: zone.floor,
+      material: "terrain",
+      ...rectBox(zone.rect, TERRAIN_TOP, top - TERRAIN_TOP),
+    });
+  }
+
   // Zone overlays: thin translucent slabs, each kind a hair higher than the last so overlaps do not flicker.
   for (const zone of map.zones) {
     const lift = 0.02 + ZONE_ORDER.indexOf(zone.kind) * 0.004;
