@@ -143,3 +143,14 @@ describe("charon.json: quality audit (every floor)", () => {
     expect(problems).toEqual([]);
   });
 });
+
+describe("charon.json: the front facade", () => {
+  it("has large shuttered windows on the library and the dining room, not just slits", () => {
+    for (const id of ["win.g.library.n", "win.g.dining.n"]) {
+      const w = floor("ground").windows.find((x) => x.id === id)!;
+      expect(w.width, id).toBeGreaterThanOrEqual(3.6);
+      expect(w.shutter, id).toBe(true);
+      expect(w.blastRated, id).toBe(true);
+    }
+  });
+});

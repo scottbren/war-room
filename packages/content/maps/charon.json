@@ -2829,9 +2829,9 @@
         {
           "id": "win.g.library.n",
           "at": { "x": 24, "y": 56 },
-          "width": 0.4,
+          "width": 4,
           "between": ["g.library", "outside"],
-          "shutter": false,
+          "shutter": true,
           "blastRated": true
         },
         {
@@ -2877,7 +2877,7 @@
         {
           "id": "win.g.dining.n",
           "at": { "x": 56, "y": 56 },
-          "width": 1.8,
+          "width": 4,
           "between": ["g.dining", "outside"],
           "shutter": true,
           "blastRated": true
