@@ -3284,7 +3284,7 @@
         {
           "id": "u.sky-lounge",
           "name": "Sky lounge (cantilevered)",
-          "rect": { "min": { "x": 54, "y": 17 }, "max": { "x": 66, "y": 33 } },
+          "rect": { "min": { "x": 54, "y": 21 }, "max": { "x": 66, "y": 33 } },
           "ceiling": 4,
           "tags": ["interior"]
         },
@@ -3476,26 +3476,26 @@
           "destructible": true
         },
         {
-          "id": "w.upper.x54:11-17",
+          "id": "w.upper.x54:11-21",
           "a": { "x": 54, "y": 11 },
-          "b": { "x": 54, "y": 17 },
+          "b": { "x": 54, "y": 21 },
           "thickness": 0.1,
           "height": 1.1,
           "material": "glass",
           "destructible": true
         },
         {
-          "id": "w.upper.x54:17-20",
-          "a": { "x": 54, "y": 17 },
-          "b": { "x": 54, "y": 20 },
+          "id": "w.upper.x54:21-22",
+          "a": { "x": 54, "y": 21 },
+          "b": { "x": 54, "y": 22 },
           "thickness": 0.4,
           "height": 4,
           "material": "reinforced",
           "destructible": true
         },
         {
-          "id": "w.upper.x54:23-26",
-          "a": { "x": 54, "y": 23 },
+          "id": "w.upper.x54:25-26",
+          "a": { "x": 54, "y": 25 },
           "b": { "x": 54, "y": 26 },
           "thickness": 0.4,
           "height": 4,
@@ -3548,17 +3548,17 @@
           "destructible": true
         },
         {
-          "id": "w.upper.x66:17-20",
-          "a": { "x": 66, "y": 17 },
-          "b": { "x": 66, "y": 20 },
-          "thickness": 0.2,
-          "height": 4,
-          "material": "plaster",
+          "id": "w.upper.x66:20-21",
+          "a": { "x": 66, "y": 20 },
+          "b": { "x": 66, "y": 21 },
+          "thickness": 0.1,
+          "height": 1.1,
+          "material": "glass",
           "destructible": true
         },
         {
-          "id": "w.upper.x66:20-22",
-          "a": { "x": 66, "y": 20 },
+          "id": "w.upper.x66:21-22",
+          "a": { "x": 66, "y": 21 },
           "b": { "x": 66, "y": 22 },
           "thickness": 0.4,
           "height": 4,
@@ -3674,21 +3674,21 @@
           "destructible": true
         },
         {
-          "id": "w.upper.y17:54-66",
-          "a": { "x": 54, "y": 17 },
-          "b": { "x": 66, "y": 17 },
-          "thickness": 0.4,
-          "height": 4,
-          "material": "reinforced",
-          "destructible": true
-        },
-        {
           "id": "w.upper.y20:66-76",
           "a": { "x": 66, "y": 20 },
           "b": { "x": 76, "y": 20 },
           "thickness": 0.1,
           "height": 1.1,
           "material": "glass",
+          "destructible": true
+        },
+        {
+          "id": "w.upper.y21:54-66",
+          "a": { "x": 54, "y": 21 },
+          "b": { "x": 66, "y": 21 },
+          "thickness": 0.4,
+          "height": 4,
+          "material": "reinforced",
           "destructible": true
         },
         {
@@ -4235,7 +4235,7 @@
         },
         {
           "id": "d.u.lounge-terrace",
-          "at": { "x": 54, "y": 21.5 },
+          "at": { "x": 54, "y": 23.5 },
           "width": 3,
           "between": ["u.sky-lounge", "u.terrace.c"],
           "kind": "glass",
@@ -4334,7 +4334,7 @@
         },
         {
           "id": "win.u.lounge.s1",
-          "at": { "x": 57, "y": 17 },
+          "at": { "x": 57, "y": 21 },
           "width": 1.8,
           "between": ["u.sky-lounge", "outside"],
           "shutter": true,
@@ -4342,15 +4342,7 @@
         },
         {
           "id": "win.u.lounge.s2",
-          "at": { "x": 63, "y": 17 },
-          "width": 1.8,
-          "between": ["u.sky-lounge", "outside"],
-          "shutter": true,
-          "blastRated": true
-        },
-        {
-          "id": "win.u.lounge.e",
-          "at": { "x": 66, "y": 18.5 },
+          "at": { "x": 63, "y": 21 },
           "width": 1.8,
           "between": ["u.sky-lounge", "outside"],
           "shutter": true,
@@ -4432,7 +4424,7 @@
         },
         {
           "id": "cover.sky-lounge-sofas",
-          "rect": { "min": { "x": 57, "y": 21 }, "max": { "x": 61, "y": 24 } },
+          "rect": { "min": { "x": 57, "y": 23 }, "max": { "x": 61, "y": 26 } },
           "type": "light",
           "height": 0.8,
           "facing": "all",
@@ -4549,7 +4541,7 @@
         {
           "id": "r.deck.lounge",
           "name": "Cantilever deck",
-          "rect": { "min": { "x": 54, "y": 17 }, "max": { "x": 66, "y": 26 } },
+          "rect": { "min": { "x": 54, "y": 21 }, "max": { "x": 66, "y": 26 } },
           "ceiling": 10,
           "tags": ["roof", "deck"]
         },
@@ -5362,7 +5354,7 @@
         },
         {
           "id": "cover.parapet.lounge.south",
-          "rect": { "min": { "x": 54, "y": 17 }, "max": { "x": 66, "y": 17.3 } },
+          "rect": { "min": { "x": 54, "y": 21 }, "max": { "x": 66, "y": 21.3 } },
           "type": "light",
           "height": 1,
           "facing": 180,
@@ -5370,7 +5362,7 @@
         },
         {
           "id": "cover.parapet.lounge.west",
-          "rect": { "min": { "x": 54, "y": 17.3 }, "max": { "x": 54.3, "y": 26 } },
+          "rect": { "min": { "x": 54, "y": 21.3 }, "max": { "x": 54.3, "y": 26 } },
           "type": "light",
           "height": 1,
           "facing": 270,
@@ -5378,7 +5370,7 @@
         },
         {
           "id": "cover.parapet.lounge.east",
-          "rect": { "min": { "x": 65.7, "y": 17.3 }, "max": { "x": 66, "y": 26 } },
+          "rect": { "min": { "x": 65.7, "y": 21.3 }, "max": { "x": 66, "y": 26 } },
           "type": "light",
           "height": 1,
           "facing": 90,

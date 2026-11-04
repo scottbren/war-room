@@ -113,11 +113,15 @@ describe("charon.json v6: stacking and heights", () => {
     expect(xs[1]! - xs[0]!).toBeGreaterThanOrEqual(10); // the middle of the hall stays open
   });
 
-  it("has a sky lounge cantilevered 8 m out over the pool notch (nothing under it on the ground floor)", () => {
+  it("has a sky lounge cantilevered 5 m out over the pool notch (nothing under it on the ground floor)", () => {
     const lounge = room("upper", "u.sky-lounge");
     expect(lounge.tags).toContain("interior");
     const cantilever = rectOf(lounge.rect.min.x, lounge.rect.min.y, lounge.rect.max.x, BAR_B.min.y);
-    expect(area(cantilever)).toBeGreaterThanOrEqual(100);
+    // Believable without columns: residential cantilevers run 3-5 m (Scott, 2026-11-04: 9 m "too much").
+    const depth = BAR_B.min.y - lounge.rect.min.y;
+    expect(depth).toBeGreaterThanOrEqual(4);
+    expect(depth).toBeLessThanOrEqual(5);
+    expect(area(cantilever)).toBeGreaterThanOrEqual(50);
     for (const r of floor("ground").rooms) expect(overlaps(cantilever, r.rect), r.id).toBe(false);
     const pool = zone("zone.pool")!;
     expect(pool.kind).toBe("pool");

@@ -147,7 +147,7 @@ Data-only markers for now (kind `poi`, tagged `smart:*`); all report to the hub 
 - **Basement (`lower`)**: l.gym, l.storage, l.cellar (west block), l.corridor.w, l.armory, l.vault (under the hall, blast doors), l.corridor.e, l.mech (plant room and generator) and l.staff. Stairs: `link.cellar-stairs` (library to cellar) and `link.plant-stairs` (service room to plant room), each with a `gallery-void` opening in the ground floor.
 - **Shore**: the boathouse, store, yacht, yacht bow and dock lounge, with the sea and marina zones. The tunnel exits in the boathouse (on the shore). `link.cliff` (cliff path, x = 18) and `link.shore-stair` (stairs, x = 71) climb to the lawn.
 - **Hill**: the four neighbor-villa rooms on raised lawns (zones `zone.hill.west`, `zone.hill.east`).
-- **Upper floor**: the gym wing is now a covered sun terrace (`u.terrace.sw`) over the master suite; the sky lounge (`u.sky-lounge`, [62,8]-[72,13]) cantilevers over the south terrace, reached through the south balcony. The gym moved to the basement.
+- **Upper floor**: the gym wing is now a covered sun terrace (`u.terrace.sw`) over the master suite; the sky lounge (`u.sky-lounge`) cantilevers over the south terrace (see version 6 and the v12 note below), reached through the south balcony. The gym moved to the basement.
 - **Style**: classical v4 features removed (belvedere, colonnades, parterre, balustrades, urns); the entrance has a flat canopy on two piers (`cover.canopy-pier.*`); planters on the terraces and the main roof deck.
 
 ## Version 6: the zigzag of three bars (supersedes the house, ground, upper, roof and link sections above)
@@ -155,7 +155,7 @@ Data-only markers for now (kind `poi`, tagged `smart:*`); all report to the hub 
 The U-shaped courtyard house is replaced by three 42 x 15 m bars, each slid sideways from the last, so the house is a staircase with open notches rather than a ring. North is up (gate, drive, helipad).
 
 - **Bar A** (x18-60, y41-56, two storeys plus roof): library, wine room, cloak, foyer (front door at x=41 under a flat canopy on two piers), guard room, double-height grand hall (22 x 9 m, ceiling 8), dining, kitchen; covered walkway east to the garage. Upper: son, office, cinema, gallery bridge over the hall void, wife; north balcony with the roof ladder.
-- **Bar B** (x40-82, y26-41, two storeys plus roof): drawing, study, stair core, PANIC ROOM (x66-76, y31-41) with the SOC south of it, service/generator/staff entrance, stair core, master suite, master bath. Upper: guest, spa, core, SAFE LANDING (same rect as the panic room), daughter, second guest suite, bath, and the SKY LOUNGE, which cantilevers 9 m south over the pool.
+- **Bar B** (x40-82, y26-41, two storeys plus roof): drawing, study, stair core, PANIC ROOM (x66-76, y31-41) with the SOC south of it, service/generator/staff entrance, stair core, master suite, master bath. Upper: guest, spa, core, SAFE LANDING (same rect as the panic room), daughter, second guest suite, bath, and the SKY LOUNGE, which cantilevers 5 m south over the pool edge (was 9 m before 2026-11-04).
 - **Bar C** (x12-54, y11-26, one storey): lounge and bar, long living room with a glass wall to the pool. Its roof is the upper-level terrace.
 - **Notches:** west garden (x12-40, y26-41); pool notch (x54-82, y11-26) with the 24 x 9 m pool.
 - **Roof** (z +8, bars A and B only): four bastions, radar tower, main deck with the air-defense site, sun deck with plunge pool, and a deck over the cantilever.
@@ -206,3 +206,6 @@ Tag conventions (no geometry changes):
 - Lifts: `svc:elevator` on ground and upper, `link:link.stairs` names the stair link it duplicates (runtime can halt or hijack it).
 - Cameras: `sees:<roomId>` lists the rooms an indoor camera sees (validator checks the rooms exist). New cameras: vault, basement corridor, gallery, service, plant. The panic room, safe landing, principal's study and master suite are deliberately unseen. `sec:blind-spot` + `why:` marks five outdoor/balcony gaps.
 - Phones: `comms:pbx` (guard room) and ten `comms:phone` markers with unique `ext:` values.
+
+## Sky lounge shortened (2026-11-04, Scott: 9 m "too much")
+`u.sky-lounge` is now x54-66, y21-33: a 5 m cantilever past the bar's south wall (y26), with no columns. Changed with it: its south wall and two shuttered windows moved to y=21 (the east window is gone; the balcony covers that side), the sofas moved to y23-26, the terrace door to y=23.5, the roof deck `r.deck.lounge` and its parapets to y21-26. The east glass balcony (`u.balcony.e`) is unchanged.

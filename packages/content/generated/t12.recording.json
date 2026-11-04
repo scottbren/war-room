@@ -45,45 +45,6 @@
       }
     },
     {
-      "at": 0,
-      "command": {
-        "kind": "move",
-        "tick": 0,
-        "entity": "def.vet.5",
-        "to": {
-          "floor": "ground",
-          "x": 89.5,
-          "y": 32.78
-        }
-      }
-    },
-    {
-      "at": 0,
-      "command": {
-        "kind": "move",
-        "tick": 0,
-        "entity": "def.vet.9",
-        "to": {
-          "floor": "grounds",
-          "x": 53.38,
-          "y": 34.61
-        }
-      }
-    },
-    {
-      "at": 20,
-      "command": {
-        "kind": "move",
-        "tick": 20,
-        "entity": "civ.staff.2",
-        "to": {
-          "floor": "grounds",
-          "x": 36.93,
-          "y": 46.75
-        }
-      }
-    },
-    {
       "at": 20,
       "command": {
         "kind": "move",
@@ -179,19 +140,6 @@
       "command": {
         "kind": "move",
         "tick": 40,
-        "entity": "def.vet.8",
-        "to": {
-          "floor": "ground",
-          "x": 25.4,
-          "y": 29.55
-        }
-      }
-    },
-    {
-      "at": 40,
-      "command": {
-        "kind": "move",
-        "tick": 40,
         "entity": "def.vet.9",
         "to": {
           "floor": "grounds",
@@ -279,32 +227,6 @@
       }
     },
     {
-      "at": 60,
-      "command": {
-        "kind": "move",
-        "tick": 60,
-        "entity": "def.vet.6",
-        "to": {
-          "floor": "ground",
-          "x": 4.29,
-          "y": 86.9
-        }
-      }
-    },
-    {
-      "at": 60,
-      "command": {
-        "kind": "move",
-        "tick": 60,
-        "entity": "def.vet.7",
-        "to": {
-          "floor": "ground",
-          "x": -13.62,
-          "y": 54.27
-        }
-      }
-    },
-    {
       "at": 80,
       "command": {
         "kind": "move",
@@ -366,45 +288,6 @@
           "floor": "grounds",
           "x": 116.62,
           "y": 32.13
-        }
-      }
-    },
-    {
-      "at": 80,
-      "command": {
-        "kind": "move",
-        "tick": 80,
-        "entity": "def.vet.5",
-        "to": {
-          "floor": "ground",
-          "x": -27.61,
-          "y": 51.53
-        }
-      }
-    },
-    {
-      "at": 80,
-      "command": {
-        "kind": "move",
-        "tick": 80,
-        "entity": "def.vet.7",
-        "to": {
-          "floor": "ground",
-          "x": -36,
-          "y": 91.1
-        }
-      }
-    },
-    {
-      "at": 80,
-      "command": {
-        "kind": "move",
-        "tick": 80,
-        "entity": "def.vet.8",
-        "to": {
-          "floor": "ground",
-          "x": 8.44,
-          "y": 56.53
         }
       }
     },
@@ -504,19 +387,6 @@
       "command": {
         "kind": "move",
         "tick": 120,
-        "entity": "def.vet.5",
-        "to": {
-          "floor": "ground",
-          "x": 63.12,
-          "y": 68.49
-        }
-      }
-    },
-    {
-      "at": 120,
-      "command": {
-        "kind": "move",
-        "tick": 120,
         "entity": "def.vet.9",
         "to": {
           "floor": "grounds",
@@ -543,19 +413,6 @@
       "command": {
         "kind": "move",
         "tick": 140,
-        "entity": "def.vet.11",
-        "to": {
-          "floor": "grounds",
-          "x": 28.11,
-          "y": 25.11
-        }
-      }
-    },
-    {
-      "at": 140,
-      "command": {
-        "kind": "move",
-        "tick": 140,
         "entity": "def.vet.12",
         "to": {
           "floor": "grounds",
@@ -574,19 +431,6 @@
           "floor": "ground",
           "x": 28.14,
           "y": 18.53
-        }
-      }
-    },
-    {
-      "at": 140,
-      "command": {
-        "kind": "move",
-        "tick": 140,
-        "entity": "def.vet.8",
-        "to": {
-          "floor": "ground",
-          "x": 122.18,
-          "y": 22.44
         }
       }
     },
@@ -634,19 +478,6 @@
       "command": {
         "kind": "move",
         "tick": 160,
-        "entity": "def.vet.5",
-        "to": {
-          "floor": "ground",
-          "x": -10.08,
-          "y": 20.67
-        }
-      }
-    },
-    {
-      "at": 160,
-      "command": {
-        "kind": "move",
-        "tick": 160,
         "entity": "def.vet.9",
         "to": {
           "floor": "grounds",
@@ -686,37 +517,11 @@
       "command": {
         "kind": "move",
         "tick": 180,
-        "entity": "def.vet.5",
-        "to": {
-          "floor": "ground",
-          "x": 36.84,
-          "y": 74.03
-        }
-      }
-    },
-    {
-      "at": 180,
-      "command": {
-        "kind": "move",
-        "tick": 180,
         "entity": "def.vet.7",
         "to": {
           "floor": "ground",
           "x": 42.19,
           "y": 26.11
-        }
-      }
-    },
-    {
-      "at": 180,
-      "command": {
-        "kind": "move",
-        "tick": 180,
-        "entity": "def.vet.8",
-        "to": {
-          "floor": "ground",
-          "x": -30.01,
-          "y": 43.5
         }
       }
     },
@@ -769,32 +574,6 @@
           "floor": "grounds",
           "x": 1.47,
           "y": 31.43
-        }
-      }
-    },
-    {
-      "at": 200,
-      "command": {
-        "kind": "move",
-        "tick": 200,
-        "entity": "def.hired.6",
-        "to": {
-          "floor": "grounds",
-          "x": 41.21,
-          "y": 11.91
-        }
-      }
-    },
-    {
-      "at": 200,
-      "command": {
-        "kind": "move",
-        "tick": 200,
-        "entity": "def.vet.8",
-        "to": {
-          "floor": "ground",
-          "x": 55.62,
-          "y": 10.92
         }
       }
     },
@@ -864,19 +643,6 @@
       }
     },
     {
-      "at": 220,
-      "command": {
-        "kind": "move",
-        "tick": 220,
-        "entity": "def.vet.8",
-        "to": {
-          "floor": "ground",
-          "x": -26.85,
-          "y": 75.9
-        }
-      }
-    },
-    {
       "at": 240,
       "command": {
         "kind": "move",
@@ -938,19 +704,6 @@
           "floor": "grounds",
           "x": -2.7,
           "y": 93.3
-        }
-      }
-    },
-    {
-      "at": 260,
-      "command": {
-        "kind": "move",
-        "tick": 260,
-        "entity": "def.hired.1",
-        "to": {
-          "floor": "grounds",
-          "x": 29.46,
-          "y": 54.66
         }
       }
     },
@@ -1059,19 +812,6 @@
       }
     },
     {
-      "at": 280,
-      "command": {
-        "kind": "move",
-        "tick": 280,
-        "entity": "def.vet.6",
-        "to": {
-          "floor": "ground",
-          "x": 2.29,
-          "y": 44.15
-        }
-      }
-    },
-    {
       "at": 300,
       "command": {
         "kind": "move",
@@ -1115,45 +855,6 @@
       "command": {
         "kind": "move",
         "tick": 300,
-        "entity": "def.vet.5",
-        "to": {
-          "floor": "ground",
-          "x": 121.22,
-          "y": 64.75
-        }
-      }
-    },
-    {
-      "at": 300,
-      "command": {
-        "kind": "move",
-        "tick": 300,
-        "entity": "def.vet.6",
-        "to": {
-          "floor": "ground",
-          "x": -37.06,
-          "y": 87.81
-        }
-      }
-    },
-    {
-      "at": 300,
-      "command": {
-        "kind": "move",
-        "tick": 300,
-        "entity": "def.vet.7",
-        "to": {
-          "floor": "ground",
-          "x": 9.06,
-          "y": 26.76
-        }
-      }
-    },
-    {
-      "at": 300,
-      "command": {
-        "kind": "move",
-        "tick": 300,
         "entity": "def.vet.9",
         "to": {
           "floor": "grounds",
@@ -1172,58 +873,6 @@
           "floor": "grounds",
           "x": -38.32,
           "y": 77.08
-        }
-      }
-    },
-    {
-      "at": 320,
-      "command": {
-        "kind": "move",
-        "tick": 320,
-        "entity": "def.hired.3",
-        "to": {
-          "floor": "grounds",
-          "x": 52.79,
-          "y": 24.92
-        }
-      }
-    },
-    {
-      "at": 320,
-      "command": {
-        "kind": "move",
-        "tick": 320,
-        "entity": "def.vet.6",
-        "to": {
-          "floor": "ground",
-          "x": 124.46,
-          "y": 12.85
-        }
-      }
-    },
-    {
-      "at": 320,
-      "command": {
-        "kind": "move",
-        "tick": 320,
-        "entity": "def.vet.7",
-        "to": {
-          "floor": "ground",
-          "x": 109.57,
-          "y": 14.21
-        }
-      }
-    },
-    {
-      "at": 320,
-      "command": {
-        "kind": "move",
-        "tick": 320,
-        "entity": "def.vet.8",
-        "to": {
-          "floor": "ground",
-          "x": 107.73,
-          "y": 16.77
         }
       }
     },
@@ -1293,19 +942,6 @@
       }
     },
     {
-      "at": 340,
-      "command": {
-        "kind": "move",
-        "tick": 340,
-        "entity": "def.vet.7",
-        "to": {
-          "floor": "ground",
-          "x": -8.58,
-          "y": 6.51
-        }
-      }
-    },
-    {
       "at": 360,
       "command": {
         "kind": "move",
@@ -1328,32 +964,6 @@
           "floor": "grounds",
           "x": 102.29,
           "y": 90.74
-        }
-      }
-    },
-    {
-      "at": 360,
-      "command": {
-        "kind": "move",
-        "tick": 360,
-        "entity": "def.vet.6",
-        "to": {
-          "floor": "ground",
-          "x": 39.52,
-          "y": 84.88
-        }
-      }
-    },
-    {
-      "at": 380,
-      "command": {
-        "kind": "move",
-        "tick": 380,
-        "entity": "civ.staff.1",
-        "to": {
-          "floor": "grounds",
-          "x": 38.58,
-          "y": 52.56
         }
       }
     },
@@ -1393,32 +1003,6 @@
           "floor": "grounds",
           "x": 125.09,
           "y": 1.84
-        }
-      }
-    },
-    {
-      "at": 380,
-      "command": {
-        "kind": "move",
-        "tick": 380,
-        "entity": "def.vet.11",
-        "to": {
-          "floor": "grounds",
-          "x": 51.23,
-          "y": 46.19
-        }
-      }
-    },
-    {
-      "at": 380,
-      "command": {
-        "kind": "move",
-        "tick": 380,
-        "entity": "def.vet.12",
-        "to": {
-          "floor": "grounds",
-          "x": 72.01,
-          "y": 26.7
         }
       }
     },
@@ -1475,19 +1059,6 @@
       }
     },
     {
-      "at": 400,
-      "command": {
-        "kind": "move",
-        "tick": 400,
-        "entity": "def.vet.5",
-        "to": {
-          "floor": "ground",
-          "x": 121.07,
-          "y": 4.09
-        }
-      }
-    },
-    {
       "at": 420,
       "command": {
         "kind": "move",
@@ -1505,37 +1076,11 @@
       "command": {
         "kind": "move",
         "tick": 420,
-        "entity": "def.hired.2",
-        "to": {
-          "floor": "grounds",
-          "x": 75.43,
-          "y": 38.5
-        }
-      }
-    },
-    {
-      "at": 420,
-      "command": {
-        "kind": "move",
-        "tick": 420,
         "entity": "def.hired.4",
         "to": {
           "floor": "grounds",
           "x": 114.47,
           "y": 6.83
-        }
-      }
-    },
-    {
-      "at": 420,
-      "command": {
-        "kind": "move",
-        "tick": 420,
-        "entity": "def.vet.6",
-        "to": {
-          "floor": "ground",
-          "x": 38.14,
-          "y": 40.22
         }
       }
     },
@@ -1601,19 +1146,6 @@
           "floor": "grounds",
           "x": 27.31,
           "y": 39.24
-        }
-      }
-    },
-    {
-      "at": 440,
-      "command": {
-        "kind": "move",
-        "tick": 440,
-        "entity": "def.vet.9",
-        "to": {
-          "floor": "grounds",
-          "x": 33.83,
-          "y": 50.6
         }
       }
     },
@@ -1696,19 +1228,6 @@
       }
     },
     {
-      "at": 460,
-      "command": {
-        "kind": "move",
-        "tick": 460,
-        "entity": "def.vet.7",
-        "to": {
-          "floor": "ground",
-          "x": 12.6,
-          "y": 89.56
-        }
-      }
-    },
-    {
       "at": 480,
       "command": {
         "kind": "move",
@@ -1718,45 +1237,6 @@
           "floor": "grounds",
           "x": 100.86,
           "y": 76.74
-        }
-      }
-    },
-    {
-      "at": 480,
-      "command": {
-        "kind": "move",
-        "tick": 480,
-        "entity": "def.hired.2",
-        "to": {
-          "floor": "grounds",
-          "x": 24.2,
-          "y": 51.43
-        }
-      }
-    },
-    {
-      "at": 480,
-      "command": {
-        "kind": "move",
-        "tick": 480,
-        "entity": "def.vet.10",
-        "to": {
-          "floor": "grounds",
-          "x": 66.78,
-          "y": 33.39
-        }
-      }
-    },
-    {
-      "at": 480,
-      "command": {
-        "kind": "move",
-        "tick": 480,
-        "entity": "def.vet.6",
-        "to": {
-          "floor": "ground",
-          "x": 94.29,
-          "y": 16.7
         }
       }
     },
@@ -1813,19 +1293,6 @@
       }
     },
     {
-      "at": 500,
-      "command": {
-        "kind": "move",
-        "tick": 500,
-        "entity": "def.vet.7",
-        "to": {
-          "floor": "ground",
-          "x": 119.78,
-          "y": 57.96
-        }
-      }
-    },
-    {
       "at": 520,
       "command": {
         "kind": "move",
@@ -1856,45 +1323,6 @@
       "command": {
         "kind": "move",
         "tick": 520,
-        "entity": "def.hired.1",
-        "to": {
-          "floor": "grounds",
-          "x": 71.67,
-          "y": 38.92
-        }
-      }
-    },
-    {
-      "at": 520,
-      "command": {
-        "kind": "move",
-        "tick": 520,
-        "entity": "def.vet.11",
-        "to": {
-          "floor": "grounds",
-          "x": 52.9,
-          "y": 55.11
-        }
-      }
-    },
-    {
-      "at": 520,
-      "command": {
-        "kind": "move",
-        "tick": 520,
-        "entity": "def.vet.7",
-        "to": {
-          "floor": "ground",
-          "x": 62.95,
-          "y": 17.95
-        }
-      }
-    },
-    {
-      "at": 520,
-      "command": {
-        "kind": "move",
-        "tick": 520,
         "entity": "def.vet.9",
         "to": {
           "floor": "grounds",
@@ -1908,76 +1336,11 @@
       "command": {
         "kind": "move",
         "tick": 540,
-        "entity": "def.hired.2",
-        "to": {
-          "floor": "grounds",
-          "x": 48.39,
-          "y": 16.79
-        }
-      }
-    },
-    {
-      "at": 540,
-      "command": {
-        "kind": "move",
-        "tick": 540,
-        "entity": "def.hired.3",
-        "to": {
-          "floor": "grounds",
-          "x": 32.59,
-          "y": 13.62
-        }
-      }
-    },
-    {
-      "at": 540,
-      "command": {
-        "kind": "move",
-        "tick": 540,
-        "entity": "def.vet.10",
-        "to": {
-          "floor": "grounds",
-          "x": 33.27,
-          "y": 47.77
-        }
-      }
-    },
-    {
-      "at": 540,
-      "command": {
-        "kind": "move",
-        "tick": 540,
         "entity": "def.vet.11",
         "to": {
           "floor": "grounds",
           "x": 67.89,
           "y": 22.5
-        }
-      }
-    },
-    {
-      "at": 540,
-      "command": {
-        "kind": "move",
-        "tick": 540,
-        "entity": "def.vet.6",
-        "to": {
-          "floor": "ground",
-          "x": 132.73,
-          "y": 13.32
-        }
-      }
-    },
-    {
-      "at": 540,
-      "command": {
-        "kind": "move",
-        "tick": 540,
-        "entity": "def.vet.8",
-        "to": {
-          "floor": "ground",
-          "x": 110.45,
-          "y": 34.51
         }
       }
     },
@@ -2086,19 +1449,6 @@
       }
     },
     {
-      "at": 560,
-      "command": {
-        "kind": "move",
-        "tick": 560,
-        "entity": "def.vet.7",
-        "to": {
-          "floor": "ground",
-          "x": -8.46,
-          "y": 47.07
-        }
-      }
-    },
-    {
       "at": 580,
       "command": {
         "kind": "move",
@@ -2142,50 +1492,11 @@
       "command": {
         "kind": "move",
         "tick": 580,
-        "entity": "def.vet.10",
-        "to": {
-          "floor": "grounds",
-          "x": 41.15,
-          "y": 25.41
-        }
-      }
-    },
-    {
-      "at": 580,
-      "command": {
-        "kind": "move",
-        "tick": 580,
         "entity": "def.vet.11",
         "to": {
           "floor": "grounds",
           "x": 134.96,
           "y": 64.43
-        }
-      }
-    },
-    {
-      "at": 580,
-      "command": {
-        "kind": "move",
-        "tick": 580,
-        "entity": "def.vet.5",
-        "to": {
-          "floor": "ground",
-          "x": 36.74,
-          "y": 60.93
-        }
-      }
-    },
-    {
-      "at": 580,
-      "command": {
-        "kind": "move",
-        "tick": 580,
-        "entity": "def.vet.7",
-        "to": {
-          "floor": "ground",
-          "x": 105.64,
-          "y": 91.19
         }
       }
     },
@@ -2238,32 +1549,6 @@
           "floor": "grounds",
           "x": 131.21,
           "y": 56.93
-        }
-      }
-    },
-    {
-      "at": 600,
-      "command": {
-        "kind": "move",
-        "tick": 600,
-        "entity": "def.vet.5",
-        "to": {
-          "floor": "ground",
-          "x": 126.55,
-          "y": 56.66
-        }
-      }
-    },
-    {
-      "at": 600,
-      "command": {
-        "kind": "move",
-        "tick": 600,
-        "entity": "def.vet.8",
-        "to": {
-          "floor": "ground",
-          "x": -12.91,
-          "y": 63.39
         }
       }
     },
@@ -2359,19 +1644,6 @@
       }
     },
     {
-      "at": 620,
-      "command": {
-        "kind": "move",
-        "tick": 620,
-        "entity": "def.vet.6",
-        "to": {
-          "floor": "ground",
-          "x": 109.62,
-          "y": 16.57
-        }
-      }
-    },
-    {
       "at": 640,
       "command": {
         "kind": "move",
@@ -2394,19 +1666,6 @@
           "floor": "grounds",
           "x": 114.4,
           "y": 33.17
-        }
-      }
-    },
-    {
-      "at": 640,
-      "command": {
-        "kind": "move",
-        "tick": 640,
-        "entity": "def.vet.8",
-        "to": {
-          "floor": "ground",
-          "x": 91.61,
-          "y": 81.56
         }
       }
     },
@@ -2467,19 +1726,6 @@
       "command": {
         "kind": "move",
         "tick": 660,
-        "entity": "def.vet.11",
-        "to": {
-          "floor": "grounds",
-          "x": 16.12,
-          "y": 13.1
-        }
-      }
-    },
-    {
-      "at": 660,
-      "command": {
-        "kind": "move",
-        "tick": 660,
         "entity": "def.vet.9",
         "to": {
           "floor": "grounds",
@@ -2511,32 +1757,6 @@
           "floor": "grounds",
           "x": 55.49,
           "y": 73.67
-        }
-      }
-    },
-    {
-      "at": 680,
-      "command": {
-        "kind": "move",
-        "tick": 680,
-        "entity": "def.vet.6",
-        "to": {
-          "floor": "ground",
-          "x": 14.04,
-          "y": 35.26
-        }
-      }
-    },
-    {
-      "at": 680,
-      "command": {
-        "kind": "move",
-        "tick": 680,
-        "entity": "def.vet.7",
-        "to": {
-          "floor": "ground",
-          "x": -11.66,
-          "y": 86.89
         }
       }
     },
@@ -2610,19 +1830,6 @@
       "command": {
         "kind": "move",
         "tick": 700,
-        "entity": "def.vet.5",
-        "to": {
-          "floor": "ground",
-          "x": 5.29,
-          "y": 34.74
-        }
-      }
-    },
-    {
-      "at": 700,
-      "command": {
-        "kind": "move",
-        "tick": 700,
         "entity": "def.vet.9",
         "to": {
           "floor": "grounds",
@@ -2654,45 +1861,6 @@
           "floor": "grounds",
           "x": 115.6,
           "y": 71.69
-        }
-      }
-    },
-    {
-      "at": 720,
-      "command": {
-        "kind": "move",
-        "tick": 720,
-        "entity": "def.vet.5",
-        "to": {
-          "floor": "ground",
-          "x": -1.44,
-          "y": 36.33
-        }
-      }
-    },
-    {
-      "at": 720,
-      "command": {
-        "kind": "move",
-        "tick": 720,
-        "entity": "def.vet.6",
-        "to": {
-          "floor": "ground",
-          "x": 11.49,
-          "y": 3.07
-        }
-      }
-    },
-    {
-      "at": 720,
-      "command": {
-        "kind": "move",
-        "tick": 720,
-        "entity": "def.vet.7",
-        "to": {
-          "floor": "ground",
-          "x": -22.61,
-          "y": 38.49
         }
       }
     },
@@ -2740,32 +1908,6 @@
       "command": {
         "kind": "move",
         "tick": 740,
-        "entity": "def.vet.6",
-        "to": {
-          "floor": "ground",
-          "x": -11.05,
-          "y": 76.42
-        }
-      }
-    },
-    {
-      "at": 740,
-      "command": {
-        "kind": "move",
-        "tick": 740,
-        "entity": "def.vet.7",
-        "to": {
-          "floor": "ground",
-          "x": 70.88,
-          "y": 84.87
-        }
-      }
-    },
-    {
-      "at": 740,
-      "command": {
-        "kind": "move",
-        "tick": 740,
         "entity": "def.vet.9",
         "to": {
           "floor": "grounds",
@@ -2788,19 +1930,6 @@
       }
     },
     {
-      "at": 760,
-      "command": {
-        "kind": "move",
-        "tick": 760,
-        "entity": "def.vet.6",
-        "to": {
-          "floor": "ground",
-          "x": -33.87,
-          "y": 29.83
-        }
-      }
-    },
-    {
       "at": 780,
       "command": {
         "kind": "move",
@@ -2818,63 +1947,11 @@
       "command": {
         "kind": "move",
         "tick": 780,
-        "entity": "def.hired.1",
-        "to": {
-          "floor": "grounds",
-          "x": 44.01,
-          "y": 50.71
-        }
-      }
-    },
-    {
-      "at": 780,
-      "command": {
-        "kind": "move",
-        "tick": 780,
         "entity": "def.vet.12",
         "to": {
           "floor": "grounds",
           "x": -35.72,
           "y": 84.1
-        }
-      }
-    },
-    {
-      "at": 780,
-      "command": {
-        "kind": "move",
-        "tick": 780,
-        "entity": "def.vet.5",
-        "to": {
-          "floor": "ground",
-          "x": 118.12,
-          "y": 4.06
-        }
-      }
-    },
-    {
-      "at": 780,
-      "command": {
-        "kind": "move",
-        "tick": 780,
-        "entity": "def.vet.6",
-        "to": {
-          "floor": "ground",
-          "x": -0.66,
-          "y": 73.35
-        }
-      }
-    },
-    {
-      "at": 780,
-      "command": {
-        "kind": "move",
-        "tick": 780,
-        "entity": "def.vet.9",
-        "to": {
-          "floor": "grounds",
-          "x": 60.37,
-          "y": 27.96
         }
       }
     },
@@ -2927,32 +2004,6 @@
           "floor": "grounds",
           "x": -30.1,
           "y": 79.83
-        }
-      }
-    },
-    {
-      "at": 800,
-      "command": {
-        "kind": "move",
-        "tick": 800,
-        "entity": "def.vet.5",
-        "to": {
-          "floor": "ground",
-          "x": 1.31,
-          "y": 44.2
-        }
-      }
-    },
-    {
-      "at": 800,
-      "command": {
-        "kind": "move",
-        "tick": 800,
-        "entity": "def.vet.6",
-        "to": {
-          "floor": "ground",
-          "x": 133.14,
-          "y": 29.04
         }
       }
     },
@@ -3113,19 +2164,6 @@
       }
     },
     {
-      "at": 840,
-      "command": {
-        "kind": "move",
-        "tick": 840,
-        "entity": "def.vet.8",
-        "to": {
-          "floor": "ground",
-          "x": 127.98,
-          "y": 20.24
-        }
-      }
-    },
-    {
       "at": 860,
       "command": {
         "kind": "move",
@@ -3161,32 +2199,6 @@
           "floor": "grounds",
           "x": 131.61,
           "y": 19.24
-        }
-      }
-    },
-    {
-      "at": 860,
-      "command": {
-        "kind": "move",
-        "tick": 860,
-        "entity": "def.hired.1",
-        "to": {
-          "floor": "grounds",
-          "x": 48.32,
-          "y": 23.62
-        }
-      }
-    },
-    {
-      "at": 860,
-      "command": {
-        "kind": "move",
-        "tick": 860,
-        "entity": "def.hired.3",
-        "to": {
-          "floor": "grounds",
-          "x": 75.14,
-          "y": 39.16
         }
       }
     },
@@ -3234,19 +2246,6 @@
       "command": {
         "kind": "move",
         "tick": 860,
-        "entity": "def.vet.6",
-        "to": {
-          "floor": "ground",
-          "x": 7.18,
-          "y": 62.95
-        }
-      }
-    },
-    {
-      "at": 860,
-      "command": {
-        "kind": "move",
-        "tick": 860,
         "entity": "def.vet.8",
         "to": {
           "floor": "ground",
@@ -3265,19 +2264,6 @@
           "floor": "grounds",
           "x": 128.08,
           "y": 12.37
-        }
-      }
-    },
-    {
-      "at": 880,
-      "command": {
-        "kind": "move",
-        "tick": 880,
-        "entity": "def.vet.8",
-        "to": {
-          "floor": "ground",
-          "x": -36.02,
-          "y": 20.16
         }
       }
     },
@@ -3330,19 +2316,6 @@
           "floor": "grounds",
           "x": 94.75,
           "y": 20.49
-        }
-      }
-    },
-    {
-      "at": 920,
-      "command": {
-        "kind": "move",
-        "tick": 920,
-        "entity": "civ.staff.4",
-        "to": {
-          "floor": "grounds",
-          "x": 76.79,
-          "y": 26.54
         }
       }
     },
@@ -3434,32 +2407,6 @@
           "floor": "grounds",
           "x": 68.18,
           "y": 84.92
-        }
-      }
-    },
-    {
-      "at": 940,
-      "command": {
-        "kind": "move",
-        "tick": 940,
-        "entity": "def.vet.5",
-        "to": {
-          "floor": "ground",
-          "x": -12.6,
-          "y": 15.48
-        }
-      }
-    },
-    {
-      "at": 940,
-      "command": {
-        "kind": "move",
-        "tick": 940,
-        "entity": "def.vet.7",
-        "to": {
-          "floor": "ground",
-          "x": 58.3,
-          "y": 69.96
         }
       }
     },
@@ -3585,37 +2532,11 @@
       "command": {
         "kind": "move",
         "tick": 980,
-        "entity": "def.vet.5",
-        "to": {
-          "floor": "ground",
-          "x": -26.14,
-          "y": 88.02
-        }
-      }
-    },
-    {
-      "at": 980,
-      "command": {
-        "kind": "move",
-        "tick": 980,
         "entity": "def.vet.6",
         "to": {
           "floor": "ground",
           "x": 40.63,
           "y": 25.11
-        }
-      }
-    },
-    {
-      "at": 980,
-      "command": {
-        "kind": "move",
-        "tick": 980,
-        "entity": "def.vet.7",
-        "to": {
-          "floor": "ground",
-          "x": 30.84,
-          "y": 82.89
         }
       }
     },
@@ -3676,63 +2597,11 @@
       "command": {
         "kind": "move",
         "tick": 1000,
-        "entity": "def.vet.12",
-        "to": {
-          "floor": "grounds",
-          "x": 41.02,
-          "y": 29.94
-        }
-      }
-    },
-    {
-      "at": 1000,
-      "command": {
-        "kind": "move",
-        "tick": 1000,
-        "entity": "def.vet.6",
-        "to": {
-          "floor": "ground",
-          "x": 135.96,
-          "y": 18.63
-        }
-      }
-    },
-    {
-      "at": 1000,
-      "command": {
-        "kind": "move",
-        "tick": 1000,
-        "entity": "def.vet.7",
-        "to": {
-          "floor": "ground",
-          "x": 25.91,
-          "y": 86.01
-        }
-      }
-    },
-    {
-      "at": 1000,
-      "command": {
-        "kind": "move",
-        "tick": 1000,
         "entity": "def.vet.9",
         "to": {
           "floor": "grounds",
           "x": 122.54,
           "y": 50.51
-        }
-      }
-    },
-    {
-      "at": 1020,
-      "command": {
-        "kind": "move",
-        "tick": 1020,
-        "entity": "civ.staff.2",
-        "to": {
-          "floor": "grounds",
-          "x": 50.05,
-          "y": 27.24
         }
       }
     },
@@ -3759,19 +2628,6 @@
           "floor": "grounds",
           "x": 103.96,
           "y": 31.88
-        }
-      }
-    },
-    {
-      "at": 1020,
-      "command": {
-        "kind": "move",
-        "tick": 1020,
-        "entity": "def.vet.8",
-        "to": {
-          "floor": "ground",
-          "x": 105.68,
-          "y": 57.44
         }
       }
     },
@@ -3824,19 +2680,6 @@
           "floor": "grounds",
           "x": -7.57,
           "y": 91.4
-        }
-      }
-    },
-    {
-      "at": 1040,
-      "command": {
-        "kind": "move",
-        "tick": 1040,
-        "entity": "def.vet.8",
-        "to": {
-          "floor": "ground",
-          "x": 104.68,
-          "y": 49.91
         }
       }
     },
@@ -3915,32 +2758,6 @@
           "floor": "grounds",
           "x": -20.81,
           "y": 86.71
-        }
-      }
-    },
-    {
-      "at": 1060,
-      "command": {
-        "kind": "move",
-        "tick": 1060,
-        "entity": "def.vet.5",
-        "to": {
-          "floor": "ground",
-          "x": -33.03,
-          "y": 56.37
-        }
-      }
-    },
-    {
-      "at": 1060,
-      "command": {
-        "kind": "move",
-        "tick": 1060,
-        "entity": "def.vet.8",
-        "to": {
-          "floor": "ground",
-          "x": -20.33,
-          "y": 58.48
         }
       }
     },
@@ -4036,19 +2853,6 @@
       }
     },
     {
-      "at": 1080,
-      "command": {
-        "kind": "move",
-        "tick": 1080,
-        "entity": "def.vet.8",
-        "to": {
-          "floor": "ground",
-          "x": 9.41,
-          "y": 78.82
-        }
-      }
-    },
-    {
       "at": 1100,
       "command": {
         "kind": "move",
@@ -4118,19 +2922,6 @@
       "command": {
         "kind": "move",
         "tick": 1120,
-        "entity": "civ.staff.4",
-        "to": {
-          "floor": "grounds",
-          "x": 46.27,
-          "y": 47.1
-        }
-      }
-    },
-    {
-      "at": 1120,
-      "command": {
-        "kind": "move",
-        "tick": 1120,
         "entity": "def.hired.2",
         "to": {
           "floor": "grounds",
@@ -4188,32 +2979,6 @@
           "floor": "grounds",
           "x": 107.9,
           "y": 71.86
-        }
-      }
-    },
-    {
-      "at": 1120,
-      "command": {
-        "kind": "move",
-        "tick": 1120,
-        "entity": "def.vet.5",
-        "to": {
-          "floor": "ground",
-          "x": -38.95,
-          "y": 79.93
-        }
-      }
-    },
-    {
-      "at": 1120,
-      "command": {
-        "kind": "move",
-        "tick": 1120,
-        "entity": "def.vet.6",
-        "to": {
-          "floor": "ground",
-          "x": 14.57,
-          "y": 70.22
         }
       }
     },
@@ -4279,32 +3044,6 @@
           "floor": "grounds",
           "x": 33.4,
           "y": 83.71
-        }
-      }
-    },
-    {
-      "at": 1140,
-      "command": {
-        "kind": "move",
-        "tick": 1140,
-        "entity": "def.vet.5",
-        "to": {
-          "floor": "ground",
-          "x": -25.9,
-          "y": 61.01
-        }
-      }
-    },
-    {
-      "at": 1140,
-      "command": {
-        "kind": "move",
-        "tick": 1140,
-        "entity": "def.vet.7",
-        "to": {
-          "floor": "ground",
-          "x": 99.29,
-          "y": 26.76
         }
       }
     },
@@ -4417,50 +3156,11 @@
       "command": {
         "kind": "move",
         "tick": 1180,
-        "entity": "def.hired.1",
-        "to": {
-          "floor": "grounds",
-          "x": 17.21,
-          "y": 18.67
-        }
-      }
-    },
-    {
-      "at": 1180,
-      "command": {
-        "kind": "move",
-        "tick": 1180,
         "entity": "def.vet.11",
         "to": {
           "floor": "grounds",
           "x": 12.75,
           "y": 67.25
-        }
-      }
-    },
-    {
-      "at": 1180,
-      "command": {
-        "kind": "move",
-        "tick": 1180,
-        "entity": "def.vet.5",
-        "to": {
-          "floor": "ground",
-          "x": 104.75,
-          "y": 19.82
-        }
-      }
-    },
-    {
-      "at": 1180,
-      "command": {
-        "kind": "move",
-        "tick": 1180,
-        "entity": "def.vet.7",
-        "to": {
-          "floor": "ground",
-          "x": 133.42,
-          "y": 35.93
         }
       }
     }
