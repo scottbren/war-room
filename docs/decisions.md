@@ -97,3 +97,10 @@ Approved by the user: building services, lift and fire alarm, camera coverage, p
 - **Thermal: choose approach (b), swapping materials in place, as the default; keep (a) for picture-in-picture.** Measured on the GTX 1060: (b) costs about +0.1 ms, (a) (a second full render of the scene with replacement materials) about +0.7 to +0.9 ms. (b) is cheaper because no extra pass is drawn; (a) leaves the main view untouched, so it is the one to use if a thermal image must be shown while the normal view stays visible (a helmet cam in thermal). The heat value per mesh comes from its material key (`fx/heat.ts`: people 1.0, concealment 0.3, water 0.05-0.1, slab 0.3, etc.), snapped to five buckets so five shared materials cover every mesh.
 - **Helmet cams: 320x180 render targets, rotate the refresh** (one camera per frame). Every-frame costs +1.7 ms (WebGL2) and +3.1 ms (WebGPU); rotating costs +1.0 ms on both. Shown as a 2x2 overlay of planes parented to the main camera in rendering group 1.
 - Measurement method and numbers: `docs/perf-notes.md`.
+
+## T12: cross-browser determinism
+- Reference run: `pnpm --filter @war-room/tools record-t12` writes `content/generated/t12.recording.json` (a 1200-tick scripted CHARON raid, seed 12, 343 commands, all 22 spawned units walking navmesh routes) and `t12.hashes.json` (the per-tick state hash list from Node). `tools/test/t12-replay.test.ts` checks the committed hash list against a fresh Node replay and that the navmesh really changes the result.
+- `replay()` and `runScripted()` take an optional `nav` (same as `createSim`); a replay must use the navmesh it was recorded with.
+- Browser check: `client/replay-debug.html` runs the recording in a Web Worker and exposes the hash list; `pnpm smoke` (Playwright, `e2e/replay-determinism.e2e.ts`, Chromium and Firefox, own dev server on port 5199) compares it with the Node list and reports the first diverging tick.
+- Result: Chromium and Firefox 157 both match Node on all 1200 ticks, including the recast WASM routes. No fix was needed.
+- Safari (WebKit) is not covered; add it if the target browsers include it.

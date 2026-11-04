@@ -1,4 +1,5 @@
 import { createRng, createSim } from "@war-room/sim";
+import type { Nav } from "@war-room/sim";
 import type { FloorId, MapFile } from "@war-room/content";
 import { createRecorder } from "./replay";
 import type { Recording } from "./replay";
@@ -30,12 +31,12 @@ function spawnsOf(map: MapFile): { id: string; floor: FloorId }[] {
  * PRNG derived from the seed (the sim's internal RNG is not exposed), so the
  * whole run is reproducible from `seed` alone.
  */
-export function runScripted(opts: { map: MapFile; seed: number; ticks: number }): ScriptedRun {
-  const { map, seed, ticks } = opts;
+export function runScripted(opts: { map: MapFile; seed: number; ticks: number; nav?: Nav }): ScriptedRun {
+  const { map, seed, ticks, nav } = opts;
   if (!Number.isInteger(seed)) throw new Error(`seed must be an integer, got ${seed}`);
   if (!Number.isInteger(ticks) || ticks < 0) throw new Error(`ticks must be a non-negative integer, got ${ticks}`);
 
-  const sim = createSim({ seed, map });
+  const sim = createSim({ seed, map, nav });
   const rec = createRecorder(sim, { seed, map });
   const units = spawnsOf(map);
 
@@ -53,7 +54,9 @@ export function runScripted(opts: { map: MapFile; seed: number; ticks: number })
         if (driver.int(0, 1) === 0) continue;
         const x = driver.int(minX, maxX) / 100;
         const y = driver.int(minY, maxY) / 100;
-        rec.enqueue({ kind: "move", tick: t, entity: unit.id, to: { floor: unit.floor, x, y } });
+        const to = { floor: unit.floor, x, y };
+        if (nav && !nav.isWalkable(to)) continue; // with a navmesh, only order moves to places a unit can stand
+        rec.enqueue({ kind: "move", tick: t, entity: unit.id, to });
       }
     }
     const { events } = rec.step();

@@ -1,5 +1,5 @@
 import { createSim } from "@war-room/sim";
-import type { Command, Sim } from "@war-room/sim";
+import type { Command, Nav, Sim } from "@war-room/sim";
 import type { MapFile } from "@war-room/content";
 
 /**
@@ -50,8 +50,11 @@ export function createRecorder(sim: Sim, meta: { seed: number; map: MapFile }): 
   };
 }
 
-/** Replays a recording and returns the state hash after every tick. */
-export function replay(recording: Recording, map: MapFile): string[] {
+/**
+ * Replays a recording and returns the state hash after every tick. Pass the same `nav` the run was recorded with
+ * (the navmesh is not part of the saved state).
+ */
+export function replay(recording: Recording, map: MapFile, nav?: Nav): string[] {
   if (recording.mapId !== map.id) {
     throw new Error(`replay: recording is for map "${recording.mapId}", got "${map.id}"`);
   }
@@ -59,7 +62,7 @@ export function replay(recording: Recording, map: MapFile): string[] {
     throw new Error(`replay: recording is for map version ${recording.mapVersion}, got version ${map.version}`);
   }
 
-  const sim = createSim({ seed: recording.seed, map });
+  const sim = createSim({ seed: recording.seed, map, nav });
   const hashes: string[] = [];
   let next = 0;
   for (let t = 0; t < recording.ticks; t++) {

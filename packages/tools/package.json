@@ -9,7 +9,8 @@
     "headless": "tsx src/headless.ts",
     "validate-map": "tsx src/validate-map.ts",
     "derive-walls": "tsx src/derive-walls.ts",
-    "bake-navmesh": "tsx src/bake-navmesh.ts"
+    "bake-navmesh": "tsx src/bake-navmesh.ts",
+    "record-t12": "tsx src/record-t12.ts"
   },
   "dependencies": {
     "@recast-navigation/core": "^0.44.0",
