@@ -11,7 +11,7 @@ Status on 2026-11-04: every week-1 task is built, tested and committed locally (
 | T2 | Determinism primitives: seeded PRNG, trig lookup tables, quantization, canonical hash (FNV-1a). |
 | T3 | Simulation skeleton: 10 Hz tick pipeline, `createSim` (enqueue / step / hash / serialize / restore), movement. |
 | T4 | Headless runner and record/replay with per-tick hash lists. |
-| T5-T6 | CHARON map (now version 12) with derived walls, and the map validator. |
+| T5-T6 | CHARON map (version 12, see docs/charon-layout.md) with derived walls, and the map validator. |
 | T7 | Greybox in the browser (Vite + React + Babylon): floors, stairs, labels, floor toggles. |
 | T8 | Navmesh: baker (recast), `createNav` (`findPath`, `isWalkable`), vertical links as off-mesh connections. |
 | T9 | Line of sight: grid + integer DDA, cover, concealment, doors, shutters, gallery void. Not yet used by the sim pipeline. |
