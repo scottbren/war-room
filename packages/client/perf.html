@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="data:," />
+    <title>War Room: perf measurement</title>
+    <style>
+      body { margin: 0; background: #0b0f14; color: #cfe; font: 13px/1.35 ui-monospace, monospace; }
+      #bar { padding: 8px 12px; }
+      canvas { width: 960px; height: 540px; display: block; margin: 0 12px; outline: 1px solid #234; }
+      pre { margin: 8px 12px; white-space: pre-wrap; }
+      button { font: inherit; padding: 4px 10px; }
+    </style>
+  </head>
+  <body>
+    <div id="bar">
+      <button id="run" type="button">Run measurements</button>
+      Options: <code>?gl=webgl2</code> forces WebGL2 · <code>?auto=1</code> starts at load · fixed 1920x1080 canvas
+    </div>
+    <canvas id="c" width="1920" height="1080"></canvas>
+    <pre id="out">idle</pre>
+    <script type="module" src="/src/perf.ts"></script>
+  </body>
+</html>

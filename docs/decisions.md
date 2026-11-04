@@ -91,3 +91,9 @@ Approved by the user: building services, lift and fire alarm, camera coverage, p
 - Engine: WebGPU when `WebGPUEngine.IsSupportedAsync` and init succeeds, otherwise WebGL2; `?gl=webgl2` forces the fallback. Overlay shows backend, fps, tick.
 - Debug scenario: `scenario.ts` adds one operator (`op.alpha.1`) on the helipad (48, 68). Real spawns come with mission data.
 - Verified in Chromium through Playwright: the operator walks helipad to study on both WebGPU and WebGL2, reaching (54, 37) exactly.
+
+## T11: camera effects and performance
+- **Effects are full-screen `PostProcess`es with the shader written twice** (GLSL in `ShaderStore.ShadersStore`, WGSL in `ShadersStoreWGSL`, same name) and `shaderLanguage` picked from the backend. Night vision, grain, fisheye and thermal all compile and render on WebGPU and WebGL2 (`client/src/fx/effects.ts`).
+- **Thermal: choose approach (b), swapping materials in place, as the default; keep (a) for picture-in-picture.** Measured on the GTX 1060: (b) costs about +0.1 ms, (a) (a second full render of the scene with replacement materials) about +0.7 to +0.9 ms. (b) is cheaper because no extra pass is drawn; (a) leaves the main view untouched, so it is the one to use if a thermal image must be shown while the normal view stays visible (a helmet cam in thermal). The heat value per mesh comes from its material key (`fx/heat.ts`: people 1.0, concealment 0.3, water 0.05-0.1, slab 0.3, etc.), snapped to five buckets so five shared materials cover every mesh.
+- **Helmet cams: 320x180 render targets, rotate the refresh** (one camera per frame). Every-frame costs +1.7 ms (WebGL2) and +3.1 ms (WebGPU); rotating costs +1.0 ms on both. Shown as a 2x2 overlay of planes parented to the main camera in rendering group 1.
+- Measurement method and numbers: `docs/perf-notes.md`.
