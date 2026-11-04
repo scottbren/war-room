@@ -60,3 +60,6 @@ Added 24 door readers and security fixtures as markers plus `checkAccess` valida
 
 ## Map v11: fail modes and badges (tier 1)
 Door fail mode is per-door data (`fail:open|secure`) rather than a global rule, so the open question (fail-safe vs fail-secure) becomes a tuning table. Added stealable/clonable badges and a badge encoder. No sim or contract change.
+
+## Map v12: services, camera coverage, phones (tier 1 complete)
+Approved by the user: building services, lift and fire alarm, camera coverage, phones. Declined: guard dogs, foyer mantrap. Per-door fail-mode table approved. Data only; no sim or contract change.

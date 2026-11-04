@@ -94,7 +94,7 @@ describe("charon other security fixtures", () => {
 
   it("puts every networked security fixture on a circuit", () => {
     for (const m of map.markers.filter((x) => x.tags.some((t) => t.startsWith("sec:")))) {
-      if (m.tags.includes("sec:ground-sensor")) continue;
+      if (m.tags.includes("sec:ground-sensor") || m.tags.includes("sec:blind-spot")) continue;
       expect(tagValue(m, "circuit") !== undefined || m.tags.includes("sec:safe") || m.tags.includes("sec:armory-rack") || m.tags.includes("sec:key-cabinet"), m.id).toBe(true);
     }
   });

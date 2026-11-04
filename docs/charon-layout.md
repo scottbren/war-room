@@ -1,4 +1,4 @@
-# CHARON layout (map version 11: zigzag of three bars; sections below the Version 6 note describe v5 and earlier and are superseded where they conflict)
+# CHARON layout (map version 12: zigzag of three bars; sections below the Version 6 note describe v5 and earlier and are superseded where they conflict)
 
 `content/maps/charon.json` implements this document. All rooms are axis-aligned rectangles, `[minX, minY] – [maxX, maxY]` in meters, in **map coordinates**. North is +y. The sea is to the south (y < 0). Non-rectangular buildings are composed from several rectangles (U, L and stepped shapes); the map format has no polygon rooms.
 
@@ -197,3 +197,12 @@ Tag conventions (no geometry changes):
 - Every networked reader and smart lock carries `fail:<open|secure>`: what the door does when its circuit loses power. Policy by door, not global: fail secure on the panic room, vault, armory, SOC, studies, office, plant/mechanical rooms and the perimeter gates; fail open (life safety egress) on the front door, gate lodge, garage and service door. One mode per door. Tunable by changing the tags; the sim runtime will read them.
 - Badges: `item:badge` + `id:badge.<name>` + `level:<n>` + `clone:<yes|no>` + `held:<who>`. Guard, maintenance and SOC-chief badges can be stolen or cloned at the SOC `sec:badge-encoder`; the principal's level-4 badge cannot be cloned.
 - Validator: bad fail mode, panic-room reader that fails open, badge outside a room.
+
+## v12: building services, camera coverage, phones (markers only)
+
+- Water and gas: `svc:water-main`, `svc:gas-main` (outdoors, north of the wall), `svc:water-shutoff`, `svc:gas-shutoff` (mechanical room), `svc:gas-appliance` (kitchen range).
+- Air: three zones (`hvac:a|b|c`) each with an `svc:ahu` air handler on a circuit, roof `svc:vent-intake` markers, and `svc:vent-grate` in the main rooms. The panic room has its own `svc:air-filter` and no grate (validator enforces it), so gas cannot reach it.
+- Fire: `svc:fire-panel` (SOC), `svc:smoke-detector`, `svc:sprinkler` (kitchen, grand hall, cellar).
+- Lifts: `svc:elevator` on ground and upper, `link:link.stairs` names the stair link it duplicates (runtime can halt or hijack it).
+- Cameras: `sees:<roomId>` lists the rooms an indoor camera sees (validator checks the rooms exist). New cameras: vault, basement corridor, gallery, service, plant. The panic room, safe landing, principal's study and master suite are deliberately unseen. `sec:blind-spot` + `why:` marks five outdoor/balcony gaps.
+- Phones: `comms:pbx` (guard room) and ten `comms:phone` markers with unique `ext:` values.

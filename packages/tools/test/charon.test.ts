@@ -19,7 +19,7 @@ const area = (r: { min: { x: number; y: number }; max: { x: number; y: number } 
 describe("charon.json: basics", () => {
   it("parses against the schema", () => {
     expect(map.id).toBe("charon");
-    expect(map.version).toBe(11);
+    expect(map.version).toBe(12);
     expect(map.floors.map((f) => f.id)).toEqual(["grounds", "ground", "upper", "roof", "lower", "shore", "hill"]);
     expect(map.floors.map((f) => f.elevation)).toEqual([0, 0, 4, 8, -4, -5, 4]);
   });

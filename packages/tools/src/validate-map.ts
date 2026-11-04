@@ -403,6 +403,7 @@ export function validateMap(input: unknown): Issue[] {
   checkFamily(map, issues);
   checkUtilities(map, issues);
   checkAccess(map, issues);
+  checkServices(map, issues);
   return issues;
 }
 
@@ -479,6 +480,47 @@ function checkAccess(map: MapFile, out: Issue[]): void {
   for (const b of [...map.markers].filter((m) => m.tags.includes("item:badge")).sort(byId)) {
     if (!b.at || roomAt(map, b.floor, b.at) === "outside") {
       out.push({ check: "badge-room", message: `Badge ${b.id} (floor ${b.floor}) is not inside any room` });
+    }
+  }
+}
+
+/** Building services, camera coverage and phones. Opt-in: only runs when a marker uses svc:, sees: or comms:phone. */
+function checkServices(map: MapFile, out: Issue[]): void {
+  const tag = (m: { tags: string[] }, prefix: string): string[] =>
+    m.tags.filter((t) => t.startsWith(`${prefix}:`)).map((t) => t.slice(prefix.length + 1));
+  const markers = [...map.markers].sort(byId);
+  const roomIds = new Set(map.floors.flatMap((f) => f.rooms.map((r) => r.id)));
+  const outdoorOk = new Set(["svc:water-main", "svc:gas-main", "svc:vent-intake"]);
+  const roomOf = (m: { floor: string; at?: Vec2 }): string => (m.at ? roomAt(map, m.floor, m.at) : "outside");
+  const panicRooms = new Set(map.floors.flatMap((f) => f.rooms.filter((r) => r.tags.includes("panic-room")).map((r) => r.id)));
+
+  for (const m of markers) {
+    const svc = m.tags.find((t) => t.startsWith("svc:"));
+    if (svc && !outdoorOk.has(svc) && roomOf(m) === "outside") {
+      out.push({ check: "service-room", message: `Service marker ${m.id} (${svc}, floor ${m.floor}) is not inside any room` });
+    }
+    if (m.tags.includes("svc:vent-grate") && panicRooms.has(roomOf(m))) {
+      out.push({ check: "panic-vent", message: `Vent grate ${m.id} is inside panic room ${roomOf(m)}: the panic room must have its own filtered air` });
+    }
+    if (m.tags.includes("svc:elevator")) {
+      const link = tag(m, "link")[0];
+      if (!link || !map.verticalLinks.some((v) => v.id === link)) {
+        out.push({ check: "lift-link", message: `Lift ${m.id} names link ${link ?? "(none)"} which does not exist` });
+      }
+    }
+    for (const r of tag(m, "sees")) {
+      if (!roomIds.has(r)) out.push({ check: "camera-room", message: `Camera ${m.id} sees room ${r} which does not exist` });
+    }
+  }
+  const seen = new Map<string, string>();
+  for (const p of markers.filter((m) => m.tags.includes("comms:phone"))) {
+    const ext = tag(p, "ext")[0];
+    if (!ext) {
+      out.push({ check: "phone-ext", message: `Phone ${p.id} has no extension (ext:<n>)` });
+    } else if (seen.has(ext)) {
+      out.push({ check: "phone-ext", message: `Phones ${seen.get(ext)} and ${p.id} share extension ${ext}` });
+    } else {
+      seen.set(ext, p.id);
     }
   }
 }

@@ -463,3 +463,39 @@ describe("fail mode and badge checks", () => {
     expect(find(validateMap(map), b.id, "not inside any room")).toBeDefined();
   });
 });
+
+describe("service, camera and phone checks", () => {
+  it("a lift that names a link that does not exist is reported", () => {
+    const map = charon();
+    const lift = map.markers.find((m) => m.tags.includes("svc:elevator"))!;
+    lift.tags = lift.tags.map((t) => (t.startsWith("link:") ? "link:link.nowhere" : t));
+    expect(find(validateMap(map), lift.id, "link.nowhere")).toBeDefined();
+  });
+
+  it("a camera that sees a room that does not exist is reported", () => {
+    const map = charon();
+    const cam = map.markers.find((m) => m.tags.some((t) => t.startsWith("sees:")))!;
+    cam.tags.push("sees:g.nowhere");
+    expect(find(validateMap(map), cam.id, "g.nowhere")).toBeDefined();
+  });
+
+  it("a vent grate inside the panic room breaks its seal", () => {
+    const map = charon();
+    map.markers.push({ id: "m.svc.bad-grate", floor: "ground", kind: "poi", at: { x: 71, y: 37 }, tags: ["svc:vent-grate", "hvac:a"] });
+    expect(find(validateMap(map), "m.svc.bad-grate", "panic")).toBeDefined();
+  });
+
+  it("two phones with the same extension are reported", () => {
+    const map = charon();
+    const phones = map.markers.filter((m) => m.tags.includes("comms:phone"));
+    phones[1]!.tags = phones[1]!.tags.map((t) => (t.startsWith("ext:") ? phones[0]!.tags.find((x) => x.startsWith("ext:"))! : t));
+    expect(find(validateMap(map), "extension")).toBeDefined();
+  });
+
+  it("a shutoff valve outside every room is reported", () => {
+    const map = charon();
+    const v = map.markers.find((m) => m.tags.includes("svc:water-shutoff"))!;
+    v.at = { x: 1, y: 1 };
+    expect(find(validateMap(map), v.id, "not inside any room")).toBeDefined();
+  });
+});

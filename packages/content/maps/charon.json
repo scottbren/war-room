@@ -1,6 +1,6 @@
 {
   "id": "charon",
-  "version": 11,
+  "version": 12,
   "bounds": { "min": { "x": -40, "y": -40 }, "max": { "x": 140, "y": 94 } },
   "floors": [
     {
@@ -7548,28 +7548,36 @@
       "floor": "ground",
       "kind": "poi",
       "at": { "x": 41, "y": 53 },
-      "tags": ["smart:camera", "feeds:g.soc", "covers:foyer", "circuit:c.house.a", "vlan:security"]
+      "tags": ["smart:camera", "feeds:g.soc", "covers:foyer", "circuit:c.house.a", "vlan:security", "sees:g.foyer"]
     },
     {
       "id": "m.smart.camera.grand-hall",
       "floor": "ground",
       "kind": "poi",
       "at": { "x": 38, "y": 47 },
-      "tags": ["smart:camera", "feeds:g.soc", "covers:grand-hall", "circuit:c.house.a", "vlan:security"]
+      "tags": ["smart:camera", "feeds:g.soc", "covers:grand-hall", "circuit:c.house.a", "vlan:security", "sees:g.grand-hall"]
     },
     {
       "id": "m.smart.camera.roof",
       "floor": "roof",
       "kind": "poi",
       "at": { "x": 37.5, "y": 52 },
-      "tags": ["smart:camera", "feeds:g.soc", "covers:roof", "circuit:c.roof", "vlan:security"]
+      "tags": [
+        "smart:camera",
+        "feeds:g.soc",
+        "covers:roof",
+        "circuit:c.roof",
+        "vlan:security",
+        "sees:r.deck.a",
+        "sees:r.pavilion"
+      ]
     },
     {
       "id": "m.smart.camera.portico",
       "floor": "ground",
       "kind": "poi",
       "at": { "x": 41, "y": 59.6 },
-      "tags": ["smart:camera", "feeds:g.soc", "covers:portico", "circuit:c.house.a", "vlan:security"]
+      "tags": ["smart:camera", "feeds:g.soc", "covers:portico", "circuit:c.house.a", "vlan:security", "sees:g.portico"]
     },
     {
       "id": "m.smart.camera.forecourt",
@@ -7674,7 +7682,7 @@
       "floor": "ground",
       "kind": "poi",
       "at": { "x": 40, "y": 18 },
-      "tags": ["smart:camera", "feeds:g.soc", "covers:living", "circuit:c.house.c", "vlan:security"]
+      "tags": ["smart:camera", "feeds:g.soc", "covers:living", "circuit:c.house.c", "vlan:security", "sees:g.living"]
     },
     {
       "id": "m.smart.camera.garden-notch",
@@ -8419,6 +8427,434 @@
       "kind": "poi",
       "at": { "x": 72, "y": 29 },
       "tags": ["sec:badge-encoder", "circuit:c.soc", "vlan:security"]
+    },
+    {
+      "id": "m.svc.water-main",
+      "floor": "grounds",
+      "kind": "poi",
+      "at": { "x": 55, "y": 82 },
+      "tags": ["svc:water-main"]
+    },
+    {
+      "id": "m.svc.gas-main",
+      "floor": "grounds",
+      "kind": "poi",
+      "at": { "x": 66, "y": 83.5 },
+      "tags": ["svc:gas-main"]
+    },
+    {
+      "id": "m.svc.water-shutoff",
+      "floor": "lower",
+      "kind": "poi",
+      "at": { "x": 67.5, "y": 28 },
+      "tags": ["svc:water-shutoff", "circuit:c.house.b", "vlan:security"]
+    },
+    {
+      "id": "m.svc.gas-shutoff",
+      "floor": "lower",
+      "kind": "poi",
+      "at": { "x": 70, "y": 27.5 },
+      "tags": ["svc:gas-shutoff", "circuit:c.house.b", "vlan:security"]
+    },
+    {
+      "id": "m.svc.gas-range",
+      "floor": "ground",
+      "kind": "poi",
+      "at": { "x": 56, "y": 42.5 },
+      "tags": ["svc:gas-appliance", "circuit:c.house.a", "vlan:security"]
+    },
+    {
+      "id": "m.svc.ahu.a",
+      "floor": "lower",
+      "kind": "poi",
+      "at": { "x": 24, "y": 48.5 },
+      "tags": ["svc:ahu", "hvac:a", "circuit:c.house.a", "vlan:security"]
+    },
+    {
+      "id": "m.svc.ahu.b",
+      "floor": "lower",
+      "kind": "poi",
+      "at": { "x": 74, "y": 36 },
+      "tags": ["svc:ahu", "hvac:b", "circuit:c.house.b", "vlan:security"]
+    },
+    {
+      "id": "m.svc.ahu.c",
+      "floor": "ground",
+      "kind": "poi",
+      "at": { "x": 19, "y": 18.5 },
+      "tags": ["svc:ahu", "hvac:c", "circuit:c.house.c", "vlan:security"]
+    },
+    {
+      "id": "m.svc.intake.a",
+      "floor": "roof",
+      "kind": "poi",
+      "at": { "x": 30, "y": 50 },
+      "tags": ["svc:vent-intake", "hvac:a"]
+    },
+    {
+      "id": "m.svc.intake.b",
+      "floor": "roof",
+      "kind": "poi",
+      "at": { "x": 56, "y": 38 },
+      "tags": ["svc:vent-intake", "hvac:b"]
+    },
+    {
+      "id": "m.svc.grate.foyer.a",
+      "floor": "ground",
+      "kind": "poi",
+      "at": { "x": 40.5, "y": 53 },
+      "tags": ["svc:vent-grate", "hvac:a"]
+    },
+    {
+      "id": "m.svc.grate.grand-hall.a",
+      "floor": "ground",
+      "kind": "poi",
+      "at": { "x": 41, "y": 45.5 },
+      "tags": ["svc:vent-grate", "hvac:a"]
+    },
+    {
+      "id": "m.svc.grate.library.a",
+      "floor": "ground",
+      "kind": "poi",
+      "at": { "x": 24, "y": 50.5 },
+      "tags": ["svc:vent-grate", "hvac:a"]
+    },
+    {
+      "id": "m.svc.grate.dining.a",
+      "floor": "ground",
+      "kind": "poi",
+      "at": { "x": 53.5, "y": 51.5 },
+      "tags": ["svc:vent-grate", "hvac:a"]
+    },
+    {
+      "id": "m.svc.grate.vault.a",
+      "floor": "lower",
+      "kind": "poi",
+      "at": { "x": 47, "y": 45.5 },
+      "tags": ["svc:vent-grate", "hvac:a"]
+    },
+    {
+      "id": "m.svc.grate.gallery.a",
+      "floor": "upper",
+      "kind": "poi",
+      "at": { "x": 41, "y": 51 },
+      "tags": ["svc:vent-grate", "hvac:a"]
+    },
+    {
+      "id": "m.svc.grate.study.b",
+      "floor": "ground",
+      "kind": "poi",
+      "at": { "x": 53.5, "y": 37 },
+      "tags": ["svc:vent-grate", "hvac:b"]
+    },
+    {
+      "id": "m.svc.grate.drawing.b",
+      "floor": "ground",
+      "kind": "poi",
+      "at": { "x": 45, "y": 37 },
+      "tags": ["svc:vent-grate", "hvac:b"]
+    },
+    {
+      "id": "m.svc.grate.core.b",
+      "floor": "ground",
+      "kind": "poi",
+      "at": { "x": 61.5, "y": 37 },
+      "tags": ["svc:vent-grate", "hvac:b"]
+    },
+    {
+      "id": "m.svc.grate.master.b",
+      "floor": "ground",
+      "kind": "poi",
+      "at": { "x": 53.5, "y": 29.5 },
+      "tags": ["svc:vent-grate", "hvac:b"]
+    },
+    {
+      "id": "m.svc.grate.soc.b",
+      "floor": "ground",
+      "kind": "poi",
+      "at": { "x": 71, "y": 28.75 },
+      "tags": ["svc:vent-grate", "hvac:b"]
+    },
+    {
+      "id": "m.svc.grate.living.c",
+      "floor": "ground",
+      "kind": "poi",
+      "at": { "x": 40, "y": 18.5 },
+      "tags": ["svc:vent-grate", "hvac:c"]
+    },
+    {
+      "id": "m.svc.grate.lounge.c",
+      "floor": "ground",
+      "kind": "poi",
+      "at": { "x": 18.5, "y": 18.5 },
+      "tags": ["svc:vent-grate", "hvac:c"]
+    },
+    {
+      "id": "m.svc.air-filter",
+      "floor": "ground",
+      "kind": "poi",
+      "at": { "x": 70.5, "y": 36 },
+      "tags": ["svc:air-filter", "circuit:c.panic", "vlan:security"]
+    },
+    {
+      "id": "m.svc.fire-panel",
+      "floor": "ground",
+      "kind": "poi",
+      "at": { "x": 70.5, "y": 28.5 },
+      "tags": ["svc:fire-panel", "circuit:c.soc", "vlan:security"]
+    },
+    {
+      "id": "m.svc.smoke.foyer",
+      "floor": "ground",
+      "kind": "poi",
+      "at": { "x": 41, "y": 52.5 },
+      "tags": ["svc:smoke-detector", "circuit:c.house.a", "vlan:security"]
+    },
+    {
+      "id": "m.svc.smoke.grand-hall",
+      "floor": "ground",
+      "kind": "poi",
+      "at": { "x": 40.5, "y": 45.5 },
+      "tags": ["svc:smoke-detector", "circuit:c.house.a", "vlan:security"]
+    },
+    {
+      "id": "m.svc.smoke.kitchen",
+      "floor": "ground",
+      "kind": "poi",
+      "at": { "x": 56, "y": 45.5 },
+      "tags": ["svc:smoke-detector", "circuit:c.house.a", "vlan:security"]
+    },
+    {
+      "id": "m.svc.smoke.study",
+      "floor": "ground",
+      "kind": "poi",
+      "at": { "x": 54, "y": 36.5 },
+      "tags": ["svc:smoke-detector", "circuit:c.house.b", "vlan:security"]
+    },
+    {
+      "id": "m.svc.smoke.security",
+      "floor": "ground",
+      "kind": "poi",
+      "at": { "x": 49, "y": 53 },
+      "tags": ["svc:smoke-detector", "circuit:c.house.a", "vlan:security"]
+    },
+    {
+      "id": "m.svc.smoke.cellar",
+      "floor": "lower",
+      "kind": "poi",
+      "at": { "x": 23.5, "y": 48.5 },
+      "tags": ["svc:smoke-detector", "circuit:c.house.a", "vlan:security"]
+    },
+    {
+      "id": "m.svc.smoke.master",
+      "floor": "ground",
+      "kind": "poi",
+      "at": { "x": 53.5, "y": 29 },
+      "tags": ["svc:smoke-detector", "circuit:c.house.b", "vlan:security"]
+    },
+    {
+      "id": "m.svc.smoke.gallery",
+      "floor": "upper",
+      "kind": "poi",
+      "at": { "x": 40.5, "y": 51 },
+      "tags": ["svc:smoke-detector", "circuit:c.house.a", "vlan:security"]
+    },
+    {
+      "id": "m.svc.sprinkler.kitchen",
+      "floor": "ground",
+      "kind": "poi",
+      "at": { "x": 55.5, "y": 42.5 },
+      "tags": ["svc:sprinkler", "circuit:c.house.a", "vlan:security"]
+    },
+    {
+      "id": "m.svc.sprinkler.grand-hall",
+      "floor": "ground",
+      "kind": "poi",
+      "at": { "x": 41, "y": 46 },
+      "tags": ["svc:sprinkler", "circuit:c.house.a", "vlan:security"]
+    },
+    {
+      "id": "m.svc.sprinkler.cellar",
+      "floor": "lower",
+      "kind": "poi",
+      "at": { "x": 24, "y": 48 },
+      "tags": ["svc:sprinkler", "circuit:c.house.a", "vlan:security"]
+    },
+    {
+      "id": "m.svc.lift.ground",
+      "floor": "ground",
+      "kind": "poi",
+      "at": { "x": 61.5, "y": 36 },
+      "tags": ["svc:elevator", "link:link.stairs", "circuit:c.house.b", "vlan:security"]
+    },
+    {
+      "id": "m.svc.lift.upper",
+      "floor": "upper",
+      "kind": "poi",
+      "at": { "x": 61.5, "y": 36 },
+      "tags": ["svc:elevator", "link:link.stairs", "circuit:c.house.b", "vlan:security"]
+    },
+    {
+      "id": "m.smart.camera.vault",
+      "floor": "lower",
+      "kind": "poi",
+      "at": { "x": 46.5, "y": 45.5 },
+      "tags": ["smart:camera", "feeds:g.soc", "covers:vault", "sees:l.vault", "circuit:c.house.a", "vlan:security"]
+    },
+    {
+      "id": "m.smart.camera.basement-corridor",
+      "floor": "lower",
+      "kind": "poi",
+      "at": { "x": 45, "y": 53 },
+      "tags": [
+        "smart:camera",
+        "feeds:g.soc",
+        "covers:basement-corridor",
+        "sees:l.corridor.a",
+        "circuit:c.house.a",
+        "vlan:security"
+      ]
+    },
+    {
+      "id": "m.smart.camera.gallery",
+      "floor": "upper",
+      "kind": "poi",
+      "at": { "x": 41, "y": 50.5 },
+      "tags": [
+        "smart:camera",
+        "feeds:g.soc",
+        "covers:gallery",
+        "sees:u.gallery",
+        "sees:u.void",
+        "circuit:c.house.a",
+        "vlan:security"
+      ]
+    },
+    {
+      "id": "m.smart.camera.service",
+      "floor": "ground",
+      "kind": "poi",
+      "at": { "x": 79, "y": 33.5 },
+      "tags": ["smart:camera", "feeds:g.soc", "covers:service", "sees:g.service", "circuit:c.house.b", "vlan:security"]
+    },
+    {
+      "id": "m.smart.camera.plant",
+      "floor": "roof",
+      "kind": "poi",
+      "at": { "x": 74.5, "y": 38 },
+      "tags": ["smart:camera", "feeds:g.soc", "covers:plant", "sees:r.plant-house", "circuit:c.roof", "vlan:security"]
+    },
+    {
+      "id": "m.sec.blind.pool-house-rear",
+      "floor": "grounds",
+      "kind": "poi",
+      "at": { "x": 75, "y": 5 },
+      "tags": ["sec:blind-spot", "why:no-camera-rear"]
+    },
+    {
+      "id": "m.sec.blind.cabana-lee",
+      "floor": "grounds",
+      "kind": "poi",
+      "at": { "x": 19.5, "y": 5 },
+      "tags": ["sec:blind-spot", "why:hedge-blocks-view"]
+    },
+    {
+      "id": "m.sec.blind.guest-villa-rear",
+      "floor": "grounds",
+      "kind": "poi",
+      "at": { "x": 75, "y": 61 },
+      "tags": ["sec:blind-spot", "why:no-camera-rear"]
+    },
+    {
+      "id": "m.sec.blind.staff-quarters-rear",
+      "floor": "grounds",
+      "kind": "poi",
+      "at": { "x": 7, "y": 61 },
+      "tags": ["sec:blind-spot", "why:no-camera-rear"]
+    },
+    {
+      "id": "m.sec.blind.north-balcony",
+      "floor": "upper",
+      "kind": "poi",
+      "at": { "x": 19, "y": 57 },
+      "tags": ["sec:blind-spot", "why:privacy-glare"]
+    },
+    {
+      "id": "m.comms.pbx",
+      "floor": "ground",
+      "kind": "poi",
+      "at": { "x": 48.5, "y": 53 },
+      "tags": ["comms:pbx", "circuit:c.house.a", "vlan:security"]
+    },
+    {
+      "id": "m.comms.phone.100",
+      "floor": "grounds",
+      "kind": "poi",
+      "at": { "x": 63.5, "y": 78 },
+      "tags": ["comms:phone", "ext:100"]
+    },
+    {
+      "id": "m.comms.phone.101",
+      "floor": "ground",
+      "kind": "poi",
+      "at": { "x": 71.5, "y": 28.5 },
+      "tags": ["comms:phone", "ext:101"]
+    },
+    {
+      "id": "m.comms.phone.102",
+      "floor": "ground",
+      "kind": "poi",
+      "at": { "x": 49, "y": 52.5 },
+      "tags": ["comms:phone", "ext:102"]
+    },
+    {
+      "id": "m.comms.phone.103",
+      "floor": "ground",
+      "kind": "poi",
+      "at": { "x": 53.5, "y": 30 },
+      "tags": ["comms:phone", "ext:103"]
+    },
+    {
+      "id": "m.comms.phone.104",
+      "floor": "ground",
+      "kind": "poi",
+      "at": { "x": 54.5, "y": 37 },
+      "tags": ["comms:phone", "ext:104"]
+    },
+    {
+      "id": "m.comms.phone.105",
+      "floor": "ground",
+      "kind": "poi",
+      "at": { "x": 55.5, "y": 45.5 },
+      "tags": ["comms:phone", "ext:105"]
+    },
+    {
+      "id": "m.comms.phone.106",
+      "floor": "grounds",
+      "kind": "poi",
+      "at": { "x": 15, "y": 64 },
+      "tags": ["comms:phone", "ext:106"]
+    },
+    {
+      "id": "m.comms.phone.107",
+      "floor": "grounds",
+      "kind": "poi",
+      "at": { "x": 74, "y": 78 },
+      "tags": ["comms:phone", "ext:107"]
+    },
+    {
+      "id": "m.comms.phone.108",
+      "floor": "upper",
+      "kind": "poi",
+      "at": { "x": 35.5, "y": 53 },
+      "tags": ["comms:phone", "ext:108"]
+    },
+    {
+      "id": "m.comms.phone.109",
+      "floor": "ground",
+      "kind": "poi",
+      "at": { "x": 39.5, "y": 18.5 },
+      "tags": ["comms:phone", "ext:109"]
     }
   ]
 }
