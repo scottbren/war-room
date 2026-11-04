@@ -123,6 +123,9 @@ function checkOverlaps(map: MapFile, out: Issue[]): void {
   }
 }
 
+/** The widest a secret door can be (a bookcase on a hinge, not a double door). */
+const HIDDEN_DOOR_MAX_WIDTH = 1.2;
+
 function checkDoors(map: MapFile, out: Issue[]): void {
   for (const floor of map.floors) {
     const roomIds = new Set(floor.rooms.map((r) => r.id));
@@ -139,6 +142,17 @@ function checkDoors(map: MapFile, out: Issue[]): void {
       }
       if (floor.id !== "roof" && !onWall(door, floor)) {
         out.push({ check: "door-on-wall", message: `Door ${door.id} (floor ${floor.id}) is not on any wall` });
+      }
+      if (door.hidden === true) {
+        if (a === "outside" || b === "outside") {
+          out.push({ check: "hidden-door-outside", message: `Door ${door.id} (floor ${floor.id}) is hidden but opens to the outside; a secret door must join two rooms` });
+        }
+        if (door.kind !== "standard") {
+          out.push({ check: "hidden-door-kind", message: `Door ${door.id} (floor ${floor.id}) is hidden but its kind is ${door.kind}; a secret door must be a standard door` });
+        }
+        if (door.width > HIDDEN_DOOR_MAX_WIDTH) {
+          out.push({ check: "hidden-door-width", message: `Door ${door.id} (floor ${floor.id}) is hidden but ${door.width} m wide; a secret door is at most ${HIDDEN_DOOR_MAX_WIDTH} m` });
+        }
       }
     }
   }
@@ -166,14 +180,19 @@ function checkReachability(map: MapFile, out: Issue[]): void {
   }
 
   const edges = new Map<string, Set<string>>();
-  const link = (from: string, to: string): void => {
-    if (!edges.has(from)) edges.set(from, new Set());
-    edges.get(from)!.add(to);
+  const plain = new Map<string, Set<string>>(); // the same graph without secret doors: what a plan can count on
+  const add = (graph: Map<string, Set<string>>, from: string, to: string): void => {
+    if (!graph.has(from)) graph.set(from, new Set());
+    graph.get(from)!.add(to);
+  };
+  const link = (from: string, to: string, secret = false): void => {
+    add(edges, from, to);
+    if (!secret) add(plain, from, to);
   };
   for (const floor of map.floors) {
     for (const d of floor.doors) {
-      link(d.between[0], d.between[1]);
-      link(d.between[1], d.between[0]);
+      link(d.between[0], d.between[1], d.hidden === true);
+      link(d.between[1], d.between[0], d.hidden === true);
     }
   }
   // Galleries that meet share one open walkway (derive-walls leaves no wall between them), so they connect without a door.
@@ -192,22 +211,35 @@ function checkReachability(map: MapFile, out: Issue[]): void {
     if (l.bidirectional) link(to, from);
   }
 
-  const seen = new Set<string>();
-  const queue = [approach.at ? roomAt(map, approach.floor, approach.at) : "outside"];
-  while (queue.length > 0) {
-    const node = queue.shift() as string;
-    if (seen.has(node)) continue;
-    seen.add(node);
-    for (const next of [...(edges.get(node) ?? [])].sort()) queue.push(next);
-  }
+  const start = approach.at ? roomAt(map, approach.floor, approach.at) : "outside";
+  const reach = (graph: Map<string, Set<string>>): Set<string> => {
+    const seen = new Set<string>();
+    const queue = [start];
+    while (queue.length > 0) {
+      const node = queue.shift() as string;
+      if (seen.has(node)) continue;
+      seen.add(node);
+      for (const next of [...(graph.get(node) ?? [])].sort()) queue.push(next);
+    }
+    return seen;
+  };
+  const seen = reach(edges);
+  const seenPlain = reach(plain);
 
   for (const floor of map.floors) {
     for (const room of [...floor.rooms].sort(byId)) {
-      if (room.tags.includes("void") || seen.has(room.id)) continue;
-      out.push({
-        check: "unreachable-room",
-        message: `Room ${room.id} (floor ${floor.id}) cannot be reached from approach A through doors and vertical links`,
-      });
+      if (room.tags.includes("void")) continue;
+      if (!seen.has(room.id)) {
+        out.push({
+          check: "unreachable-room",
+          message: `Room ${room.id} (floor ${floor.id}) cannot be reached from approach A through doors and vertical links`,
+        });
+      } else if (!seenPlain.has(room.id)) {
+        out.push({
+          check: "hidden-only-room",
+          message: `Room ${room.id} (floor ${floor.id}) can only be reached through hidden doors; give it an ordinary way in`,
+        });
+      }
     }
   }
 }

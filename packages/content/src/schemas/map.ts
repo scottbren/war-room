@@ -38,6 +38,9 @@ export const Door = z
     kind: z.enum(["standard", "glass", "blast", "gate", "shutter"]),
     state: z.enum(["open", "closed", "locked"]),
     breach: z.array(z.enum(["manual", "shotgun", "explosive", "thermal-lance", "hack"])),
+    /** A secret door (a bookcase, a panel). It works like any door, but it is on no plan or blueprint: only the people who
+     *  live there know it, until it is found or shown by intel. Added 2026-11-04 with approval; absent means false. */
+    hidden: z.boolean().optional(),
   })
   .strict();
 export type Door = z.infer<typeof Door>;

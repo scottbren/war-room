@@ -2250,8 +2250,17 @@
           "destructible": true
         },
         {
-          "id": "w.ground.y33:50-58",
+          "id": "w.ground.y33:50-55",
           "a": { "x": 50, "y": 33 },
+          "b": { "x": 55, "y": 33 },
+          "thickness": 0.2,
+          "height": 4,
+          "material": "plaster",
+          "destructible": true
+        },
+        {
+          "id": "w.ground.y33:56-58",
+          "a": { "x": 56, "y": 33 },
           "b": { "x": 58, "y": 33 },
           "thickness": 0.2,
           "height": 4,
@@ -2889,6 +2898,16 @@
           "kind": "standard",
           "state": "closed",
           "breach": ["manual", "shotgun", "explosive"]
+        },
+        {
+          "id": "d.g.study-master",
+          "at": { "x": 55.5, "y": 33 },
+          "width": 1,
+          "between": ["g.study", "g.master"],
+          "kind": "standard",
+          "state": "closed",
+          "breach": ["manual", "shotgun", "explosive"],
+          "hidden": true
         }
       ],
       "windows": [
@@ -6251,7 +6270,7 @@
           "width": 1.2,
           "between": ["l.cellar", "l.corridor.a"],
           "kind": "standard",
-          "state": "closed",
+          "state": "locked",
           "breach": ["manual", "shotgun", "explosive"]
         },
         {
@@ -9284,6 +9303,27 @@
       "kind": "poi",
       "at": { "x": 36.8, "y": 34 },
       "tags": ["fixture:path-light"]
+    },
+    {
+      "id": "m.auth.l.cellar-corridor.keypad",
+      "floor": "lower",
+      "kind": "poi",
+      "at": { "x": 30.75, "y": 52 },
+      "tags": ["auth:keypad", "door:d.l.cellar-corridor", "level:2", "circuit:c.house.a", "vlan:house", "fail:secure"]
+    },
+    {
+      "id": "m.routine.wife.spa",
+      "floor": "lower",
+      "kind": "poi",
+      "at": { "x": 60.5, "y": 40 },
+      "tags": ["routine:spa", "member:wife"]
+    },
+    {
+      "id": "m.routine.daughter.gym",
+      "floor": "lower",
+      "kind": "poi",
+      "at": { "x": 48.2, "y": 39.6 },
+      "tags": ["routine:gym", "member:daughter"]
     }
   ]
 }

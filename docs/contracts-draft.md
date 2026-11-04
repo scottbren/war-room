@@ -54,6 +54,7 @@ Door {
   kind: "standard" | "glass" | "blast" | "gate" | "shutter"
   state: "open" | "closed" | "locked"
   breach: ("manual" | "shotgun" | "explosive" | "thermal-lance" | "hack")[]
+  hidden?: boolean                // a secret door (bookcase, panel): works like any door, but is on no plan; only residents know it until found or shown by intel. Added 2026-11-04 (approved)
 }
 Window { id, at: Vec2, width, between: [string, string], shutter: boolean, blastRated: boolean }
 Opening {
@@ -103,7 +104,12 @@ Team     { id, name, side, members: string[] }          // e.g. "alpha" with 4 o
 Equipment { id, name, kind, effects: Record<string, number> }
 Mission  { id, mapId, seedPolicy: "random" | "fixed", principalSpawnOptions: string[],
            driveLocationOptions: string[], familyPresence: { wife: number, son: number, daughter: number },  // probabilities
+           raidTimeOptions?: number[],          // minutes after midnight; the sim picks one with the seeded PRNG (added 2026-11-04, approved)
+           routines?: Routine[],                // family habits checked against the raid time (added 2026-11-04, approved)
            complicationPool: string[], complicationsPerRun: [number, number] }
+Routine  { id: string, member: "wife" | "son" | "daughter", from: number, to: number,   // minutes after midnight, from < to
+           location: string,                    // marker id: a poi tagged "routine:<activity>" and "member:<member>"
+           probability: number }                // chance they keep the habit that night, given they are home
 DecisionCard { id, title, trigger: { event: string, conditions: Condition[] },
                reserved: boolean, defaultOptionId?: string,
                options: { id, label, effects: Effect[] }[] }

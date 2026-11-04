@@ -316,3 +316,27 @@ describe("floor toggles", () => {
     expect(toggleFloor(next, "upper")).toEqual(all);
   });
 });
+
+describe("planGreybox: hidden doors", () => {
+  it("fills the gap of a hidden door with a bookcase panel, so the debug view shows a wall of shelves, not an open doorway", () => {
+    const hidden = map.floors.flatMap((f) => f.doors.map((d) => ({ f, d }))).filter(({ d }) => d.hidden === true);
+    expect(hidden.length).toBeGreaterThanOrEqual(1);
+    for (const { f, d } of hidden) {
+      const panel = byId(`door:${d.id}`);
+      expect(panel.material).toBe("door:hidden");
+      expect(panel.floor).toBe(f.id);
+      const [w, h, t] = panel.size;
+      expect(Math.max(w, t), "as wide as the doorway").toBeCloseTo(d.width, 5);
+      expect(Math.min(w, t), "thin").toBeLessThanOrEqual(0.3);
+      const ceiling = Math.min(...f.rooms.filter((r) => d.between.includes(r.id)).map((r) => r.ceiling));
+      expect(h, "as tall as the wall around it, so no gap shows above").toBeCloseTo(ceiling, 5);
+      expect(panel.center[0]).toBeCloseTo(d.at.x, 5);
+      expect(panel.center[2]).toBeCloseTo(d.at.y, 5);
+      expect(panel.center[1] - h / 2).toBeCloseTo(f.elevation, 5); // stands on the floor
+    }
+  });
+
+  it("draws no panel for ordinary doors", () => {
+    expect(boxes.filter((b) => b.id.startsWith("door:")).length).toBe(map.floors.flatMap((f) => f.doors).filter((d) => d.hidden === true).length);
+  });
+});

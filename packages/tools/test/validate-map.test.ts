@@ -507,3 +507,40 @@ describe("service, camera and phone checks", () => {
     expect(find(validateMap(map), v.id, "not inside any room")).toBeDefined();
   });
 });
+
+describe("hidden doors", () => {
+  const hide = (map: MapFile, floor: string, id: string): Floor["doors"][number] => {
+    const d = floorOf(map, floor).doors.find((x) => x.id === id)!;
+    d.hidden = true;
+    return d;
+  };
+
+  it("a hidden door between two rooms that have another way round is fine", () => {
+    const map = charon();
+    hide(map, "ground", "d.g.drawing-study"); // the study is also reached through d.g.study-core
+    expect(messages(validateMap(map))).toEqual([]);
+  });
+
+  it("a hidden door to the outside is rejected, by door id", () => {
+    const map = charon();
+    hide(map, "ground", "d.g.garden-room-lawn");
+    expect(find(validateMap(map), "d.g.garden-room-lawn", "hidden", "outside")).toBeDefined();
+  });
+
+  it("a hidden door must be a plain, narrow door", () => {
+    const map = charon();
+    const glass = hide(map, "ground", "d.g.drawing-study");
+    glass.kind = "glass";
+    expect(find(validateMap(map), "d.g.drawing-study", "hidden", "standard")).toBeDefined();
+    glass.kind = "standard";
+    glass.width = 1.6;
+    expect(find(validateMap(map), "d.g.drawing-study", "hidden", "1.2")).toBeDefined();
+  });
+
+  it("a room whose only way in is a hidden door is reported (operators cannot plan a route to it)", () => {
+    const map = charon();
+    hide(map, "ground", "d.g.foyer-cloak"); // the cloakroom has no other door
+    const issue = find(validateMap(map), "g.cloak", "reached through hidden doors");
+    expect(issue).toBeDefined();
+  });
+});

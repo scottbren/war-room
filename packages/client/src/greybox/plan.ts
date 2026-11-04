@@ -17,6 +17,7 @@ export type MaterialKey =
   | "stairs"
   | "stairs:spine"
   | "window:glass"
+  | "door:hidden"
   | "window:slit"
   | "window:shutter"
   | "wall:reinforced"
@@ -42,6 +43,7 @@ export const MATERIALS: Record<MaterialKey, Material> = {
   stairs: { color: [0.78, 0.74, 0.66], alpha: 1 }, // pale marble
   "stairs:spine": { color: [0.2, 0.21, 0.24], alpha: 1 }, // dark steel carrying a floating flight
   "window:glass": { color: [0.55, 0.75, 0.9], alpha: 0.4 }, // blast-rated glazing
+  "door:hidden": { color: [0.42, 0.28, 0.16], alpha: 1 }, // a bookcase that swings: dark wood
   "window:slit": { color: [0.1, 0.14, 0.18], alpha: 0.85 }, // narrow firing/light slit
   "window:shutter": { color: [0.25, 0.27, 0.3], alpha: 1 }, // steel shutter housing
   "wall:reinforced": { color: [0.35, 0.37, 0.42], alpha: 1 },
@@ -217,6 +219,23 @@ function stairBoxes(link: MapFile["verticalLinks"][number], elevationOf: Map<Flo
   return boxes;
 }
 
+const HIDDEN_DOOR_THICKNESS = 0.18;
+
+/** A secret door looks like part of the wall: a floor-to-ceiling bookcase fills the gap that derive-walls leaves for it. */
+function hiddenDoorBox(floor: Floor, d: Floor["doors"][number]): Box {
+  const owner = floor.rooms.find((r) => d.between.includes(r.id));
+  const vertical = owner !== undefined && (d.at.x === owner.rect.min.x || d.at.x === owner.rect.max.x);
+  const ceilings = floor.rooms.filter((r) => d.between.includes(r.id)).map((r) => r.ceiling);
+  const HIDDEN_DOOR_HEIGHT = ceilings.length > 0 ? Math.min(...ceilings) : 2.4; // as tall as the wall around it
+  return {
+    id: `door:${d.id}`,
+    floor: floor.id,
+    material: "door:hidden",
+    center: [d.at.x, floor.elevation + HIDDEN_DOOR_HEIGHT / 2, d.at.y],
+    size: vertical ? [HIDDEN_DOOR_THICKNESS, HIDDEN_DOOR_HEIGHT, d.width] : [d.width, HIDDEN_DOOR_HEIGHT, HIDDEN_DOOR_THICKNESS],
+  };
+}
+
 /** Pane (and shutter housing) for one window, standing in the wall that contains it. */
 function windowBoxes(floor: Floor, w: Floor["windows"][number]): Box[] {
   const wall = floor.walls.find((x) => {
@@ -304,6 +323,7 @@ export function planGreybox(map: MapFile): Box[] {
     }
     for (const wall of floor.walls) boxes.push(wallBox(floor, wall));
     for (const window of floor.windows) boxes.push(...windowBoxes(floor, window));
+    for (const door of floor.doors) if (door.hidden === true) boxes.push(hiddenDoorBox(floor, door));
     for (const cover of floor.cover) {
       boxes.push({
         id: `cover:${cover.id}`,

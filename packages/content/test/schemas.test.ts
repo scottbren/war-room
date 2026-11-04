@@ -173,3 +173,50 @@ describe("DecisionCard / Complication", () => {
     expect(Complication.safeParse(bad).success).toBe(false);
   });
 });
+
+describe("Door hidden flag (approved contract change, 2026-11-04)", () => {
+  const door = { id: "d1", at: { x: 2, y: 0 }, width: 1, between: ["g.a", "outside"], kind: "standard", state: "closed", breach: ["manual"] };
+  const withDoor = (extra: Record<string, unknown>) => ({ ...validMap, floors: [{ ...validMap.floors[0], doors: [{ ...door, ...extra }] }] });
+
+  it("is optional, so every existing door stays valid", () => {
+    expect(MapFile.safeParse(withDoor({})).success).toBe(true);
+  });
+  it("accepts true and false", () => {
+    expect(MapFile.safeParse(withDoor({ hidden: true })).success).toBe(true);
+    expect(MapFile.safeParse(withDoor({ hidden: false })).success).toBe(true);
+  });
+  it("rejects anything that is not a boolean", () => {
+    expect(MapFile.safeParse(withDoor({ hidden: "yes" })).success).toBe(false);
+    expect(MapFile.safeParse(withDoor({ hidden: 1 })).success).toBe(false);
+  });
+});
+
+describe("Mission routines (approved contract change, 2026-11-04)", () => {
+  const routine = { id: "r.wife.spa", member: "wife", from: 21 * 60, to: 22 * 60 + 30, location: "m.routine.wife.spa", probability: 0.6 };
+  const withRoutines = (routines: unknown, raidTimeOptions: unknown = [21 * 60 + 30]) => ({ ...validMission, raidTimeOptions, routines });
+
+  it("stays valid without routines or a raid clock", () => {
+    expect(Mission.safeParse(validMission).success).toBe(true);
+  });
+  it("accepts a routine and the raid times it is checked against", () => {
+    expect(Mission.safeParse(withRoutines([routine])).success).toBe(true);
+  });
+  it("only allows the three family members", () => {
+    expect(Mission.safeParse(withRoutines([{ ...routine, member: "father" }])).success).toBe(false);
+  });
+  it("needs a window inside one day that starts before it ends", () => {
+    expect(Mission.safeParse(withRoutines([{ ...routine, from: 600, to: 600 }])).success).toBe(false);
+    expect(Mission.safeParse(withRoutines([{ ...routine, from: 700, to: 600 }])).success).toBe(false);
+    expect(Mission.safeParse(withRoutines([{ ...routine, to: 1440 }])).success).toBe(false);
+    expect(Mission.safeParse(withRoutines([{ ...routine, from: -1 }])).success).toBe(false);
+    expect(Mission.safeParse(withRoutines([{ ...routine, from: 600.5 }])).success).toBe(false);
+  });
+  it("keeps the probability between 0 and 1 and rejects unknown fields", () => {
+    expect(Mission.safeParse(withRoutines([{ ...routine, probability: 1.2 }])).success).toBe(false);
+    expect(Mission.safeParse(withRoutines([{ ...routine, mood: "tired" }])).success).toBe(false);
+  });
+  it("rejects a raid time outside the day", () => {
+    expect(Mission.safeParse(withRoutines([routine], [1440])).success).toBe(false);
+    expect(Mission.safeParse(withRoutines([routine], [-5])).success).toBe(false);
+  });
+});
