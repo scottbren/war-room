@@ -4,6 +4,7 @@ type Link = MapFile["verticalLinks"][number];
 
 /** How far off the flight's centre line (in metres) a unit can be and still count as walking on it. */
 const LANE = 0.3;
+const TREAD_BUMP = 0.125;
 
 /**
  * Extra height, in metres, for a unit standing on a stair flight. The sim walks a flight as a horizontal line on one
@@ -26,7 +27,9 @@ export function stairLift(links: readonly Link[], elevations: Readonly<Record<Fl
     const t = ((alongX ? x - lo.at.x : y - lo.at.y)) / run;
     const side = Math.abs(alongX ? y - lo.at.y : x - lo.at.x);
     if (side > LANE || t < 0 || t > 1) continue;
-    return floor === lo.floor ? rise * t : -rise * (1 - t);
+    // The treads are steps, the walk is a smooth line: a small bump (0.125 m at mid-flight, 0 at both ends) keeps the feet on the tread tops.
+    const bump = TREAD_BUMP * 4 * t * (1 - t);
+    return (floor === lo.floor ? rise * t : -rise * (1 - t)) + bump;
   }
   return 0;
 }

@@ -15,6 +15,7 @@ export type MaterialKey =
   | "slab"
   | "slab:deck"
   | "stairs"
+  | "stairs:spine"
   | "window:glass"
   | "window:slit"
   | "window:shutter"
@@ -39,6 +40,7 @@ export const MATERIALS: Record<MaterialKey, Material> = {
   slab: { color: [0.45, 0.45, 0.47], alpha: 1 },
   "slab:deck": { color: [0.62, 0.52, 0.4], alpha: 1 }, // open decks and terraces: warm timber and stone
   stairs: { color: [0.78, 0.74, 0.66], alpha: 1 }, // pale marble
+  "stairs:spine": { color: [0.2, 0.21, 0.24], alpha: 1 }, // dark steel carrying a floating flight
   "window:glass": { color: [0.55, 0.75, 0.9], alpha: 0.4 }, // blast-rated glazing
   "window:slit": { color: [0.1, 0.14, 0.18], alpha: 0.85 }, // narrow firing/light slit
   "window:shutter": { color: [0.25, 0.27, 0.3], alpha: 1 }, // steel shutter housing
@@ -98,6 +100,15 @@ const SHUTTER_HEIGHT = 0.3;
 
 const STAIR_WIDTH = 3;
 const STAIR_STEP_RISE = 0.25;
+// A floating flight (the grand stairs): thin open treads on a narrow steel spine, with a glass balustrade down each side.
+const FLOATING_STAIR_PREFIX = "link.grand-stairs.";
+const FLOATING_WIDTH = 2.4;
+const TREAD_THICKNESS = 0.14;
+const SPINE_WIDTH = 0.3;
+const SPINE_DEPTH = 0.45; // how far the spine hangs under a tread
+const SPINE_CLEARANCE = 0.06; // and it never gets closer than this to the floor
+const GLASS_RAIL_HEIGHT = 1;
+const GLASS_RAIL_THICKNESS = 0.04;
 
 /** Axis-aligned map rectangle to a box standing on `elevation`. */
 function rectBox(
@@ -145,6 +156,14 @@ function wallBox(floor: Floor, w: Floor["walls"][number]): Box {
   };
 }
 
+/** A box on a stair flight: `along` is the flight's axis ("x" or "y" on the map), positions in map metres. */
+function flightBox(along: "x" | "y", alongMid: number, acrossMid: number, bottom: number, top: number, alongSize: number, acrossSize: number): Pick<Box, "center" | "size"> {
+  const height = top - bottom;
+  return along === "y"
+    ? { center: [acrossMid, bottom + height / 2, alongMid], size: [acrossSize, height, alongSize] }
+    : { center: [alongMid, bottom + height / 2, acrossMid], size: [alongSize, height, acrossSize] };
+}
+
 /**
  * A stairs link as a solid stepped flight, centered on the line between its two ends.
  * Only axis-aligned flights with a real horizontal run are drawn (a link that goes
@@ -167,6 +186,22 @@ function stairBoxes(link: MapFile["verticalLinks"][number], elevationOf: Map<Flo
   const along = dx !== 0 ? "x" : "y";
   const sign = (dx !== 0 ? dx : dy) > 0 ? 1 : -1;
   const boxes: Box[] = [];
+  if (link.id.startsWith(FLOATING_STAIR_PREFIX)) {
+    const across = along === "x" ? lo.at.y : lo.at.x;
+    const sideOffset = (FLOATING_WIDTH - GLASS_RAIL_THICKNESS) / 2;
+    for (let i = 0; i < n; i++) {
+      const top = base + ((i + 1) * rise) / n;
+      const nn = String(i).padStart(2, "0");
+      const mid = (along === "x" ? lo.at.x : lo.at.y) + sign * (i * stepRun + stepRun / 2);
+      boxes.push({ id: `stairs:${link.id}:${nn}`, floor: lo.floor, material: "stairs", ...flightBox(along, mid, across, top - TREAD_THICKNESS, top, stepRun, FLOATING_WIDTH) });
+      const spineBottom = Math.max(base + SPINE_CLEARANCE, top - TREAD_THICKNESS - SPINE_DEPTH);
+      boxes.push({ id: `spine:${link.id}:${nn}`, floor: lo.floor, material: "stairs:spine", ...flightBox(along, mid, across, spineBottom, top - TREAD_THICKNESS, stepRun, SPINE_WIDTH) });
+      for (const [side, sign2] of [["a", -1], ["b", 1]] as const) {
+        boxes.push({ id: `rail:${link.id}:${side}:${nn}`, floor: lo.floor, material: "window:glass", ...flightBox(along, mid, across + sign2 * sideOffset, top, top + GLASS_RAIL_HEIGHT, stepRun, GLASS_RAIL_THICKNESS) });
+      }
+    }
+    return boxes;
+  }
   for (let i = 0; i < n; i++) {
     const height = ((i + 1) * rise) / n;
     const start = (along === "x" ? lo.at.x : lo.at.y) + sign * i * stepRun;

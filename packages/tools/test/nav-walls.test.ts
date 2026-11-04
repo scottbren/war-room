@@ -109,7 +109,8 @@ describe("routes keep out of the stair body", () => {
     const path = nav.findPath(from, room("upper", "u.son"));
     expect(path.length).toBeGreaterThan(2);
     const link = map.verticalLinks.find((l) => l.id === "link.grand-stairs.west")!;
-    const body = { x0: link.from.at.x - 1.5, x1: link.from.at.x + 1.5, y0: link.from.at.y + 2, y1: link.to.at.y };
+    // the low part of the floating flight (under 2.1 m of headroom) is solid for routing; the high part is open underneath
+    const body = { x0: link.from.at.x - 1.2, x1: link.from.at.x + 1.2, y0: link.from.at.y + 2, y1: link.from.at.y + 4.7 };
     let samples = 0;
     for (let i = 1; i < path.length; i++) {
       const a = path[i - 1]!, b = path[i]!;

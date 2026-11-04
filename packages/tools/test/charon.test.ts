@@ -71,19 +71,13 @@ describe("charon.json: the zigzag villa", () => {
     for (const id of ["u.guest", "u.spa", "u.terrace.c", "u.sky-lounge", "u.office", "u.cinema", "u.bath"]) expect(room("upper", id)).toBeDefined();
   });
 
-  it("has a grand staircase: two walkable flights to the gallery, with balustrade rails and no solid block", () => {
+  it("has a grand staircase: two walkable floating flights to the gallery, with no solid block and no rail standing on the hall floor", () => {
     for (const id of ["link.grand-stairs.west", "link.grand-stairs.east"]) {
       const link = map.verticalLinks.find((l) => l.id === id)!;
       expect(link).toMatchObject({ kind: "stairs", bidirectional: true, from: { floor: "ground" }, to: { floor: "upper" } });
       expect(link.restrictedTo).toBeUndefined();
     }
-    expect(floor("ground").cover.filter((c) => c.id.startsWith("cover.grand-stair-body"))).toEqual([]);
-    const rails = floor("ground").cover.filter((c) => c.id.startsWith("cover.grand-stair-rail"));
-    expect(rails).toHaveLength(2);
-    for (const rail of rails) {
-      expect(rail.type).toBe("light");
-      expect(rail.rect.max.x - rail.rect.min.x).toBeLessThan(0.5);
-    }
+    expect(floor("ground").cover.filter((c) => c.id.startsWith("cover.grand-stair"))).toEqual([]); // the glass balustrade rides the flight (greybox), not the floor
   });
 
   it("has an L- or stepped shape for the outbuildings instead of plain boxes", () => {

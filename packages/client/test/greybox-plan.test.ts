@@ -167,26 +167,50 @@ describe("planGreybox: coordinates (map x, y, z -> Babylon x, z, y)", () => {
     expect(pond.center[1]).toBeGreaterThan(path.center[1]);
   });
 
-  it("draws a stairs link as real steps: a stepped flight rising to the upper floor", () => {
-    const steps = boxes.filter((b) => b.id.startsWith("stairs:link.grand-stairs.west:"));
-    expect(steps.length).toBeGreaterThanOrEqual(14);
-    expect(steps.length).toBeLessThanOrEqual(20);
+  it("draws a stairs link as real steps: a stepped flight rising to the upper floor (a service-style flight is solid)", () => {
+    const steps = boxes.filter((b) => b.id.startsWith("stairs:link.shore-stair:"));
+    expect(steps.length).toBeGreaterThanOrEqual(10);
     const tops = steps.map((b) => b.center[1] + b.size[1] / 2);
     for (let i = 1; i < tops.length; i++) expect(tops[i]!, `step ${i}`).toBeGreaterThan(tops[i - 1]!);
-    expect(tops[0]!).toBeLessThanOrEqual(0.4); // first step is a low riser
-    expect(tops[tops.length - 1]!).toBeCloseTo(floorElevation("upper"), 5); // the last step is level with the gallery
     for (const b of steps) {
       expect(b.material).toBe("stairs");
-      expect(b.floor).toBe("ground");
-      expect(b.center[0]).toBeCloseTo(32, 5); // centered on the link line x = 32
-      expect(b.size[0]).toBeGreaterThanOrEqual(2.4); // a proper width
-      expect(b.center[1] - b.size[1] / 2).toBeCloseTo(0, 5); // solid down to the floor
+      expect(b.center[1] - b.size[1] / 2).toBeCloseTo(floorElevation("shore"), 5); // solid down to the floor
     }
-    const first = steps[0]!;
-    const last = steps[steps.length - 1]!;
-    expect(first.center[2] - first.size[2] / 2).toBeCloseTo(41.2, 5); // starts at the link's lower end (y = 41.2)
-    expect(last.center[2] + last.size[2] / 2).toBeCloseTo(50.2, 5); // and runs to its upper end (y = 50.2)
-    expect(boxes.filter((b) => b.id.startsWith("stairs:link.grand-stairs.east:")).length).toBe(steps.length);
+  });
+
+  it("draws the grand stairs as floating flights: thin open treads on a spine, glass balustrades, nothing solid underneath", () => {
+    for (const side of ["west", "east"] as const) {
+      const id = `link.grand-stairs.${side}`;
+      const link = map.verticalLinks.find((l) => l.id === id)!;
+      const treads = boxes.filter((b) => b.id.startsWith(`stairs:${id}:`));
+      expect(treads.length).toBeGreaterThanOrEqual(14);
+      expect(treads.length).toBeLessThanOrEqual(20);
+      const tops = treads.map((b) => b.center[1] + b.size[1] / 2);
+      for (let i = 1; i < tops.length; i++) expect(tops[i]!, `${id} tread ${i}`).toBeGreaterThan(tops[i - 1]!);
+      expect(tops[0]!).toBeLessThanOrEqual(0.4); // a low first step
+      expect(tops[tops.length - 1]!).toBeCloseTo(floorElevation("upper"), 5); // the last tread is level with the gallery
+      for (const t of treads) {
+        expect(t.material).toBe("stairs");
+        expect(t.floor).toBe("ground");
+        expect(t.size[1], "a thin tread").toBeLessThanOrEqual(0.2);
+        expect(t.size[0], "a 2.4 m wide flight").toBeCloseTo(2.4, 5);
+        expect(t.center[0]).toBeCloseTo(link.from.at.x, 5);
+      }
+      const first = treads[0]!, last = treads[treads.length - 1]!;
+      expect(first.center[2] - first.size[2] / 2).toBeCloseTo(link.from.at.y, 5);
+      expect(last.center[2] + last.size[2] / 2).toBeCloseTo(link.to.at.y, 5);
+      // The spine carries the treads and leaves open air under the high steps; glass rails line both sides.
+      const spine = boxes.filter((b) => b.id.startsWith(`spine:${id}:`));
+      expect(spine.length).toBe(treads.length);
+      for (const b of spine) expect(b.material).toBe("stairs:spine");
+      const highSpine = spine[spine.length - 1]!;
+      expect(highSpine.center[1] - highSpine.size[1] / 2).toBeGreaterThan(3); // open air under the top
+      const rails = boxes.filter((b) => b.id.startsWith(`rail:${id}:`));
+      expect(rails.length).toBe(treads.length * 2);
+      for (const b of rails) expect(b.material).toBe("window:glass");
+      // Nothing solid on the hall floor under the flight.
+      for (const b of [...treads, ...spine, ...rails]) expect(b.center[1] - b.size[1] / 2, b.id).toBeGreaterThan(0.05);
+    }
   });
 
   it("draws no steps for a stairs link with no horizontal run (the service stair), and none for non-stair links", () => {

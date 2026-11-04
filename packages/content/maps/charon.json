@@ -1600,17 +1600,17 @@
           "destructible": true
         },
         {
-          "id": "w.ground.x30:41-41.7",
+          "id": "w.ground.x30:41-42.5",
           "a": { "x": 30, "y": 41 },
-          "b": { "x": 30, "y": 41.7 },
+          "b": { "x": 30, "y": 42.5 },
           "thickness": 0.2,
           "height": 4,
           "material": "plaster",
           "destructible": true
         },
         {
-          "id": "w.ground.x30:42.7-45",
-          "a": { "x": 30, "y": 42.7 },
+          "id": "w.ground.x30:43.5-45",
+          "a": { "x": 30, "y": 43.5 },
           "b": { "x": 30, "y": 45 },
           "thickness": 0.2,
           "height": 4,
@@ -1618,8 +1618,17 @@
           "destructible": true
         },
         {
-          "id": "w.ground.x30:45-50",
+          "id": "w.ground.x30:45-46.9",
           "a": { "x": 30, "y": 45 },
+          "b": { "x": 30, "y": 46.9 },
+          "thickness": 0.2,
+          "height": 4,
+          "material": "plaster",
+          "destructible": true
+        },
+        {
+          "id": "w.ground.x30:48.1-50",
+          "a": { "x": 30, "y": 48.1 },
           "b": { "x": 30, "y": 50 },
           "thickness": 0.2,
           "height": 4,
@@ -1762,17 +1771,17 @@
           "destructible": true
         },
         {
-          "id": "w.ground.x52:41-41.6",
+          "id": "w.ground.x52:41-43.4",
           "a": { "x": 52, "y": 41 },
-          "b": { "x": 52, "y": 41.6 },
+          "b": { "x": 52, "y": 43.4 },
           "thickness": 0.2,
           "height": 4,
           "material": "plaster",
           "destructible": true
         },
         {
-          "id": "w.ground.x52:42.800000000000004-47",
-          "a": { "x": 52, "y": 42.800000000000004 },
+          "id": "w.ground.x52:44.6-47",
+          "a": { "x": 52, "y": 44.6 },
           "b": { "x": 52, "y": 47 },
           "thickness": 0.2,
           "height": 4,
@@ -1780,8 +1789,17 @@
           "destructible": true
         },
         {
-          "id": "w.ground.x52:47-50",
+          "id": "w.ground.x52:47-47.9",
           "a": { "x": 52, "y": 47 },
+          "b": { "x": 52, "y": 47.9 },
+          "thickness": 0.2,
+          "height": 4,
+          "material": "plaster",
+          "destructible": true
+        },
+        {
+          "id": "w.ground.x52:49.1-50",
+          "a": { "x": 52, "y": 49.1 },
           "b": { "x": 52, "y": 50 },
           "thickness": 0.2,
           "height": 4,
@@ -2538,8 +2556,17 @@
           "breach": ["manual", "shotgun", "explosive"]
         },
         {
+          "id": "d.g.hall-library",
+          "at": { "x": 30, "y": 47.5 },
+          "width": 1.2,
+          "between": ["g.grand-hall", "g.library"],
+          "kind": "standard",
+          "state": "closed",
+          "breach": ["manual", "shotgun", "explosive"]
+        },
+        {
           "id": "d.g.hall-wine",
-          "at": { "x": 30, "y": 42.2 },
+          "at": { "x": 30, "y": 43 },
           "width": 1,
           "between": ["g.grand-hall", "g.wine-room"],
           "kind": "standard",
@@ -2565,8 +2592,17 @@
           "breach": ["manual", "shotgun", "explosive"]
         },
         {
+          "id": "d.g.hall-dining",
+          "at": { "x": 52, "y": 48.5 },
+          "width": 1.2,
+          "between": ["g.grand-hall", "g.dining"],
+          "kind": "standard",
+          "state": "closed",
+          "breach": ["manual", "shotgun", "explosive"]
+        },
+        {
           "id": "d.g.hall-kitchen",
-          "at": { "x": 52, "y": 42.2 },
+          "at": { "x": 52, "y": 44 },
           "width": 1.2,
           "between": ["g.grand-hall", "g.kitchen"],
           "kind": "standard",
@@ -3075,22 +3111,6 @@
           "rect": { "min": { "x": 76.3, "y": 33 }, "max": { "x": 78.3, "y": 40 } },
           "type": "heavy",
           "height": 1.8,
-          "facing": "all",
-          "destructible": true
-        },
-        {
-          "id": "cover.grand-stair-rail.west",
-          "rect": { "min": { "x": 33.6, "y": 43.2 }, "max": { "x": 33.8, "y": 50 } },
-          "type": "light",
-          "height": 1,
-          "facing": "all",
-          "destructible": true
-        },
-        {
-          "id": "cover.grand-stair-rail.east",
-          "rect": { "min": { "x": 48.2, "y": 43.2 }, "max": { "x": 48.4, "y": 50 } },
-          "type": "light",
-          "height": 1,
           "facing": "all",
           "destructible": true
         },
@@ -6834,15 +6854,15 @@
     {
       "id": "link.grand-stairs.west",
       "kind": "stairs",
-      "from": { "floor": "ground", "at": { "x": 32, "y": 41.2 } },
-      "to": { "floor": "upper", "at": { "x": 32, "y": 50.2 } },
+      "from": { "floor": "ground", "at": { "x": 34, "y": 41.2 } },
+      "to": { "floor": "upper", "at": { "x": 34, "y": 50.2 } },
       "bidirectional": true
     },
     {
       "id": "link.grand-stairs.east",
       "kind": "stairs",
-      "from": { "floor": "ground", "at": { "x": 50, "y": 41.2 } },
-      "to": { "floor": "upper", "at": { "x": 50, "y": 50.2 } },
+      "from": { "floor": "ground", "at": { "x": 48, "y": 41.2 } },
+      "to": { "floor": "upper", "at": { "x": 48, "y": 50.2 } },
       "bidirectional": true
     },
     {

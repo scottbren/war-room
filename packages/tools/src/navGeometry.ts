@@ -19,6 +19,10 @@ const STOREY_CAP = 3.8;
 /** Stair flights are 3 m wide (as the greybox draws them); the first 2 m of the run stay open so a route can reach the foot. */
 const STAIR_WIDTH = 3;
 const STAIR_FOOT_OPEN = 2;
+/** The grand stairs float (open treads on a spine, see client greybox/plan.ts): 2.4 m wide, and walkable underneath where a person fits. */
+const FLOATING_STAIR_PREFIX = "link.grand-stairs.";
+const FLOATING_STAIR_WIDTH = 2.4;
+const HEADROOM = 2.1;
 
 function subtract(rect: Rect, hole: Rect): Rect[] {
   const ix0 = Math.max(rect.min.x, hole.min.x), ix1 = Math.min(rect.max.x, hole.max.x);
@@ -127,13 +131,18 @@ export function buildNavGeometry(map: MapFile): NavGeometry {
     const dx = hi.at.x - lo.at.x, dy = hi.at.y - lo.at.y;
     if (rise <= 0 || (dx !== 0 && dy !== 0) || Math.abs(dx) + Math.abs(dy) < 2) continue;
     const sign = (dx !== 0 ? dx : dy) > 0 ? 1 : -1;
+    const floating = link.id.startsWith(FLOATING_STAIR_PREFIX);
+    const width = floating ? FLOATING_STAIR_WIDTH : STAIR_WIDTH;
+    const run = Math.abs(dx) + Math.abs(dy);
     const from = (dx !== 0 ? lo.at.x : lo.at.y) + sign * STAIR_FOOT_OPEN;
-    const to = dx !== 0 ? hi.at.x : hi.at.y;
+    // A solid flight blocks its whole length; a floating one only the low steps, where there is no headroom underneath.
+    const to = (dx !== 0 ? lo.at.x : lo.at.y) + sign * (floating ? Math.min(run, (HEADROOM / rise) * run) : run);
+    if (floating && Math.abs(to - from) < 0.01) continue;
     const [a, b] = [Math.min(from, to), Math.max(from, to)];
     const body: Rect =
       dx !== 0
-        ? { min: { x: a, y: lo.at.y - STAIR_WIDTH / 2 }, max: { x: b, y: lo.at.y + STAIR_WIDTH / 2 } }
-        : { min: { x: lo.at.x - STAIR_WIDTH / 2, y: a }, max: { x: lo.at.x + STAIR_WIDTH / 2, y: b } };
+        ? { min: { x: a, y: lo.at.y - width / 2 }, max: { x: b, y: lo.at.y + width / 2 } }
+        : { min: { x: lo.at.x - width / 2, y: a }, max: { x: lo.at.x + width / 2, y: b } };
     soup.walls(body, base, base + Math.min(rise, STOREY_CAP));
   }
 
