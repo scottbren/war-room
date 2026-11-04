@@ -10,6 +10,9 @@ import { stairLift } from "./stairs";
 const SIDE_COLORS: Record<string, [number, number, number]> = {
   operator: [0.2, 0.6, 1],
   hostile: [0.9, 0.2, 0.2],
+  defender: [0.9, 0.2, 0.2],
+  principal: [0.7, 0.3, 0.9],
+  family: [0.95, 0.55, 0.75],
   civilian: [0.9, 0.85, 0.3],
 };
 const HEIGHT = 1.8;

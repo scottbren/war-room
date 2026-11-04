@@ -1,0 +1,14 @@
+{
+  "id": "mission.testbed",
+  "mapId": "testbed",
+  "seedPolicy": "random",
+  "principalSpawnOptions": ["m.principal.study"],
+  "driveLocationOptions": ["m.drive.study-desk"],
+  "familyPresence": { "wife": 1, "son": 0, "daughter": 0 },
+  "raidTimeOptions": [180, 1260],
+  "routines": [
+    { "id": "routine.wife.lounge", "member": "wife", "from": 1200, "to": 1320, "location": "m.routine.wife.hall", "probability": 1 }
+  ],
+  "complicationPool": [],
+  "complicationsPerRun": [0, 0]
+}

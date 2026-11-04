@@ -1,4 +1,5 @@
 import type { FloorId, Side } from "@war-room/content";
+import type { MissionSetup } from "./mission";
 import type { AlertLevel, Command, DeviceKind, DeviceState, DoorState, EntityState, ShutterState } from "./types";
 
 /** Position in integer centimeters. */
@@ -63,6 +64,8 @@ export interface World {
   /** Highest alert level whose automation has already run (edge trigger). */
   alertApplied: AlertLevel;
   queue: QueuedCommand[];
+  /** Rolled mission facts (raid time, drive location); present only when the sim was created with a mission. */
+  setup?: MissionSetup;
 }
 
 export function createWorld(): World {

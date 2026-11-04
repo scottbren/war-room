@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { MapFile } from "@war-room/content";
+import { MapFile, Mission } from "@war-room/content";
 import { MAPS, mapNameFromSearch } from "../src/maps";
 
 describe("map choice", () => {
@@ -11,6 +11,9 @@ describe("map choice", () => {
   });
 
   it("has a valid map under each name, whose id is the name (the worker picks the navmesh by it)", () => {
-    for (const [name, entry] of Object.entries(MAPS)) expect(MapFile.parse(entry.json).id).toBe(name);
+    for (const [name, entry] of Object.entries(MAPS)) {
+      expect(MapFile.parse(entry.json).id).toBe(name);
+      expect(Mission.parse(entry.mission).mapId).toBe(name);
+    }
   });
 });

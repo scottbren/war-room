@@ -1,4 +1,4 @@
-import { MapFile } from "@war-room/content";
+import { MapFile, Mission } from "@war-room/content";
 import { createNav, createSim } from "@war-room/sim";
 import type { Sim, Snapshot } from "@war-room/sim";
 import { MAPS, isMapName } from "./maps";
@@ -20,7 +20,7 @@ async function init(seed: number, mapName: string): Promise<void> {
   const navmeshUrl = chosen.navmeshUrl;
   const data = new Uint8Array(await (await fetch(navmeshUrl)).arrayBuffer());
   nav = await createNav({ data, map });
-  sim = createSim({ seed, map: withDemoOperator(map), nav });
+  sim = createSim({ seed, map: withDemoOperator(map), mission: Mission.parse(chosen.mission), nav });
   const first = sim.step();
   last = first.snapshot;
   post({ type: "ready", snapshot: first.snapshot });

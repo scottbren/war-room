@@ -1,12 +1,14 @@
 import charonJson from "../../content/maps/charon.json";
 import testbedJson from "../../content/maps/testbed.json";
+import charonMission from "../../content/missions/charon.json";
+import testbedMission from "../../content/missions/testbed.json";
 import charonNavmeshUrl from "../../content/generated/charon.navmesh.bin?url";
 import testbedNavmeshUrl from "../../content/generated/testbed.navmesh.bin?url";
 
 /** The maps the client can show. CHARON is the game map; TESTBED is a small dev fixture (open `/?map=testbed`). */
 export const MAPS = {
-  charon: { json: charonJson, navmeshUrl: charonNavmeshUrl },
-  testbed: { json: testbedJson, navmeshUrl: testbedNavmeshUrl },
+  charon: { json: charonJson, mission: charonMission, navmeshUrl: charonNavmeshUrl },
+  testbed: { json: testbedJson, mission: testbedMission, navmeshUrl: testbedNavmeshUrl },
 } as const;
 
 export type MapName = keyof typeof MAPS;

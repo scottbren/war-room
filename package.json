@@ -13,6 +13,7 @@
     "dev": "pnpm --filter @war-room/client dev",
     "run:headless": "pnpm --filter @war-room/tools run headless",
     "validate-map": "pnpm --filter @war-room/tools run validate-map",
+  "validate-mission": "pnpm --filter @war-room/tools run validate-mission",
     "derive-walls": "pnpm --filter @war-room/tools run derive-walls",
     "bake-navmesh": "pnpm --filter @war-room/tools run bake-navmesh",
     "smoke": "pnpm --filter @war-room/client run smoke"

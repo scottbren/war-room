@@ -1,0 +1,15 @@
+{
+  "id": "mission.charon",
+  "mapId": "charon",
+  "seedPolicy": "random",
+  "principalSpawnOptions": ["m.principal.master", "m.principal.study"],
+  "driveLocationOptions": ["m.drive.study-desk", "m.drive.office-safe"],
+  "familyPresence": { "wife": 0.7, "son": 0.5, "daughter": 0.5 },
+  "raidTimeOptions": [60, 180, 1380],
+  "routines": [
+    { "id": "routine.wife.spa", "member": "wife", "from": 1380, "to": 1439, "location": "m.routine.wife.spa", "probability": 0.6 },
+    { "id": "routine.daughter.gym", "member": "daughter", "from": 0, "to": 120, "location": "m.routine.daughter.gym", "probability": 0.4 }
+  ],
+  "complicationPool": [],
+  "complicationsPerRun": [0, 0]
+}

@@ -8,6 +8,7 @@
     "typecheck": "tsc --noEmit",
     "headless": "tsx src/headless.ts",
     "validate-map": "tsx src/validate-map.ts",
+    "validate-mission": "tsx src/validate-mission.ts",
     "derive-walls": "tsx src/derive-walls.ts",
     "bake-navmesh": "tsx src/bake-navmesh.ts",
     "record-t12": "tsx src/record-t12.ts",

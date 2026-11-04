@@ -557,6 +557,20 @@
     },
     { "id": "m.family.wife", "floor": "upper", "kind": "poi", "at": { "x": 21, "y": 10 }, "tags": ["family:wife"] },
     {
+      "id": "m.drive.study-desk",
+      "floor": "ground",
+      "kind": "poi",
+      "at": { "x": 15.5, "y": 16.8 },
+      "tags": ["poi:drive", "drive:study-desk"]
+    },
+    {
+      "id": "m.routine.wife.hall",
+      "floor": "ground",
+      "kind": "poi",
+      "at": { "x": 15.5, "y": 7.5 },
+      "tags": ["routine:lounge", "member:wife"]
+    },
+    {
       "id": "m.smart.camera.hall",
       "floor": "ground",
       "kind": "poi",

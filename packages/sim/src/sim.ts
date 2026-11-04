@@ -4,6 +4,8 @@ import { DEFAULT_HEALTH } from "./defaults";
 import { canonicalize, hashState } from "./hash";
 import { pipeline } from "./pipeline";
 import { fromCm, quantizePos, toCm } from "./quantize";
+import { planMission } from "./mission";
+import type { MissionSetup } from "./mission";
 import { createRng } from "./rng";
 import type { Rng } from "./rng";
 import { createCtx } from "./systems/context";
@@ -32,6 +34,8 @@ interface SimState {
   alert: AlertLevel;
   alertApplied: AlertLevel;
   queue: QueuedCommand[];
+  /** Only present for a sim created with a mission, so runs without one hash exactly as before. */
+  setup?: MissionSetup;
 }
 
 function tagValue(tags: string[], prefix: string): string | undefined {
@@ -110,6 +114,7 @@ function toState(map: MapFile, world: World, rng: Rng): SimState {
     alert: world.alert,
     alertApplied: world.alertApplied,
     queue: [...world.queue].sort((a, b) => a.seq - b.seq),
+    ...(world.setup !== undefined ? { setup: world.setup } : {}),
   };
 }
 
@@ -221,7 +226,7 @@ function parseState(text: string, map: MapFile): { world: World; rng: number[] }
   if (!isRecord(m) || m["id"] !== map.id || m["version"] !== map.version) {
     return fail("state was saved from a different map or map version");
   }
-  const { tick, seq, rng, entities, doors, queue, devices, shutters, alert, alertApplied } = raw;
+  const { tick, seq, rng, entities, doors, queue, devices, shutters, alert, alertApplied, setup } = raw;
   if (!isInt(tick) || tick < 0 || !isInt(seq) || seq < 0) return fail("invalid tick or seq");
   if (!Array.isArray(rng) || rng.length !== 4) return fail("invalid rng state");
   if (!Array.isArray(entities) || !Array.isArray(doors) || !Array.isArray(queue) || !Array.isArray(devices) || !Array.isArray(shutters)) {
@@ -234,6 +239,15 @@ function parseState(text: string, map: MapFile): { world: World; rng: number[] }
   world.seq = seq;
   world.alert = alert as AlertLevel;
   world.alertApplied = alertApplied as AlertLevel;
+
+  if (setup !== undefined) {
+    if (!isRecord(setup)) return fail("invalid mission setup");
+    if (Object.keys(setup).some((k) => k !== "raidMinute" && k !== "driveMarker")) return fail("mission setup has unknown fields");
+    const { raidMinute, driveMarker } = setup;
+    if (raidMinute !== undefined && (!isInt(raidMinute) || raidMinute < 0 || raidMinute > 1439)) return fail("invalid raid time");
+    if (driveMarker !== undefined && (typeof driveMarker !== "string" || !map.markers.some((m) => m.id === driveMarker && m.at !== undefined))) return fail("invalid drive marker");
+    world.setup = { ...(raidMinute !== undefined ? { raidMinute } : {}), ...(driveMarker !== undefined ? { driveMarker } : {}) };
+  }
 
   for (const e of entities) {
     const entity = parseEntity(e);
@@ -290,6 +304,13 @@ export function createSim(opts: CreateSimOptions): Sim {
   const { map } = opts;
   let world = buildWorld(map);
   const rng = createRng(opts.seed);
+  if (opts.mission) {
+    const plan = planMission(map, opts.mission, rng);
+    world.setup = plan.setup;
+    for (const s of plan.spawns) {
+      addEntity(world, { id: s.id, side: s.side, pos: { floor: s.floor, xCm: toCm(s.x), yCm: toCm(s.y) }, facing: 0, health: DEFAULT_HEALTH, state: "idle" });
+    }
+  }
 
   const snapshot = (): Snapshot => ({
     tick: world.tick,

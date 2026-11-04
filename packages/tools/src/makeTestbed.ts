@@ -100,6 +100,8 @@ export function makeTestbedMap(): MapFile {
       marker("m.spawn.def3", "grounds", "spawn", 3, 11, ["entity:def.test.3", "side:defender"]),
       marker("m.principal.study", "ground", "poi", 17, 14, ["principal-start:study"]),
       marker("m.family.wife", "upper", "poi", 21, 10, ["family:wife"]),
+      marker("m.drive.study-desk", "ground", "poi", 15.5, 16.8, ["poi:drive", "drive:study-desk"]),
+      marker("m.routine.wife.hall", "ground", "poi", 15.5, 7.5, ["routine:lounge", "member:wife"]),
       marker("m.smart.camera.hall", "ground", "poi", 23, 7, ["smart:camera", "covers:hall"]),
     ],
   };
