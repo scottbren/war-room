@@ -140,6 +140,8 @@ function classify(run: Run, outline: Rect4 | undefined): Spec | undefined {
       : { material: "stone", thickness: 0.3, destructible: true, height };
   }
   if (shared && has("arcade") && has("exterior")) return undefined;
+  // Galleries that meet (the sides of a U around a void) are one walkway: no wall across it.
+  if (shared && owners.every((o) => o.tags.includes("gallery"))) return undefined;
 
   if (has("panic-room") || has("safe-landing")) return { material: "reinforced", thickness: 0.5, destructible: false };
   if (!shared && has("void")) return { material: "glass", thickness: 0.1, destructible: true, height: RAILING_HEIGHT };

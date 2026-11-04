@@ -151,6 +151,13 @@ function roomAt(map: MapFile, floorId: string, p: Vec2): string {
   return hit ? hit.id : "outside";
 }
 
+/** True when two rectangles touch along a run of positive length (not just at a corner). */
+function sharesEdge(a: Room["rect"], b: Room["rect"]): boolean {
+  const overlapX = Math.min(a.max.x, b.max.x) - Math.max(a.min.x, b.min.x);
+  const overlapY = Math.min(a.max.y, b.max.y) - Math.max(a.min.y, b.min.y);
+  return (overlapX > 0 && (a.max.y === b.min.y || b.max.y === a.min.y)) || (overlapY > 0 && (a.max.x === b.min.x || b.max.x === a.min.x));
+}
+
 function checkReachability(map: MapFile, out: Issue[]): void {
   const approach = map.markers.find((m) => m.kind === "approach" && m.tags.includes("approach:A"));
   if (!approach) {
@@ -167,6 +174,15 @@ function checkReachability(map: MapFile, out: Issue[]): void {
     for (const d of floor.doors) {
       link(d.between[0], d.between[1]);
       link(d.between[1], d.between[0]);
+    }
+  }
+  // Galleries that meet share one open walkway (derive-walls leaves no wall between them), so they connect without a door.
+  for (const floor of map.floors) {
+    const galleries = floor.rooms.filter((r) => r.tags.includes("gallery"));
+    for (const a of galleries) {
+      for (const b of galleries) {
+        if (a.id !== b.id && sharesEdge(a.rect, b.rect)) link(a.id, b.id);
+      }
     }
   }
   for (const l of map.verticalLinks) {

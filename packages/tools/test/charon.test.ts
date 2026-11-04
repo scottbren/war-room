@@ -26,8 +26,8 @@ describe("charon.json: basics", () => {
 
   it("has the expected room count per floor", () => {
     expect(floor("grounds").rooms).toHaveLength(10);
-    expect(floor("ground").rooms).toHaveLength(21);
-    expect(floor("upper").rooms).toHaveLength(18);
+    expect(floor("ground").rooms).toHaveLength(22); // 21 plus the garden room
+    expect(floor("upper").rooms).toHaveLength(21); // the void plus three galleries replaced the old void
     expect(floor("roof").rooms).toHaveLength(14);
     expect(floor("lower").rooms).toHaveLength(9);
     expect(floor("shore").rooms).toHaveLength(5);

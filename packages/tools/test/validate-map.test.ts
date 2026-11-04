@@ -170,6 +170,14 @@ describe("individual checks, by breaking a copy of charon", () => {
     expect(find(validateMap(map), "u.void")).toBeUndefined();
   });
 
+  it("galleries that meet are one walkway: a side gallery with no door is reachable, unless it is not tagged as a gallery", () => {
+    const map = charon();
+    expect(find(validateMap(map), "u.gallery.w")).toBeUndefined();
+    const west = floorOf(map, "upper").rooms.find((r) => r.id === "u.gallery.w")!;
+    west.tags = west.tags.filter((t) => t !== "gallery");
+    expect(find(validateMap(map), "u.gallery.w", "cannot be reached")).toBeDefined();
+  });
+
   it("a map without an approach A marker says so", () => {
     const map = charon();
     map.markers = map.markers.filter((m) => !m.tags.includes("approach:A"));

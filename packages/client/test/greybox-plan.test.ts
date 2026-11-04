@@ -197,8 +197,8 @@ describe("planGreybox: coordinates (map x, y, z -> Babylon x, z, y)", () => {
         expect(t.center[0]).toBeCloseTo(link.from.at.x, 5);
       }
       const first = treads[0]!, last = treads[treads.length - 1]!;
-      expect(first.center[2] - first.size[2] / 2).toBeCloseTo(link.from.at.y, 5);
-      expect(last.center[2] + last.size[2] / 2).toBeCloseTo(link.to.at.y, 5);
+      expect(first.center[2] + first.size[2] / 2).toBeCloseTo(link.from.at.y, 5); // the foot is at the south end...
+      expect(last.center[2] - last.size[2] / 2).toBeCloseTo(link.to.at.y, 5); // ...and the flight rises north
       // The spine carries the treads and leaves open air under the high steps; glass rails line both sides.
       const spine = boxes.filter((b) => b.id.startsWith(`spine:${id}:`));
       expect(spine.length).toBe(treads.length);

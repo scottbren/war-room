@@ -195,6 +195,12 @@ describe("deriveWalls: courtyards, arcades and voids", () => {
     for (const w of between(bedroom, 4)) expect(w).toMatchObject({ material: "plaster", height: 3 });
   });
 
+  it("leaves two galleries that share an edge open to each other (one continuous walkway), but still walls a gallery from a bedroom", () => {
+    const gallery = (id: string, r: ReturnType<typeof rect>) => room(id, r, ["interior", "hall", "gallery"]);
+    expect(between(twoRooms(gallery("u.g.n", rect(0, 0, 4, 4)), gallery("u.g.w", rect(4, 0, 8, 4))), 4)).toEqual([]);
+    expect(between(twoRooms(gallery("u.g.n", rect(0, 0, 4, 4)), room("u.bed", rect(4, 0, 8, 4), ["interior"])), 4)).toHaveLength(1);
+  });
+
   it("puts a railing on a void's own open edge on the outline instead of a full wall", () => {
     const map = twoRooms(room("u.bed", rect(0, 0, 4, 4), ["interior"]), room("u.void", rect(4, 0, 8, 4), ["interior", "void"]));
     const east = between(map, 8);

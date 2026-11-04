@@ -114,20 +114,20 @@ describe("nav: findPath on the CHARON navmesh", () => {
     expect(nav.findPath(centre("ground", "g.foyer"), centre("upper", "u.son"))).toEqual(a);
   });
 
-  it("keeps windows closed to movement: inside to outside through the library west window is not a straight line", () => {
-    const path = nav.findPath({ floor: "ground", x: 19.5, y: 50 }, { floor: "grounds", x: 16.5, y: 50 });
+  it("keeps windows closed to movement: inside to outside through the dining room east window is not a straight line", () => {
+    const path = nav.findPath({ floor: "ground", x: 58.5, y: 49 }, { floor: "grounds", x: 61.5, y: 49 });
     expect(path.length).not.toBe(2);
   });
 
-  // Re-recorded 2026-11-04: the grand-stair flights became solid bodies in the navmesh (routes go around them), which also
-  // re-cut the mesh polygons, so waypoint counts and lengths moved slightly. Foyer to son's room goes through the hall to the foot of the west floating flight.
+  // Re-recorded 2026-11-04 after the entrance redesign (floating flights with the foot at the entrance, a garden room, doors moved):
+  // foyer to study now uses the unblocked drawing-room door; foyer to son's room goes to the foot of the west flight and round the gallery U.
   it("gives the same answers in Node as the Web Worker debug page (client/nav-debug.html) did in Chromium", () => {
     const expected: [Pos, Pos, number, number][] = [
-      [centre("ground", "g.foyer"), centre("ground", "g.study"), 8, 23.25],
-      [centre("ground", "g.foyer"), centre("upper", "u.son"), 8, 33.01],
-      [centre("ground", "g.master"), centre("ground", "g.panic"), 6, 20.37],
+      [centre("ground", "g.foyer"), centre("ground", "g.study"), 5, 22.57],
+      [centre("ground", "g.foyer"), centre("upper", "u.son"), 10, 32.3],
+      [centre("ground", "g.master"), centre("ground", "g.panic"), 7, 20.34],
       [centre("ground", "g.panic"), centre("shore", "grounds.boathouse"), 4, 42.62],
-      [{ floor: "grounds", x: 48, y: 68 }, centre("ground", "g.study"), 11, 39.23],
+      [{ floor: "grounds", x: 48, y: 68 }, centre("ground", "g.study"), 8, 38.44],
     ];
     for (const [from, to, points, len] of expected) {
       const path = nav.findPath(from, to);

@@ -28,7 +28,8 @@ const BAR_C = rectOf(12, 11, 54, 26);
 
 describe("charon.json v6: the zigzag of three bars", () => {
   it("tiles each ground-floor bar completely with rooms (no gaps, no strays)", () => {
-    const rooms = floor("ground").rooms.filter((r) => !r.tags.includes("walkway") && !r.tags.includes("portico"));
+    // The garden room is the one deliberate bay: it grows the hall north into the garden notch (Scott, 2026-11-04).
+    const rooms = floor("ground").rooms.filter((r) => !r.tags.includes("walkway") && !r.tags.includes("portico") && r.id !== "g.garden-room");
     for (const [name, bar] of [["A", BAR_A], ["B", BAR_B], ["C", BAR_C]] as const) {
       const inside = rooms.filter((r) => overlaps(r.rect, bar));
       for (const r of inside) expect(overlapArea(r.rect, bar), `${r.id} sticks out of bar ${name}`).toBe(area(r.rect));
@@ -45,7 +46,8 @@ describe("charon.json v6: the zigzag of three bars", () => {
     expect(Math.min(BAR_A.max.x, BAR_B.max.x) - Math.max(BAR_A.min.x, BAR_B.min.x)).toBe(20);
     expect(Math.min(BAR_B.max.x, BAR_C.max.x) - Math.max(BAR_B.min.x, BAR_C.min.x)).toBe(14);
     // the garden notch (west of B, between A and C) and the pool notch (east of C, south of B) hold no ground-floor room
-    const notches = [rectOf(12, 26, 40, 41), rectOf(54, 11, 82, 26)];
+    // (the garden room bay, x30-40 y36-41, sits against the hall; the rest of the notch stays open)
+    const notches = [rectOf(12, 26, 40, 36), rectOf(12, 36, 30, 41), rectOf(54, 11, 82, 26)];
     for (const n of notches) for (const r of floor("ground").rooms) expect(overlaps(n, r.rect), r.id).toBe(false);
   });
 
@@ -92,22 +94,35 @@ describe("charon.json v6: stacking and heights", () => {
     for (const r of floor("roof").rooms) expect(overlaps(r.rect, BAR_C), r.id + " over the low bar").toBe(false);
   });
 
-  it("has a double-height grand hall with a void above it", () => {
+  it("has a double-height grand hall with a void above it, ringed by galleries on three sides", () => {
     const hall = room("ground", "g.grand-hall");
     expect(hall.ceiling).toBe(8);
-    expect(room("upper", "u.void").rect).toEqual(hall.rect);
-    expect(floor("upper").openings.some((o) => o.kind === "gallery-void" && o.below === "ground")).toBe(true);
+    const void_ = room("upper", "u.void");
+    const rings = ["u.gallery.n", "u.gallery.w", "u.gallery.e"].map((id) => room("upper", id));
+    for (const r of rings) expect(r.tags, r.id).toEqual(expect.arrayContaining(["hall", "gallery"]));
+    // The void and the three new galleries exactly fill the hall's footprint.
+    const area = (r: { rect: typeof hall.rect }) => (r.rect.max.x - r.rect.min.x) * (r.rect.max.y - r.rect.min.y);
+    expect(area(void_) + rings.reduce((t, r) => t + area(r), 0)).toBeCloseTo(area(hall), 6);
+    for (const r of [void_, ...rings]) {
+      expect(r.rect.min.x).toBeGreaterThanOrEqual(hall.rect.min.x);
+      expect(r.rect.max.x).toBeLessThanOrEqual(hall.rect.max.x);
+      expect(r.rect.min.y).toBeGreaterThanOrEqual(hall.rect.min.y);
+      expect(r.rect.max.y).toBeLessThanOrEqual(hall.rect.max.y);
+    }
+    const opening = floor("upper").openings.find((o) => o.kind === "gallery-void" && o.below === "ground" && o.id !== "op.cellar-stairs")!;
+    expect(opening.rect).toEqual(void_.rect);
   });
 
-  it("has two grand-stair flights on either side of the open hall, each landing on the gallery", () => {
+  it("has two grand-stair flights on either side of the open hall: the foot by the entrance, rising away to the north gallery", () => {
     const flights = map.verticalLinks.filter((l) => l.id.startsWith("link.grand-stairs."));
     expect(flights.length).toBe(2);
-    const hall = room("ground", "g.grand-hall"), gallery = room("upper", "u.gallery");
+    const hall = room("ground", "g.grand-hall"), north = room("upper", "u.gallery.n");
     for (const l of flights) {
       expect(l.kind).toBe("stairs");
       expect(inRoom(hall, l.from.at), l.id).toBe(true);
-      expect(inRoom(gallery, l.to.at), l.id).toBe(true);
-      expect(Math.abs(l.to.at.y - l.from.at.y), l.id).toBeGreaterThanOrEqual(8.5); // a walkable run for 4 m of rise
+      expect(inRoom(north, l.to.at), l.id).toBe(true);
+      expect(hall.rect.max.y - l.from.at.y, `${l.id}: the foot is at the entrance (south) end`).toBeLessThanOrEqual(1);
+      expect(l.from.at.y - l.to.at.y, `${l.id}: it rises away from the entrance`).toBeGreaterThanOrEqual(6.5); // a walkable run for 4 m of rise
     }
     const xs = flights.map((l) => l.from.at.x).sort((a, b) => a - b);
     expect(xs[1]! - xs[0]!).toBeGreaterThanOrEqual(10); // the middle of the hall stays open
@@ -122,7 +137,9 @@ describe("charon.json v6: stacking and heights", () => {
       expect(x0 - hall.rect.min.x, `${l.id} to the west wall`).toBeGreaterThanOrEqual(2.5); // nothing touches a wall
       expect(hall.rect.max.x - x1, `${l.id} to the east wall`).toBeGreaterThanOrEqual(2.5);
       const run = Math.abs(l.to.at.y - l.from.at.y), rise = floor("upper").elevation - floor("ground").elevation;
-      const low = { y0: l.from.at.y + FOOT_OPEN, y1: l.from.at.y + (HEADROOM / rise) * run }; // under 2.1 m of headroom
+      const dir = Math.sign(l.to.at.y - l.from.at.y);
+      const ends = [l.from.at.y + dir * FOOT_OPEN, l.from.at.y + dir * (HEADROOM / rise) * run]; // the stretch with under 2.1 m of headroom
+      const low = { y0: Math.min(...ends), y1: Math.max(...ends) };
       for (const d of floor("ground").doors) {
         const vertical = d.at.x === hall.rect.min.x || d.at.x === hall.rect.max.x;
         const onLow = vertical

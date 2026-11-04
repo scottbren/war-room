@@ -60,6 +60,11 @@ const ROUTES: [string, [string, string], [string, string]][] = [
   ["master to the panic room", ["ground", "g.master"], ["ground", "g.panic"]],
   ["panic room to the boathouse", ["ground", "g.panic"], ["shore", "grounds.boathouse"]],
   ["helipad to the garage link", ["grounds", "@helipad"], ["ground", "g.garage-link"]],
+  ["foyer to the garden room", ["ground", "g.foyer"], ["ground", "g.garden-room"]],
+  ["foyer to the drawing room", ["ground", "g.foyer"], ["ground", "g.drawing"]],
+  ["garden room to the east gallery", ["ground", "g.garden-room"], ["upper", "u.gallery.e"]],
+  ["foyer to the north gallery", ["ground", "g.foyer"], ["upper", "u.gallery.n"]],
+  ["kitchen to the dining room", ["ground", "g.kitchen"], ["ground", "g.dining"]],
 ];
 
 describe("routes keep the capsule's radius clear of walls and solid cover", () => {
@@ -90,4 +95,26 @@ describe("routes keep the capsule's radius clear of walls and solid cover", () =
       expect(detail).toEqual([]);
     });
   }
+});
+
+describe("every door in the entrance area can be walked straight through", () => {
+  it("has floor on both sides of each door and no detour round furniture or a stair", () => {
+    const f = map.floors.find((x) => x.id === "ground")!;
+    const OFF = 0.9;
+    const problems: string[] = [];
+    for (const d of f.doors) {
+      if (!(d.at.x >= 12 && d.at.x <= 62 && d.at.y >= 26 && d.at.y <= 62)) continue;
+      const owner = d.between.map((id) => f.rooms.find((r) => r.id === id)).find((r) => r !== undefined)!;
+      const vertical = d.at.x === owner.rect.min.x || d.at.x === owner.rect.max.x;
+      const a = vertical ? { x: d.at.x - OFF, y: d.at.y } : { x: d.at.x, y: d.at.y - OFF };
+      const b = vertical ? { x: d.at.x + OFF, y: d.at.y } : { x: d.at.x, y: d.at.y + OFF };
+      const onFloor = (p: { x: number; y: number }): Pos | undefined => (["ground", "grounds"] as const).map((fl) => ({ floor: fl, ...p }) as Pos).find((q) => nav.isWalkable(q));
+      const A = onFloor(a), B = onFloor(b);
+      if (!A || !B) { problems.push(`${d.id}: no floor on the ${!A ? "first" : "second"} side`); continue; }
+      const path = nav.findPath(A, B);
+      const len = path.slice(1).reduce((sum, q, i) => sum + Math.hypot(q.x - path[i]!.x, q.y - path[i]!.y), 0);
+      if (path.length === 0 || len > 2 * OFF + 0.5) problems.push(`${d.id}: ${path.length === 0 ? "no route" : `a ${len.toFixed(1)} m detour for ${(2 * OFF).toFixed(1)} m`}`);
+    }
+    expect(problems).toEqual([]);
+  });
 });
