@@ -99,3 +99,44 @@ describe("charon other security fixtures", () => {
     }
   });
 });
+
+describe("charon fail modes and badges", () => {
+  const networked = () => map.markers.filter((m) => (tagValue(m, "auth") !== undefined && !["dial", "key"].includes(tagValue(m, "auth")!)) || m.tags.includes("smart:lock"));
+
+  it("gives every networked reader and smart lock a fail mode, open or secure", () => {
+    for (const m of networked()) expect(["open", "secure"], m.id).toContain(tagValue(m, "fail"));
+  });
+
+  it("fails secure on the panic room, the vault, the armory and the SOC, and open on the front door and the garage", () => {
+    for (const door of ["d.g.panic-core", "d.u.safe-core", "d.l.vault-corridor", "d.l.armory-corridor", "d.g.soc-bath", "d.g.soc-service"]) {
+      for (const r of networked().filter((m) => tagValue(m, "door") === door)) expect(tagValue(r, "fail"), r.id).toBe("secure");
+    }
+    for (const door of ["d.g.main", "d.garage", "d.g.service-south"]) {
+      for (const r of networked().filter((m) => tagValue(m, "door") === door)) expect(tagValue(r, "fail"), r.id).toBe("open");
+    }
+  });
+
+  it("agrees on one fail mode per door", () => {
+    const byDoor = new Map<string, Set<string>>();
+    for (const m of networked()) {
+      const d = tagValue(m, "door")!;
+      byDoor.set(d, (byDoor.get(d) ?? new Set()).add(tagValue(m, "fail")!));
+    }
+    for (const [door, modes] of byDoor) expect(modes.size, door).toBe(1);
+  });
+
+  it("has stealable badges of rising clearance, a badge encoder in the SOC, and a principal badge that cannot be cloned", () => {
+    const badges = withTag("item:badge");
+    expect(badges.length).toBeGreaterThanOrEqual(4);
+    for (const b of badges) {
+      expect(roomOf(b), b.id).toBeDefined();
+      expect(Number(tagValue(b, "level")), b.id).toBeGreaterThanOrEqual(1);
+      expect(["yes", "no"], b.id).toContain(tagValue(b, "clone"));
+    }
+    expect(withTag("sec:badge-encoder").map((m) => roomOf(m)?.id)).toEqual(["g.soc"]);
+    const principal = badges.find((b) => tagValue(b, "id") === "badge.principal")!;
+    expect(tagValue(principal, "clone")).toBe("no");
+    expect(Math.max(...badges.map((b) => Number(tagValue(b, "level"))))).toBe(4);
+    expect(badges.some((b) => tagValue(b, "clone") === "yes")).toBe(true);
+  });
+});

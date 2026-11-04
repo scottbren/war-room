@@ -459,12 +459,26 @@ function checkAccess(map: MapFile, out: Issue[]): void {
     if (!mechanical && tag(r, "circuit").length === 0) {
       out.push({ check: "reader-circuit", message: `Networked reader ${r.id} has no circuit; it cannot run without power` });
     }
+    if (!mechanical && !["open", "secure"].includes(tag(r, "fail")[0] ?? "")) {
+      out.push({ check: "reader-fail", message: `Reader ${r.id} needs a fail mode (fail:open or fail:secure) for when power is cut` });
+    }
     methodsByDoor.set(doorId, [...(methodsByDoor.get(doorId) ?? []), tag(r, "auth")[0]!]);
   }
   for (const doorId of [...methodsByDoor.keys()].sort()) {
     const door = map.floors.flatMap((f) => f.doors).find((d) => d.id === doorId);
     if (door?.between.some((b) => panicRooms.has(b)) && !methodsByDoor.get(doorId)!.includes("biometric")) {
       out.push({ check: "panic-door-biometric", message: `Door ${doorId} leads into the panic room but has no biometric reader` });
+    }
+  }
+  const panicDoors = new Set(map.floors.flatMap((f) => f.doors.filter((d) => d.between.some((b) => panicRooms.has(b))).map((d) => d.id)));
+  for (const r of readers) {
+    if (panicDoors.has(tag(r, "door")[0] ?? "") && tag(r, "fail")[0] === "open") {
+      out.push({ check: "panic-door-fail", message: `Reader ${r.id} guards the panic room but fails open; panic room doors must fail secure` });
+    }
+  }
+  for (const b of [...map.markers].filter((m) => m.tags.includes("item:badge")).sort(byId)) {
+    if (!b.at || roomAt(map, b.floor, b.at) === "outside") {
+      out.push({ check: "badge-room", message: `Badge ${b.id} (floor ${b.floor}) is not inside any room` });
     }
   }
 }

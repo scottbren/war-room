@@ -57,3 +57,6 @@ Added power, comms, intel and network markers and validator checks (`checkUtilit
 
 ## Map v10: access control (tier 1)
 Added 24 door readers and security fixtures as markers plus `checkAccess` validator. No sim or contract change.
+
+## Map v11: fail modes and badges (tier 1)
+Door fail mode is per-door data (`fail:open|secure`) rather than a global rule, so the open question (fail-safe vs fail-secure) becomes a tuning table. Added stealable/clonable badges and a badge encoder. No sim or contract change.

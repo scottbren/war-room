@@ -440,3 +440,26 @@ describe("access control checks", () => {
     expect(reader(charon(), "m.smart.lock.panic")).toBeDefined();
   });
 });
+
+describe("fail mode and badge checks", () => {
+  it("a networked reader with an invalid fail mode is reported", () => {
+    const map = charon();
+    const r = map.markers.find((m) => m.tags.includes("auth:badge"))!;
+    r.tags = r.tags.filter((t) => !t.startsWith("fail:")).concat("fail:maybe");
+    expect(find(validateMap(map), r.id, "fail")).toBeDefined();
+  });
+
+  it("a panic-room reader that fails open is reported", () => {
+    const map = charon();
+    const r = map.markers.find((m) => m.tags.includes("door:d.g.panic-core") && m.tags.includes("auth:keypad"))!;
+    r.tags = r.tags.map((t) => (t === "fail:secure" ? "fail:open" : t));
+    expect(find(validateMap(map), r.id, "panic", "secure")).toBeDefined();
+  });
+
+  it("a badge outside every room is reported", () => {
+    const map = charon();
+    const b = map.markers.find((m) => m.tags.includes("item:badge"))!;
+    b.at = { x: 1, y: 1 };
+    expect(find(validateMap(map), b.id, "not inside any room")).toBeDefined();
+  });
+});
