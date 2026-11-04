@@ -1,5 +1,5 @@
 import { ArcRotateCamera } from "@babylonjs/core/Cameras/arcRotateCamera";
-import { Engine } from "@babylonjs/core/Engines/engine";
+import type { AbstractEngine } from "@babylonjs/core/Engines/abstractEngine";
 import { DirectionalLight } from "@babylonjs/core/Lights/directionalLight";
 import { HemisphericLight } from "@babylonjs/core/Lights/hemisphericLight";
 import { Color4 } from "@babylonjs/core/Maths/math.color";
@@ -8,6 +8,12 @@ import { Scene } from "@babylonjs/core/scene";
 import type { FloorId, MapFile } from "@war-room/content";
 import { buildGreybox } from "./greybox/build";
 import type { Greybox } from "./greybox/build";
+import { createEngine } from "./engine";
+import type { Backend } from "./engine";
+import { SimBridge } from "./bridge";
+import { floorCandidates } from "./picking";
+import { DEMO_OPERATOR } from "./scenario";
+import { createUnitLayer } from "./units";
 import { planLabels } from "./greybox/labels";
 import { FLOOR_KEYS } from "./greybox/plan";
 import type { FloorVisibility } from "./greybox/plan";
@@ -16,7 +22,9 @@ export interface Viewer {
   greybox: Greybox;
   scene: Scene;
   camera: ArcRotateCamera;
-  engine: Engine;
+  engine: AbstractEngine;
+  backend: Backend;
+  bridge: SimBridge;
   toggleFloor(floor: FloorId): void;
   /** Room name labels (key L). */
   toggleLabels(): boolean;
@@ -26,11 +34,13 @@ export interface Viewer {
 export interface ViewerCallbacks {
   onFloors(visibility: FloorVisibility): void;
   onFps(fps: number): void;
+  onTick(tick: number): void;
+  onError(message: string): void;
 }
 
 /** Engine, scene, camera, lights, and the greybox, for one canvas. */
-export function createViewer(canvas: HTMLCanvasElement, map: MapFile, callbacks: ViewerCallbacks): Viewer {
-  const engine = new Engine(canvas, true, { preserveDrawingBuffer: true, stencil: false });
+export async function createViewer(canvas: HTMLCanvasElement, map: MapFile, callbacks: ViewerCallbacks): Promise<Viewer> {
+  const { engine, backend } = await createEngine(canvas);
   const scene = new Scene(engine);
   scene.clearColor = new Color4(0.04, 0.06, 0.09, 1);
 
@@ -97,6 +107,38 @@ export function createViewer(canvas: HTMLCanvasElement, map: MapFile, callbacks:
   };
   window.addEventListener("keydown", onKey);
 
+  // Simulation in a worker; units drawn from interpolated snapshots.
+  const bridge = new SimBridge(new Worker(new URL("./sim.worker.ts", import.meta.url), { type: "module" }) as never, () => performance.now());
+  bridge.onError = callbacks.onError;
+  bridge.start(1);
+  const elevations = Object.fromEntries(map.floors.map((f) => [f.id, f.elevation])) as Record<FloorId, number>;
+  const unitLayer = createUnitLayer(scene, elevations, (f) => greybox.floorVisible(f));
+  let lastTick = -1;
+  scene.onBeforeRenderObservable.add(() => {
+    unitLayer.update(bridge.units(performance.now()));
+    if (bridge.tick !== lastTick) {
+      lastTick = bridge.tick;
+      callbacks.onTick(lastTick);
+    }
+  });
+
+  // A click that is not a drag orders the operator to the clicked spot.
+  let downAt: { x: number; y: number } | undefined;
+  const onDown = (e: PointerEvent): void => {
+    downAt = e.button === 0 ? { x: e.clientX, y: e.clientY } : undefined;
+  };
+  const onUp = (e: PointerEvent): void => {
+    if (!downAt || e.button !== 0 || Math.abs(e.clientX - downAt.x) + Math.abs(e.clientY - downAt.y) > 5) return;
+    downAt = undefined;
+    const rect = canvas.getBoundingClientRect();
+    const ray = scene.createPickingRay(((e.clientX - rect.left) / rect.width) * engine.getRenderWidth(), ((e.clientY - rect.top) / rect.height) * engine.getRenderHeight(), Matrix.Identity(), camera);
+    const visible = map.floors.map((f) => f.id).filter((f) => greybox.floorVisible(f));
+    const candidates = floorCandidates({ origin: [ray.origin.x, ray.origin.y, ray.origin.z], direction: [ray.direction.x, ray.direction.y, ray.direction.z] }, visible, elevations);
+    if (candidates.length > 0) bridge.moveTo(DEMO_OPERATOR, candidates);
+  };
+  canvas.addEventListener("pointerdown", onDown);
+  canvas.addEventListener("pointerup", onUp);
+
   engine.runRenderLoop(() => scene.render());
   const onResize = (): void => engine.resize();
   window.addEventListener("resize", onResize);
@@ -107,10 +149,16 @@ export function createViewer(canvas: HTMLCanvasElement, map: MapFile, callbacks:
     scene,
     camera,
     engine,
+    backend,
+    bridge,
     toggleFloor,
     toggleLabels,
     dispose() {
       labelLayer.remove();
+      canvas.removeEventListener("pointerdown", onDown);
+      canvas.removeEventListener("pointerup", onUp);
+      bridge.dispose();
+      unitLayer.dispose();
       window.clearInterval(fpsTimer);
       window.removeEventListener("keydown", onKey);
       window.removeEventListener("resize", onResize);

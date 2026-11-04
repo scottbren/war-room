@@ -1,4 +1,5 @@
 import type { FloorId, MapFile, Mission, Side } from "@war-room/content";
+import type { Nav } from "./nav";
 
 export type { FloorId };
 
@@ -114,4 +115,10 @@ export interface CreateSimOptions {
   seed: number;
   map: MapFile;
   mission?: Mission;
+  /**
+   * A ready navmesh (see createNav). With one, `move` commands follow a route across rooms and floors;
+   * without one, units walk in a straight line on a single floor. Not part of the saved state: give a
+   * restored sim the same navmesh it was saved with.
+   */
+  nav?: Nav;
 }

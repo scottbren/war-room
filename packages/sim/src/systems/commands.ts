@@ -1,5 +1,5 @@
 import { DEFAULT_SPEED_CM_PER_TICK } from "../defaults";
-import { toCm } from "../quantize";
+import { fromCm, toCm } from "../quantize";
 import type { Command } from "../types";
 import type { QueuedCommand, World } from "../world";
 import type { Ctx, System } from "./context";
@@ -13,14 +13,19 @@ function apply(world: World, ctx: Ctx, command: Command): void {
     case "move": {
       const entity = world.entities[command.entity];
       if (!entity) return reject(ctx, command, `unknown entity: ${command.entity}`);
-      if (command.to.floor !== entity.pos.floor) {
-        return reject(ctx, command, "cross-floor moves need the navmesh (T8)");
+      const speedCmPerTick = DEFAULT_SPEED_CM_PER_TICK[entity.side];
+      if (ctx.nav) {
+        const from = { floor: entity.pos.floor, x: fromCm(entity.pos.xCm), y: fromCm(entity.pos.yCm) };
+        const route = ctx.nav.findPath(from, command.to).slice(1); // the first point is where the unit already is
+        if (route.length === 0) return reject(ctx, command, "no route to target");
+        const [next, ...rest] = route.map((p) => ({ floor: p.floor, xCm: toCm(p.x), yCm: toCm(p.y) }));
+        entity.motion = { toXCm: next!.xCm, toYCm: next!.yCm, toFloor: next!.floor, speedCmPerTick, ...(rest.length > 0 ? { rest } : {}) };
+        return;
       }
-      entity.motion = {
-        toXCm: toCm(command.to.x),
-        toYCm: toCm(command.to.y),
-        speedCmPerTick: DEFAULT_SPEED_CM_PER_TICK[entity.side],
-      };
+      if (command.to.floor !== entity.pos.floor) {
+        return reject(ctx, command, "cross-floor moves need a navmesh");
+      }
+      entity.motion = { toXCm: toCm(command.to.x), toYCm: toCm(command.to.y), speedCmPerTick };
       return;
     }
     case "setDoor": {

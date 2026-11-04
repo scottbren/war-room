@@ -82,3 +82,12 @@ Approved by the user: building services, lift and fire alarm, camera coverage, p
 - Diagonal walls are refused (the map has none; they would otherwise fill their whole bounding box).
 - Known limits: sight does not yet use elevation (a roof observer cannot look down through anything), and positions exactly on a wall line are ambiguous by design (units are never placed inside walls).
 - Not wired into the pipeline yet (perception system comes later); door and shutter changes will call `setDoor` and `setShutter` from the sim systems.
+
+## T10: client and worker bridge
+- **Nav is passed into `createSim` as an optional `nav` (not saved state).** With a nav, `move` computes a route (`findPath`) and the unit follows the waypoints; an unreachable target is rejected with a `commandRejected` event ("no route to target"). Without one, movement stays the old straight line (so existing tests are unchanged). `arrived` fires once, when the whole route ends.
+- Floor changes along a route (stairs, lift, tunnel) happen as a pop on arrival at the link end: the unit walks to the link on the source floor, then appears on the target floor. Smooth stair animation is later polish.
+- Worker protocol (`client/src/protocol.ts`): page to worker `init {seed}` and `moveTo {entity, candidates[]}`; worker to page `ready {snapshot}`, `tick {snapshot, events}`, `error {message}`. A click is sent as one candidate per visible floor (nearest along the camera ray first); the worker uses the first one the navmesh calls walkable, so clicking where a roof is hidden or absent falls through to the floor below.
+- The worker steps at 10 Hz with `setInterval`; commands are enqueued with the last completed tick so they apply on the next step. The page keeps the last two snapshots and interpolates over the measured tick interval (clamped to 50-400 ms), jumping when a unit is new or changes floor.
+- Engine: WebGPU when `WebGPUEngine.IsSupportedAsync` and init succeeds, otherwise WebGL2; `?gl=webgl2` forces the fallback. Overlay shows backend, fps, tick.
+- Debug scenario: `scenario.ts` adds one operator (`op.alpha.1`) on the helipad (48, 68). Real spawns come with mission data.
+- Verified in Chromium through Playwright: the operator walks helipad to study on both WebGPU and WebGL2, reaching (54, 37) exactly.

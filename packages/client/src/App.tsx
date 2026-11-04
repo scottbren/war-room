@@ -34,15 +34,27 @@ export function App() {
   const viewerRef = useRef<Viewer | null>(null);
   const [floors, setFloors] = useState<FloorVisibility>(allFloorsVisible);
   const [fps, setFps] = useState(0);
+  const [tick, setTick] = useState(0);
+  const [backend, setBackend] = useState("starting");
+  const [error, setError] = useState("");
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const viewer = createViewer(canvas, map, { onFloors: setFloors, onFps: setFps });
-    viewerRef.current = viewer;
-    if (import.meta.env.DEV) window.__warRoom = viewer;
+    let disposed = false;
+    let created: Viewer | null = null;
+    createViewer(canvas, map, { onFloors: setFloors, onFps: setFps, onTick: setTick, onError: setError })
+      .then((viewer) => {
+        if (disposed) return viewer.dispose();
+        created = viewer;
+        viewerRef.current = viewer;
+        setBackend(viewer.backend);
+        if (import.meta.env.DEV) window.__warRoom = viewer;
+      })
+      .catch((e: unknown) => setError(String(e)));
     return () => {
-      viewer.dispose();
+      disposed = true;
+      created?.dispose();
       viewerRef.current = null;
       delete window.__warRoom;
     };
@@ -54,8 +66,9 @@ export function App() {
       <div style={panel}>
         <div style={{ fontWeight: 700, letterSpacing: 1 }}>CHARON · greybox</div>
         <div style={{ opacity: 0.7, marginBottom: 8 }}>
-          {map.id} v{map.version} · {Math.round(fps)} fps
+          {map.id} v{map.version} · {backend} · {Math.round(fps)} fps · tick {tick}
         </div>
+        {error && <div style={{ color: "#ff8080", marginBottom: 6 }}>{error}</div>}
         {FLOOR_BUTTONS.map(([key, floor]) => (
           <button
             key={floor}
@@ -68,7 +81,7 @@ export function App() {
           </button>
         ))}
         <div style={{ opacity: 0.55, marginTop: 8, fontSize: 11, lineHeight: 1.4 }}>
-          Drag: orbit · Right-drag / Ctrl-drag: pan · Wheel: zoom · L: room labels
+          Drag: orbit · Right-drag / Ctrl-drag: pan · Wheel: zoom · L: room labels · Click: move operator
         </div>
       </div>
     </div>

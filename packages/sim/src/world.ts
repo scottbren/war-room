@@ -8,10 +8,21 @@ export interface EntityPos {
   yCm: number;
 }
 
+/** A point on a route, in integer centimeters. */
+export interface Waypoint {
+  floor: FloorId;
+  xCm: number;
+  yCm: number;
+}
+
 export interface Motion {
   toXCm: number;
   toYCm: number;
+  /** Floor the unit is on once it reaches (toXCm, toYCm); omitted means it stays on its current floor. */
+  toFloor?: FloorId;
   speedCmPerTick: number;
+  /** Waypoints after the current target, in order (a navmesh route). Omitted when there are none. */
+  rest?: Waypoint[];
 }
 
 /** Entity with optional components. All numbers are integers. */

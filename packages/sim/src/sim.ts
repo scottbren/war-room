@@ -10,7 +10,7 @@ import { createCtx } from "./systems/context";
 import { hubOnline } from "./systems/smart-home";
 import type { AlertLevel, Command, CreateSimOptions, DeviceKind, DeviceState, DoorState, EntityState, ShutterState, Sim, Snapshot } from "./types";
 import { addEntity, createWorld, sortedDeviceIds, sortedDoorIds, sortedEntities, sortedShutterIds } from "./world";
-import type { Device, Entity, QueuedCommand, World } from "./world";
+import type { Device, Entity, QueuedCommand, Waypoint, World } from "./world";
 
 const STATE_VERSION = 2;
 
@@ -190,6 +190,20 @@ function parseEntity(raw: unknown): Entity {
       return fail(`entity ${id} has invalid motion`);
     }
     entity.motion = { toXCm: motion["toXCm"], toYCm: motion["toYCm"], speedCmPerTick: motion["speedCmPerTick"] };
+    if (motion["toFloor"] !== undefined) {
+      const toFloor = FloorId.safeParse(motion["toFloor"]);
+      if (!toFloor.success) return fail(`entity ${id} has invalid motion`);
+      entity.motion.toFloor = toFloor.data;
+    }
+    if (motion["rest"] !== undefined) {
+      const rest = motion["rest"];
+      if (!Array.isArray(rest) || rest.length === 0) return fail(`entity ${id} has invalid motion`);
+      entity.motion.rest = rest.map((w): Waypoint => {
+        const floor = isRecord(w) ? FloorId.safeParse(w["floor"]) : undefined;
+        if (!isRecord(w) || !floor?.success || !isInt(w["xCm"]) || !isInt(w["yCm"])) return fail(`entity ${id} has an invalid route`);
+        return { floor: floor.data, xCm: w["xCm"], yCm: w["yCm"] };
+      });
+    }
   }
   return entity;
 }
@@ -312,7 +326,7 @@ export function createSim(opts: CreateSimOptions): Sim {
     },
 
     step() {
-      const ctx = createCtx(world.tick + 1, rng);
+      const ctx = createCtx(world.tick + 1, rng, opts.nav);
       for (const system of pipeline) system(world, ctx);
       world.tick += 1;
       return { snapshot: snapshot(), events: ctx.events };
