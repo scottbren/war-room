@@ -94,6 +94,24 @@ describe("deriveWalls", () => {
     }
   });
 
+  it("stops a wall between a double-height room and a one-storey room at the lower ceiling, so the floor above can look into the tall room", () => {
+    const map = fixture();
+    map.floors[0]!.rooms = [room("g.tall", rect(0, 0, 4, 4), ["interior"], 8), room("g.low", rect(4, 0, 8, 4), ["interior"], 4)];
+    map.floors[0]!.doors = [];
+    const walls = wallsOf(deriveWalls(map), "ground");
+    expect(walls.filter((w) => w.a.x === 4 && w.b.x === 4).map((w) => w.height)).toEqual([4]); // shared: the lower ceiling
+    expect(walls.filter((w) => w.a.x === 0 && w.b.x === 0).map((w) => w.height)).toEqual([8]); // the tall room's own outside wall
+    expect(walls.filter((w) => w.a.x === 8 && w.b.x === 8).map((w) => w.height)).toEqual([4]);
+  });
+
+  it("keeps the interior room's height on a wall it shares with an exterior room", () => {
+    const map = fixture();
+    map.floors[0]!.rooms = [room("g.tall", rect(0, 0, 4, 4), ["interior"], 8), room("g.yard", rect(4, 0, 8, 4), ["exterior"], 3)];
+    map.floors[0]!.doors = [];
+    const shared = wallsOf(deriveWalls(map), "ground").filter((w) => w.a.x === 4 && w.b.x === 4);
+    expect(shared.map((w) => w.height)).toEqual([8]);
+  });
+
   it("does not make walls on the roof (the parapet is cover)", () => {
     expect(wallsOf(deriveWalls(fixture()), "roof")).toEqual([]);
   });

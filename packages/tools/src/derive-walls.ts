@@ -211,7 +211,10 @@ function deriveFloor(floor: Floor): Floor {
   for (const run of runs) {
     const spec = classify(run, outline);
     if (!spec) continue;
-    const height = spec.height ?? Math.max(...run.owners.map((o) => o.ceiling));
+    // A wall shared by a tall room and a lower one stops at the lower ceiling: above it is the next floor's space (a
+    // gallery looking into a double-height hall), not wall. Exterior rooms (courtyards, balconies) do not lower it.
+    const sides = run.owners.filter((o) => !o.tags.includes("exterior"));
+    const height = spec.height ?? Math.min(...(sides.length > 0 ? sides : run.owners).map((o) => o.ceiling));
     let pieces: [number, number][] = [[run.from, run.to]];
     for (const gap of (cuts.get(run) ?? []).sort((a, b) => a.lo - b.lo)) {
       pieces = pieces.flatMap(([from, to]): [number, number][] => {

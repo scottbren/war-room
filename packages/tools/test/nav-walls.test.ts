@@ -19,7 +19,7 @@ beforeAll(async () => {
   nav = await createNav({ data: new Uint8Array(read("../../content/generated/charon.navmesh.bin")), map });
 });
 
-interface Rect { id: string; floor: string; x0: number; y0: number; x1: number; y1: number }
+interface Rect { id: string; floor: string; height: number; x0: number; y0: number; x1: number; y1: number }
 /** Every wall as the rectangle it occupies (axis-aligned walls only; the map has no diagonals). */
 function wallRects(): Rect[] {
   const out: Rect[] = [];
@@ -27,7 +27,7 @@ function wallRects(): Rect[] {
     for (const w of f.walls) {
       const t = w.thickness / 2;
       out.push({
-        id: w.id, floor: f.id,
+        id: w.id, floor: f.id, height: w.height,
         x0: Math.min(w.a.x, w.b.x) - (w.a.x === w.b.x ? t : 0), x1: Math.max(w.a.x, w.b.x) + (w.a.x === w.b.x ? t : 0),
         y0: Math.min(w.a.y, w.b.y) - (w.a.y === w.b.y ? t : 0), y1: Math.max(w.a.y, w.b.y) + (w.a.y === w.b.y ? t : 0),
       });
@@ -36,6 +36,8 @@ function wallRects(): Rect[] {
   return out;
 }
 const sameLevel = (a: string, b: string): boolean => a === b || (a === "grounds" && b === "ground") || (a === "ground" && b === "grounds") || (a === "hill" && b === "upper") || (a === "upper" && b === "hill");
+
+const floorElevation = (id: string): number => map.floors.find((f) => f.id === id)!.elevation;
 
 const room = (floor: string, id: string): Pos => {
   const r = map.floors.find((f) => f.id === floor)!.rooms.find((x) => x.id === id)!.rect;
@@ -77,15 +79,48 @@ describe("walking never enters a wall", () => {
       const walls = wallRects();
       const pts = trace(room(floor, id));
       expect(pts.length).toBeGreaterThan(50);
-      // A stair flight is walked as a horizontal line on its lower floor (the renderer lifts it), and the grand stair's top
-      // meets the hall's south wall by map design: that is the one place a path may overlap a wall, so the lane is exempt.
-      const onFlight = (p: { floor: string; x: number; y: number }) =>
-        map.verticalLinks.some((l) => l.kind === "stairs" && [l.from.floor, l.to.floor].includes(p.floor as never) &&
-          Math.abs(p.x - l.from.at.x) <= 0.3 && Math.abs(l.from.at.x - l.to.at.x) < 1e-9 &&
-          p.y >= Math.min(l.from.at.y, l.to.at.y) && p.y <= Math.max(l.from.at.y, l.to.at.y));
-      const bad = pts.filter((p) => !onFlight(p)).filter((p) => walls.some((w) => sameLevel(w.floor, p.floor) && p.x > w.x0 && p.x < w.x1 && p.y > w.y0 && p.y < w.y1));
-      const detail = bad.slice(0, 5).map((p) => `${p.floor} (${p.x.toFixed(2)}, ${p.y.toFixed(2)}) tick ${p.tick} in ${walls.filter((w) => sameLevel(w.floor, p.floor) && p.x > w.x0 && p.x < w.x1 && p.y > w.y0 && p.y < w.y1).map((w) => w.id).join(",")}`);
+      // A stair flight is walked as a horizontal line on its lower floor and the renderer lifts the capsule along it (see
+      // client/src/stairs.ts). Where a flight meets a wall the capsule may overlap the wall's footprint only once it has
+      // climbed above the wall top (the grand stair arrives at 4 m, past the 4 m hall wall), so the test uses that height.
+      const lift = (p: { floor: string; x: number; y: number }): number => {
+        for (const l of map.verticalLinks) {
+          if (l.kind !== "stairs" || Math.abs(l.from.at.x - l.to.at.x) > 1e-9 || Math.abs(p.x - l.from.at.x) > 0.3) continue;
+          const [lo, hi] = floorElevation(l.from.floor) <= floorElevation(l.to.floor) ? [l.from, l.to] : [l.to, l.from];
+          const t = (p.y - lo.at.y) / (hi.at.y - lo.at.y);
+          if (t < 0 || t > 1) continue;
+          const rise = floorElevation(hi.floor) - floorElevation(lo.floor);
+          if (p.floor === lo.floor) return rise * t;
+          if (p.floor === hi.floor) return -rise * (1 - t);
+        }
+        return 0;
+      };
+      const inside = (p: { floor: string; x: number; y: number }) =>
+        walls.filter((w) => sameLevel(w.floor, p.floor) && p.x > w.x0 && p.x < w.x1 && p.y > w.y0 && p.y < w.y1 && lift(p) < w.height - 0.15);
+      const bad = pts.filter((p) => inside(p).length > 0);
+      const detail = bad.slice(0, 5).map((p) => `${p.floor} (${p.x.toFixed(2)}, ${p.y.toFixed(2)}) tick ${p.tick} in ${inside(p).map((w) => w.id).join(",")}`);
       expect(detail, `${bad.length} of ${pts.length} samples inside walls`).toEqual([]);
     });
   }
+});
+
+describe("routes keep out of the stair body", () => {
+  it("a route to the upper floor walks around the grand stair and meets it at the foot, never through the steps", () => {
+    const from: Pos = { floor: "grounds", x: 48, y: 68 };
+    const path = nav.findPath(from, room("upper", "u.son"));
+    expect(path.length).toBeGreaterThan(2);
+    const link = map.verticalLinks.find((l) => l.id === "link.grand-stairs.west")!;
+    const body = { x0: link.from.at.x - 1.5, x1: link.from.at.x + 1.5, y0: link.from.at.y + 2, y1: link.to.at.y };
+    let samples = 0;
+    for (let i = 1; i < path.length; i++) {
+      const a = path[i - 1]!, b = path[i]!;
+      if (a.floor !== "ground" || b.floor !== "ground") continue; // the flight itself is the link, not a mesh walk
+      for (let k = 0; k <= 20; k++) {
+        const x = a.x + ((b.x - a.x) * k) / 20, y = a.y + ((b.y - a.y) * k) / 20;
+        samples++;
+        expect(x > body.x0 && x < body.x1 && y > body.y0 && y < body.y1, `(${x.toFixed(2)}, ${y.toFixed(2)}) is inside the stair body`).toBe(false);
+      }
+    }
+    expect(samples).toBeGreaterThan(20);
+    expect(path.some((p) => p.floor === "ground" && Math.abs(p.x - link.from.at.x) < 0.1 && Math.abs(p.y - link.from.at.y) < 0.5)).toBe(true); // it does go to the foot (the mesh snaps it clear of the wall)
+  });
 });

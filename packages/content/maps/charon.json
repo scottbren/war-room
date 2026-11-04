@@ -1586,7 +1586,7 @@
           "a": { "x": 26, "y": 11 },
           "b": { "x": 26, "y": 16.5 },
           "thickness": 0.2,
-          "height": 5,
+          "height": 4,
           "material": "plaster",
           "destructible": true
         },
@@ -1595,43 +1595,34 @@
           "a": { "x": 26, "y": 19.5 },
           "b": { "x": 26, "y": 26 },
           "thickness": 0.2,
-          "height": 5,
+          "height": 4,
           "material": "plaster",
           "destructible": true
         },
         {
-          "id": "w.ground.x30:41-42.5",
+          "id": "w.ground.x30:41-41.7",
           "a": { "x": 30, "y": 41 },
-          "b": { "x": 30, "y": 42.5 },
+          "b": { "x": 30, "y": 41.7 },
           "thickness": 0.2,
-          "height": 8,
+          "height": 4,
           "material": "plaster",
           "destructible": true
         },
         {
-          "id": "w.ground.x30:43.5-45",
-          "a": { "x": 30, "y": 43.5 },
+          "id": "w.ground.x30:42.7-45",
+          "a": { "x": 30, "y": 42.7 },
           "b": { "x": 30, "y": 45 },
           "thickness": 0.2,
-          "height": 8,
+          "height": 4,
           "material": "plaster",
           "destructible": true
         },
         {
-          "id": "w.ground.x30:45-46.9",
+          "id": "w.ground.x30:45-50",
           "a": { "x": 30, "y": 45 },
-          "b": { "x": 30, "y": 46.9 },
-          "thickness": 0.2,
-          "height": 8,
-          "material": "plaster",
-          "destructible": true
-        },
-        {
-          "id": "w.ground.x30:48.1-50",
-          "a": { "x": 30, "y": 48.1 },
           "b": { "x": 30, "y": 50 },
           "thickness": 0.2,
-          "height": 8,
+          "height": 4,
           "material": "plaster",
           "destructible": true
         },
@@ -1771,38 +1762,29 @@
           "destructible": true
         },
         {
-          "id": "w.ground.x52:41-43.4",
+          "id": "w.ground.x52:41-41.6",
           "a": { "x": 52, "y": 41 },
-          "b": { "x": 52, "y": 43.4 },
+          "b": { "x": 52, "y": 41.6 },
           "thickness": 0.2,
-          "height": 8,
+          "height": 4,
           "material": "plaster",
           "destructible": true
         },
         {
-          "id": "w.ground.x52:44.6-47",
-          "a": { "x": 52, "y": 44.6 },
+          "id": "w.ground.x52:42.800000000000004-47",
+          "a": { "x": 52, "y": 42.800000000000004 },
           "b": { "x": 52, "y": 47 },
           "thickness": 0.2,
-          "height": 8,
+          "height": 4,
           "material": "plaster",
           "destructible": true
         },
         {
-          "id": "w.ground.x52:47-47.9",
+          "id": "w.ground.x52:47-50",
           "a": { "x": 52, "y": 47 },
-          "b": { "x": 52, "y": 47.9 },
-          "thickness": 0.2,
-          "height": 8,
-          "material": "plaster",
-          "destructible": true
-        },
-        {
-          "id": "w.ground.x52:49.1-50",
-          "a": { "x": 52, "y": 49.1 },
           "b": { "x": 52, "y": 50 },
           "thickness": 0.2,
-          "height": 8,
+          "height": 4,
           "material": "plaster",
           "destructible": true
         },
@@ -2063,7 +2045,7 @@
           "a": { "x": 40, "y": 26 },
           "b": { "x": 42, "y": 26 },
           "thickness": 0.2,
-          "height": 5,
+          "height": 4,
           "material": "plaster",
           "destructible": true
         },
@@ -2072,7 +2054,7 @@
           "a": { "x": 44, "y": 26 },
           "b": { "x": 46, "y": 26 },
           "thickness": 0.2,
-          "height": 5,
+          "height": 4,
           "material": "plaster",
           "destructible": true
         },
@@ -2081,7 +2063,7 @@
           "a": { "x": 46, "y": 26 },
           "b": { "x": 49.3, "y": 26 },
           "thickness": 0.2,
-          "height": 5,
+          "height": 4,
           "material": "plaster",
           "destructible": true
         },
@@ -2090,7 +2072,7 @@
           "a": { "x": 50.7, "y": 26 },
           "b": { "x": 54, "y": 26 },
           "thickness": 0.2,
-          "height": 5,
+          "height": 4,
           "material": "plaster",
           "destructible": true
         },
@@ -2234,7 +2216,7 @@
           "a": { "x": 40, "y": 41 },
           "b": { "x": 43.5, "y": 41 },
           "thickness": 0.2,
-          "height": 8,
+          "height": 4,
           "material": "plaster",
           "destructible": true
         },
@@ -2243,7 +2225,7 @@
           "a": { "x": 46.5, "y": 41 },
           "b": { "x": 50, "y": 41 },
           "thickness": 0.2,
-          "height": 8,
+          "height": 4,
           "material": "plaster",
           "destructible": true
         },
@@ -2252,7 +2234,7 @@
           "a": { "x": 50, "y": 41 },
           "b": { "x": 52, "y": 41 },
           "thickness": 0.2,
-          "height": 8,
+          "height": 4,
           "material": "plaster",
           "destructible": true
         },
@@ -2347,20 +2329,20 @@
           "destructible": true
         },
         {
-          "id": "w.ground.y50:30-32.5",
+          "id": "w.ground.y50:30-34.5",
           "a": { "x": 30, "y": 50 },
-          "b": { "x": 32.5, "y": 50 },
+          "b": { "x": 34.5, "y": 50 },
           "thickness": 0.2,
-          "height": 8,
+          "height": 4,
           "material": "plaster",
           "destructible": true
         },
         {
-          "id": "w.ground.y50:33.5-36",
-          "a": { "x": 33.5, "y": 50 },
+          "id": "w.ground.y50:35.5-36",
+          "a": { "x": 35.5, "y": 50 },
           "b": { "x": 36, "y": 50 },
           "thickness": 0.2,
-          "height": 8,
+          "height": 4,
           "material": "plaster",
           "destructible": true
         },
@@ -2369,7 +2351,7 @@
           "a": { "x": 36, "y": 50 },
           "b": { "x": 39, "y": 50 },
           "thickness": 0.2,
-          "height": 8,
+          "height": 4,
           "material": "plaster",
           "destructible": true
         },
@@ -2378,25 +2360,25 @@
           "a": { "x": 43, "y": 50 },
           "b": { "x": 46, "y": 50 },
           "thickness": 0.2,
-          "height": 8,
+          "height": 4,
           "material": "plaster",
           "destructible": true
         },
         {
-          "id": "w.ground.y50:46-48.5",
+          "id": "w.ground.y50:46-46.5",
           "a": { "x": 46, "y": 50 },
-          "b": { "x": 48.5, "y": 50 },
+          "b": { "x": 46.5, "y": 50 },
           "thickness": 0.2,
-          "height": 8,
+          "height": 4,
           "material": "plaster",
           "destructible": true
         },
         {
-          "id": "w.ground.y50:49.5-52",
-          "a": { "x": 49.5, "y": 50 },
+          "id": "w.ground.y50:47.5-52",
+          "a": { "x": 47.5, "y": 50 },
           "b": { "x": 52, "y": 50 },
           "thickness": 0.2,
-          "height": 8,
+          "height": 4,
           "material": "plaster",
           "destructible": true
         },
@@ -2432,7 +2414,7 @@
           "a": { "x": 36, "y": 56 },
           "b": { "x": 39.5, "y": 56 },
           "thickness": 0.4,
-          "height": 6,
+          "height": 4,
           "material": "reinforced",
           "destructible": true
         },
@@ -2441,7 +2423,7 @@
           "a": { "x": 42.5, "y": 56 },
           "b": { "x": 46, "y": 56 },
           "thickness": 0.4,
-          "height": 6,
+          "height": 4,
           "material": "reinforced",
           "destructible": true
         },
@@ -2539,7 +2521,7 @@
         },
         {
           "id": "d.g.cloak-hall",
-          "at": { "x": 33, "y": 50 },
+          "at": { "x": 35, "y": 50 },
           "width": 1,
           "between": ["g.cloak", "g.grand-hall"],
           "kind": "standard",
@@ -2548,7 +2530,7 @@
         },
         {
           "id": "d.g.security-hall",
-          "at": { "x": 49, "y": 50 },
+          "at": { "x": 47, "y": 50 },
           "width": 1,
           "between": ["g.security", "g.grand-hall"],
           "kind": "standard",
@@ -2556,17 +2538,8 @@
           "breach": ["manual", "shotgun", "explosive"]
         },
         {
-          "id": "d.g.hall-library",
-          "at": { "x": 30, "y": 47.5 },
-          "width": 1.2,
-          "between": ["g.grand-hall", "g.library"],
-          "kind": "standard",
-          "state": "closed",
-          "breach": ["manual", "shotgun", "explosive"]
-        },
-        {
           "id": "d.g.hall-wine",
-          "at": { "x": 30, "y": 43 },
+          "at": { "x": 30, "y": 42.2 },
           "width": 1,
           "between": ["g.grand-hall", "g.wine-room"],
           "kind": "standard",
@@ -2592,17 +2565,8 @@
           "breach": ["manual", "shotgun", "explosive"]
         },
         {
-          "id": "d.g.hall-dining",
-          "at": { "x": 52, "y": 48.5 },
-          "width": 1.2,
-          "between": ["g.grand-hall", "g.dining"],
-          "kind": "standard",
-          "state": "closed",
-          "breach": ["manual", "shotgun", "explosive"]
-        },
-        {
           "id": "d.g.hall-kitchen",
-          "at": { "x": 52, "y": 44 },
+          "at": { "x": 52, "y": 42.2 },
           "width": 1.2,
           "between": ["g.grand-hall", "g.kitchen"],
           "kind": "standard",
@@ -3116,7 +3080,7 @@
         },
         {
           "id": "cover.grand-stair-rail.west",
-          "rect": { "min": { "x": 33.6, "y": 41 }, "max": { "x": 33.8, "y": 50 } },
+          "rect": { "min": { "x": 33.6, "y": 43.2 }, "max": { "x": 33.8, "y": 50 } },
           "type": "light",
           "height": 1,
           "facing": "all",
@@ -3124,7 +3088,7 @@
         },
         {
           "id": "cover.grand-stair-rail.east",
-          "rect": { "min": { "x": 48.2, "y": 41 }, "max": { "x": 48.4, "y": 50 } },
+          "rect": { "min": { "x": 48.2, "y": 43.2 }, "max": { "x": 48.4, "y": 50 } },
           "type": "light",
           "height": 1,
           "facing": "all",
@@ -6309,7 +6273,7 @@
           "a": { "x": 80, "y": -1.5 },
           "b": { "x": 80, "y": 0 },
           "thickness": 0.3,
-          "height": 4,
+          "height": 3,
           "material": "stone",
           "destructible": true
         },
@@ -6318,7 +6282,7 @@
           "a": { "x": 80, "y": -4 },
           "b": { "x": 80, "y": -2.5 },
           "thickness": 0.3,
-          "height": 4,
+          "height": 3,
           "material": "stone",
           "destructible": true
         },

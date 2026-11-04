@@ -16,6 +16,9 @@ const CLOSED_WINDOW_HEIGHT = 3;
 const MAX_STEP_OVER = 0.4;
 /** Walls and cover stop just short of the floor above so they cannot leak into its walkable layer. */
 const STOREY_CAP = 3.8;
+/** Stair flights are 3 m wide (as the greybox draws them); the first 2 m of the run stay open so a route can reach the foot. */
+const STAIR_WIDTH = 3;
+const STAIR_FOOT_OPEN = 2;
 
 function subtract(rect: Rect, hole: Rect): Rect[] {
   const ix0 = Math.max(rect.min.x, hole.min.x), ix1 = Math.min(rect.max.x, hole.max.x);
@@ -112,6 +115,26 @@ export function buildNavGeometry(map: MapFile): NavGeometry {
       if (c.height <= MAX_STEP_OVER) continue; // pool edges, kerbs and rugs are stepped over
       soup.walls(c.rect, h, h + Math.min(c.height, cap));
     }
+  }
+
+  // A stair flight is a solid body on its lower floor (the steps the greybox draws), so routes go around it and meet it at
+  // the foot instead of walking through the steps. The flight itself is crossed by the off-mesh link below.
+  for (const link of map.verticalLinks) {
+    if (link.kind !== "stairs") continue;
+    const [lo, hi] = elevation.get(link.from.floor)! <= elevation.get(link.to.floor)! ? [link.from, link.to] : [link.to, link.from];
+    const base = elevation.get(lo.floor)!;
+    const rise = elevation.get(hi.floor)! - base;
+    const dx = hi.at.x - lo.at.x, dy = hi.at.y - lo.at.y;
+    if (rise <= 0 || (dx !== 0 && dy !== 0) || Math.abs(dx) + Math.abs(dy) < 2) continue;
+    const sign = (dx !== 0 ? dx : dy) > 0 ? 1 : -1;
+    const from = (dx !== 0 ? lo.at.x : lo.at.y) + sign * STAIR_FOOT_OPEN;
+    const to = dx !== 0 ? hi.at.x : hi.at.y;
+    const [a, b] = [Math.min(from, to), Math.max(from, to)];
+    const body: Rect =
+      dx !== 0
+        ? { min: { x: a, y: lo.at.y - STAIR_WIDTH / 2 }, max: { x: b, y: lo.at.y + STAIR_WIDTH / 2 } }
+        : { min: { x: lo.at.x - STAIR_WIDTH / 2, y: a }, max: { x: lo.at.x + STAIR_WIDTH / 2, y: b } };
+    soup.walls(body, base, base + Math.min(rise, STOREY_CAP));
   }
 
   const offMesh: OffMeshLink[] = map.verticalLinks.map((l) => ({

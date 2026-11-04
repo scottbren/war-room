@@ -113,6 +113,27 @@ describe("charon.json v6: stacking and heights", () => {
     expect(xs[1]! - xs[0]!).toBeGreaterThanOrEqual(10); // the middle of the hall stays open
   });
 
+  it("keeps the foot of each flight open to the hall and no door under a flight (a path must not pass through the steps)", () => {
+    const flights = map.verticalLinks.filter((l) => l.id.startsWith("link.grand-stairs."));
+    const hall = room("ground", "g.grand-hall");
+    const FOOT_OPEN = 2; // metres of the run, from the foot, that stay open to the hall (the first steps are under 1 m high)
+    for (const l of flights) {
+      const lane = { x0: l.from.at.x - 1.5, x1: l.from.at.x + 1.5, y0: l.from.at.y, y1: l.to.at.y };
+      for (const d of floor("ground").doors) {
+        // A door in a vertical wall (x = the hall's side) opens along y; one in a horizontal wall opens along x.
+        const vertical = d.at.x === hall.rect.min.x || d.at.x === hall.rect.max.x;
+        const body = vertical
+          ? d.at.x > lane.x0 - 1 && d.at.x < lane.x1 + 1 && d.at.y + d.width / 2 > lane.y0 + FOOT_OPEN && d.at.y - d.width / 2 < lane.y1
+          : d.at.x + d.width / 2 > lane.x0 && d.at.x - d.width / 2 < lane.x1 && d.at.y > lane.y0 + FOOT_OPEN && d.at.y <= lane.y1 + 0.2;
+        expect(body, `${d.id} opens onto the steps of ${l.id}`).toBe(false);
+      }
+      for (const c of floor("ground").cover.filter((x) => x.id.startsWith("cover.grand-stair-rail"))) {
+        const alongFlight = c.rect.max.x > lane.x0 - 0.5 && c.rect.min.x < lane.x1 + 0.5;
+        if (alongFlight) expect(c.rect.min.y, `${c.id} blocks the foot`).toBeGreaterThanOrEqual(l.from.at.y - 0.2 + FOOT_OPEN);
+      }
+    }
+  });
+
   it("has a sky lounge cantilevered 5 m out over the pool notch (nothing under it on the ground floor)", () => {
     const lounge = room("upper", "u.sky-lounge");
     expect(lounge.tags).toContain("interior");

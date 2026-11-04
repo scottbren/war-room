@@ -119,13 +119,15 @@ describe("nav: findPath on the CHARON navmesh", () => {
     expect(path.length).not.toBe(2);
   });
 
+  // Re-recorded 2026-11-04: the grand-stair flights became solid bodies in the navmesh (routes go around them), which also
+  // re-cut the mesh polygons, so waypoint counts and lengths moved slightly. Foyer to son's room now goes through the hall and the stair foot.
   it("gives the same answers in Node as the Web Worker debug page (client/nav-debug.html) did in Chromium", () => {
     const expected: [Pos, Pos, number, number][] = [
-      [centre("ground", "g.foyer"), centre("ground", "g.study"), 9, 23.25],
-      [centre("ground", "g.foyer"), centre("upper", "u.son"), 9, 35.06],
+      [centre("ground", "g.foyer"), centre("ground", "g.study"), 8, 23.25],
+      [centre("ground", "g.foyer"), centre("upper", "u.son"), 10, 32.06],
       [centre("ground", "g.master"), centre("ground", "g.panic"), 6, 20.37],
       [centre("ground", "g.panic"), centre("shore", "grounds.boathouse"), 4, 42.62],
-      [{ floor: "grounds", x: 48, y: 68 }, centre("ground", "g.study"), 15, 37.64],
+      [{ floor: "grounds", x: 48, y: 68 }, centre("ground", "g.study"), 11, 39.23],
     ];
     for (const [from, to, points, len] of expected) {
       const path = nav.findPath(from, to);
