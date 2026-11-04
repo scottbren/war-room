@@ -94,13 +94,13 @@ describe("charon.json v6: stacking and heights", () => {
     for (const r of floor("roof").rooms) expect(overlaps(r.rect, BAR_C), r.id + " over the low bar").toBe(false);
   });
 
-  it("has a double-height grand hall with a void above it, ringed by galleries on three sides", () => {
+  it("has a double-height grand hall with a void above it, ringed by galleries on all four sides", () => {
     const hall = room("ground", "g.grand-hall");
     expect(hall.ceiling).toBe(8);
     const void_ = room("upper", "u.void");
-    const rings = ["u.gallery.n", "u.gallery.w", "u.gallery.e"].map((id) => room("upper", id));
+    const rings = ["u.gallery.n", "u.gallery.w", "u.gallery.e", "u.gallery"].map((id) => room("upper", id));
     for (const r of rings) expect(r.tags, r.id).toEqual(expect.arrayContaining(["hall", "gallery"]));
-    // The void and the three new galleries exactly fill the hall's footprint.
+    // The void and the four galleries (the south one is a bridge over the hall floor) exactly fill the hall's footprint.
     const area = (r: { rect: typeof hall.rect }) => (r.rect.max.x - r.rect.min.x) * (r.rect.max.y - r.rect.min.y);
     expect(area(void_) + rings.reduce((t, r) => t + area(r), 0)).toBeCloseTo(area(hall), 6);
     for (const r of [void_, ...rings]) {
@@ -113,25 +113,26 @@ describe("charon.json v6: stacking and heights", () => {
     expect(opening.rect).toEqual(void_.rect);
   });
 
-  it("has two grand-stair flights on either side of the open hall: the foot by the entrance, rising away to the north gallery", () => {
+  it("has one wide grand stair on the hall's axis: the foot by the entrance under the gallery bridge, rising straight ahead to the north gallery", () => {
     const flights = map.verticalLinks.filter((l) => l.id.startsWith("link.grand-stairs."));
-    expect(flights.length).toBe(2);
+    expect(flights.length).toBe(1);
+    expect(room("ground", "g.grand-hall").rect.max.y - room("ground", "g.grand-hall").rect.min.y, "deep enough for a 7 m run plus an arrival space").toBeGreaterThanOrEqual(11);
     const hall = room("ground", "g.grand-hall"), north = room("upper", "u.gallery.n");
     for (const l of flights) {
       expect(l.kind).toBe("stairs");
       expect(inRoom(hall, l.from.at), l.id).toBe(true);
       expect(inRoom(north, l.to.at), l.id).toBe(true);
-      expect(hall.rect.max.y - l.from.at.y, `${l.id}: the foot is at the entrance (south) end`).toBeLessThanOrEqual(1);
+      expect(hall.rect.max.y - l.from.at.y, `${l.id}: the foot is at the entrance (south) end`).toBeLessThanOrEqual(2.5);
       expect(l.from.at.y - l.to.at.y, `${l.id}: it rises away from the entrance`).toBeGreaterThanOrEqual(6.5); // a walkable run for 4 m of rise
     }
-    const xs = flights.map((l) => l.from.at.x).sort((a, b) => a - b);
-    expect(xs[1]! - xs[0]!).toBeGreaterThanOrEqual(10); // the middle of the hall stays open
+    const foyer = room("ground", "g.foyer").rect;
+    for (const l of flights) expect(Math.abs(l.from.at.x - (foyer.min.x + foyer.max.x) / 2), `${l.id} on the entrance axis`).toBeLessThanOrEqual(0.5);
   });
 
   it("floats each flight clear of the hall side walls, and no door opens onto the low part of a flight", () => {
     const flights = map.verticalLinks.filter((l) => l.id.startsWith("link.grand-stairs."));
     const hall = room("ground", "g.grand-hall");
-    const WIDTH = 2.4, HEADROOM = 2.1, FOOT_OPEN = 2;
+    const WIDTH = 3.6, HEADROOM = 2.1, FOOT_OPEN = 2;
     for (const l of flights) {
       const x0 = l.from.at.x - WIDTH / 2, x1 = l.from.at.x + WIDTH / 2;
       expect(x0 - hall.rect.min.x, `${l.id} to the west wall`).toBeGreaterThanOrEqual(2.5); // nothing touches a wall

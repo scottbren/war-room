@@ -71,8 +71,8 @@ describe("charon.json: the zigzag villa", () => {
     for (const id of ["u.guest", "u.spa", "u.terrace.c", "u.sky-lounge", "u.office", "u.cinema", "u.bath"]) expect(room("upper", id)).toBeDefined();
   });
 
-  it("has a grand staircase: two walkable floating flights to the gallery, with no solid block and no rail standing on the hall floor", () => {
-    for (const id of ["link.grand-stairs.west", "link.grand-stairs.east"]) {
+  it("has a grand staircase: one wide walkable floating flight to the gallery, with no solid block and no rail standing on the hall floor", () => {
+    for (const id of ["link.grand-stairs.central"]) {
       const link = map.verticalLinks.find((l) => l.id === id)!;
       expect(link).toMatchObject({ kind: "stairs", bidirectional: true, from: { floor: "ground" }, to: { floor: "upper" } });
       expect(link.restrictedTo).toBeUndefined();

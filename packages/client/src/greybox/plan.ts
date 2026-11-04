@@ -102,7 +102,7 @@ const STAIR_WIDTH = 3;
 const STAIR_STEP_RISE = 0.25;
 // A floating flight (the grand stairs): thin open treads on a narrow steel spine, with a glass balustrade down each side.
 const FLOATING_STAIR_PREFIX = "link.grand-stairs.";
-const FLOATING_WIDTH = 2.4;
+const FLOATING_WIDTH = 3.6;
 const TREAD_THICKNESS = 0.14;
 const SPINE_WIDTH = 0.3;
 const SPINE_DEPTH = 0.45; // how far the spine hangs under a tread

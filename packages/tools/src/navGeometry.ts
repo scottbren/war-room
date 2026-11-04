@@ -21,7 +21,7 @@ const STAIR_WIDTH = 3;
 const STAIR_FOOT_OPEN = 2;
 /** The grand stairs float (open treads on a spine, see client greybox/plan.ts): 2.4 m wide, and walkable underneath where a person fits. */
 const FLOATING_STAIR_PREFIX = "link.grand-stairs.";
-const FLOATING_STAIR_WIDTH = 2.4;
+const FLOATING_STAIR_WIDTH = 3.6;
 const HEADROOM = 2.1;
 
 function subtract(rect: Rect, hole: Rect): Rect[] {

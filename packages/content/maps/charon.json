@@ -1414,28 +1414,28 @@
         {
           "id": "g.cloak",
           "name": "Cloakroom and powder room",
-          "rect": { "min": { "x": 30, "y": 50 }, "max": { "x": 36, "y": 56 } },
+          "rect": { "min": { "x": 30, "y": 52 }, "max": { "x": 36, "y": 56 } },
           "ceiling": 4,
           "tags": ["interior"]
         },
         {
           "id": "g.foyer",
           "name": "Entrance foyer",
-          "rect": { "min": { "x": 36, "y": 50 }, "max": { "x": 46, "y": 56 } },
+          "rect": { "min": { "x": 36, "y": 52 }, "max": { "x": 46, "y": 56 } },
           "ceiling": 4,
           "tags": ["interior"]
         },
         {
           "id": "g.security",
           "name": "Security office",
-          "rect": { "min": { "x": 46, "y": 50 }, "max": { "x": 52, "y": 56 } },
+          "rect": { "min": { "x": 46, "y": 52 }, "max": { "x": 52, "y": 56 } },
           "ceiling": 4,
           "tags": ["interior", "guard-post"]
         },
         {
           "id": "g.grand-hall",
           "name": "Grand hall",
-          "rect": { "min": { "x": 30, "y": 41 }, "max": { "x": 52, "y": 50 } },
+          "rect": { "min": { "x": 30, "y": 41 }, "max": { "x": 52, "y": 52 } },
           "ceiling": 8,
           "tags": ["interior", "hall"]
         },
@@ -1653,17 +1653,17 @@
           "destructible": true
         },
         {
-          "id": "w.ground.x30:48.1-50",
+          "id": "w.ground.x30:48.1-52",
           "a": { "x": 30, "y": 48.1 },
-          "b": { "x": 30, "y": 50 },
+          "b": { "x": 30, "y": 52 },
           "thickness": 0.2,
           "height": 4,
           "material": "plaster",
           "destructible": true
         },
         {
-          "id": "w.ground.x30:50-56",
-          "a": { "x": 30, "y": 50 },
+          "id": "w.ground.x30:52-56",
+          "a": { "x": 30, "y": 52 },
           "b": { "x": 30, "y": 56 },
           "thickness": 0.2,
           "height": 4,
@@ -1671,8 +1671,8 @@
           "destructible": true
         },
         {
-          "id": "w.ground.x36:50-52.5",
-          "a": { "x": 36, "y": 50 },
+          "id": "w.ground.x36:52-52.5",
+          "a": { "x": 36, "y": 52 },
           "b": { "x": 36, "y": 52.5 },
           "thickness": 0.2,
           "height": 4,
@@ -1752,8 +1752,8 @@
           "destructible": true
         },
         {
-          "id": "w.ground.x46:50-52.5",
-          "a": { "x": 46, "y": 50 },
+          "id": "w.ground.x46:52-52.5",
+          "a": { "x": 46, "y": 52 },
           "b": { "x": 46, "y": 52.5 },
           "thickness": 0.2,
           "height": 4,
@@ -1815,17 +1815,17 @@
           "destructible": true
         },
         {
-          "id": "w.ground.x52:49.1-50",
+          "id": "w.ground.x52:49.1-52",
           "a": { "x": 52, "y": 49.1 },
-          "b": { "x": 52, "y": 50 },
+          "b": { "x": 52, "y": 52 },
           "thickness": 0.2,
           "height": 4,
           "material": "plaster",
           "destructible": true
         },
         {
-          "id": "w.ground.x52:50-56",
-          "a": { "x": 52, "y": 50 },
+          "id": "w.ground.x52:52-56",
+          "a": { "x": 52, "y": 52 },
           "b": { "x": 52, "y": 56 },
           "thickness": 0.2,
           "height": 4,
@@ -2382,36 +2382,36 @@
           "destructible": true
         },
         {
-          "id": "w.ground.y50:30-36",
-          "a": { "x": 30, "y": 50 },
-          "b": { "x": 36, "y": 50 },
+          "id": "w.ground.y52:30-36",
+          "a": { "x": 30, "y": 52 },
+          "b": { "x": 36, "y": 52 },
           "thickness": 0.2,
           "height": 4,
           "material": "plaster",
           "destructible": true
         },
         {
-          "id": "w.ground.y50:36-38",
-          "a": { "x": 36, "y": 50 },
-          "b": { "x": 38, "y": 50 },
+          "id": "w.ground.y52:36-38",
+          "a": { "x": 36, "y": 52 },
+          "b": { "x": 38, "y": 52 },
           "thickness": 0.2,
           "height": 4,
           "material": "plaster",
           "destructible": true
         },
         {
-          "id": "w.ground.y50:44-46",
-          "a": { "x": 44, "y": 50 },
-          "b": { "x": 46, "y": 50 },
+          "id": "w.ground.y52:44-46",
+          "a": { "x": 44, "y": 52 },
+          "b": { "x": 46, "y": 52 },
           "thickness": 0.2,
           "height": 4,
           "material": "plaster",
           "destructible": true
         },
         {
-          "id": "w.ground.y50:46-52",
-          "a": { "x": 46, "y": 50 },
-          "b": { "x": 52, "y": 50 },
+          "id": "w.ground.y52:46-52",
+          "a": { "x": 46, "y": 52 },
+          "b": { "x": 52, "y": 52 },
           "thickness": 0.2,
           "height": 4,
           "material": "plaster",
@@ -2529,7 +2529,7 @@
         },
         {
           "id": "d.g.foyer-hall",
-          "at": { "x": 41, "y": 50 },
+          "at": { "x": 41, "y": 52 },
           "width": 6,
           "between": ["g.foyer", "g.grand-hall"],
           "kind": "standard",
@@ -3999,26 +3999,17 @@
           "destructible": true
         },
         {
-          "id": "w.upper.y43:32.5-32.8",
+          "id": "w.upper.y43:32.5-39.2",
           "a": { "x": 32.5, "y": 43 },
-          "b": { "x": 32.8, "y": 43 },
+          "b": { "x": 39.2, "y": 43 },
           "thickness": 0.1,
           "height": 1.1,
           "material": "glass",
           "destructible": true
         },
         {
-          "id": "w.upper.y43:35.2-46.8",
-          "a": { "x": 35.2, "y": 43 },
-          "b": { "x": 46.8, "y": 43 },
-          "thickness": 0.1,
-          "height": 1.1,
-          "material": "glass",
-          "destructible": true
-        },
-        {
-          "id": "w.upper.y43:49.2-49.5",
-          "a": { "x": 49.2, "y": 43 },
+          "id": "w.upper.y43:42.8-49.5",
+          "a": { "x": 42.8, "y": 43 },
           "b": { "x": 49.5, "y": 43 },
           "thickness": 0.1,
           "height": 1.1,
@@ -4307,18 +4298,9 @@
           "breach": ["manual", "shotgun", "explosive"]
         },
         {
-          "id": "d.u.stair-top.west",
-          "at": { "x": 34, "y": 43 },
-          "width": 2.4,
-          "between": ["u.void", "u.gallery.n"],
-          "kind": "standard",
-          "state": "open",
-          "breach": []
-        },
-        {
-          "id": "d.u.stair-top.east",
-          "at": { "x": 48, "y": 43 },
-          "width": 2.4,
+          "id": "d.u.stair-top",
+          "at": { "x": 41, "y": 43 },
+          "width": 3.6,
           "between": ["u.void", "u.gallery.n"],
           "kind": "standard",
           "state": "open",
@@ -6966,17 +6948,10 @@
   ],
   "verticalLinks": [
     {
-      "id": "link.grand-stairs.west",
+      "id": "link.grand-stairs.central",
       "kind": "stairs",
-      "from": { "floor": "ground", "at": { "x": 34, "y": 49.8 } },
-      "to": { "floor": "upper", "at": { "x": 34, "y": 42.8 } },
-      "bidirectional": true
-    },
-    {
-      "id": "link.grand-stairs.east",
-      "kind": "stairs",
-      "from": { "floor": "ground", "at": { "x": 48, "y": 49.8 } },
-      "to": { "floor": "upper", "at": { "x": 48, "y": 42.8 } },
+      "from": { "floor": "ground", "at": { "x": 41, "y": 49.8 } },
+      "to": { "floor": "upper", "at": { "x": 41, "y": 42.8 } },
       "bidirectional": true
     },
     {
@@ -7740,7 +7715,7 @@
       "id": "m.smart.motion.foyer",
       "floor": "ground",
       "kind": "poi",
-      "at": { "x": 44, "y": 52 },
+      "at": { "x": 44, "y": 52.6 },
       "tags": ["smart:motion", "feeds:g.soc", "covers:foyer", "circuit:c.house.a", "vlan:security"]
     },
     {
@@ -7929,7 +7904,7 @@
       "id": "m.util.panel.a",
       "floor": "ground",
       "kind": "poi",
-      "at": { "x": 33, "y": 52 },
+      "at": { "x": 33, "y": 52.6 },
       "tags": ["util:power", "util:panel", "feeds:c.house.a"]
     },
     {
@@ -8356,7 +8331,7 @@
       "id": "m.sec.panic-button.security",
       "floor": "ground",
       "kind": "poi",
-      "at": { "x": 47, "y": 52 },
+      "at": { "x": 47, "y": 52.7 },
       "tags": ["sec:panic-button", "circuit:c.house.a", "vlan:security"]
     },
     {
@@ -8391,7 +8366,7 @@
       "id": "m.sec.monitor.security",
       "floor": "ground",
       "kind": "poi",
-      "at": { "x": 48, "y": 51 },
+      "at": { "x": 48, "y": 52.7 },
       "tags": ["sec:monitor", "circuit:c.house.a", "vlan:security"]
     },
     {
@@ -8491,7 +8466,7 @@
       "id": "m.badge.guard",
       "floor": "ground",
       "kind": "poi",
-      "at": { "x": 46.5, "y": 52 },
+      "at": { "x": 46.7, "y": 52.8 },
       "tags": ["item:badge", "id:badge.guard", "level:2", "clone:yes", "held:guard"]
     },
     {

@@ -517,6 +517,19 @@
       "command": {
         "kind": "move",
         "tick": 180,
+        "entity": "def.vet.7",
+        "to": {
+          "floor": "ground",
+          "x": 42.19,
+          "y": 26.11
+        }
+      }
+    },
+    {
+      "at": 180,
+      "command": {
+        "kind": "move",
+        "tick": 180,
         "entity": "def.vet.9",
         "to": {
           "floor": "grounds",

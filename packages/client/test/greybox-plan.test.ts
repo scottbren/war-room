@@ -63,9 +63,9 @@ describe("planGreybox: raised ground", () => {
 
 describe("planGreybox: coordinates (map x, y, z -> Babylon x, z, y)", () => {
   it("lays a room slab so its top is at the floor elevation", () => {
-    const hall = byId("slab:g.grand-hall"); // map rect [30,41]-[52,50], floor ground at z = 0
-    expect(hall.center).toEqual([41, -0.1, 45.5]);
-    expect(hall.size).toEqual([22, 0.2, 9]);
+    const hall = byId("slab:g.grand-hall"); // map rect [30,41]-[52,52], floor ground at z = 0
+    expect(hall.center).toEqual([41, -0.1, 46.5]);
+    expect(hall.size).toEqual([22, 0.2, 11]);
     const upperHall = byId("slab:u.gallery");
     expect(upperHall.center[1]).toBeCloseTo(floorElevation("upper") - 0.1, 10);
   });
@@ -179,7 +179,7 @@ describe("planGreybox: coordinates (map x, y, z -> Babylon x, z, y)", () => {
   });
 
   it("draws the grand stairs as floating flights: thin open treads on a spine, glass balustrades, nothing solid underneath", () => {
-    for (const side of ["west", "east"] as const) {
+    for (const side of ["central"] as const) {
       const id = `link.grand-stairs.${side}`;
       const link = map.verticalLinks.find((l) => l.id === id)!;
       const treads = boxes.filter((b) => b.id.startsWith(`stairs:${id}:`));
@@ -193,7 +193,7 @@ describe("planGreybox: coordinates (map x, y, z -> Babylon x, z, y)", () => {
         expect(t.material).toBe("stairs");
         expect(t.floor).toBe("ground");
         expect(t.size[1], "a thin tread").toBeLessThanOrEqual(0.2);
-        expect(t.size[0], "a 2.4 m wide flight").toBeCloseTo(2.4, 5);
+        expect(t.size[0], "a 3.6 m wide flight").toBeCloseTo(3.6, 5);
         expect(t.center[0]).toBeCloseTo(link.from.at.x, 5);
       }
       const first = treads[0]!, last = treads[treads.length - 1]!;

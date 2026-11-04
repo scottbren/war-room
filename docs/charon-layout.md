@@ -215,3 +215,6 @@ Two symmetric straight flights, now `link.grand-stairs.west` at x=34 and `.east`
 
 ## Entrance, grand hall and garden side (v12)
 Foyer opens to the grand hall through a 6 m opening. The hall is clear of furniture. Two floating flights (x 34 and x 48) start at the south end by the foyer and rise north to the north gallery; upper doors d.u.stair-top.west/east open to it. The upper floor is a U: north gallery y 41-43, west gallery x 30-32.5, east gallery x 49.5-52, round a void [32.5,43]-[49.5,50]. North of the hall is the garden room [30,36]-[40,41], open 6 m to the hall, with glass doors to the lawn (35,36), the terrace (30,38.5) and the drawing room (40,38.5). The library has a French door west (18,50); the kitchen a service door east (60,44). The grand piano is in the drawing room.
+
+## Grand hall and stair, second pass (v13)
+Supersedes the flanking flights above. The hall is [30,41]-[52,52], 8 m ceiling. You enter from the foyer (door at (41,52), 6 m wide), pass under the upper gallery bridge (y 50-52), and meet one wide floating flight (3.6 m, x 39.2-42.8) at its foot (41, 49.8). It rises north to the north gallery (top (41, 42.8)). The void is [32.5,43]-[49.5,50]; galleries ring it on all four sides. The foyer is 10 x 4 m; the cloakroom and security office are 4 m deep.
