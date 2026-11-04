@@ -251,17 +251,17 @@
           "destructible": true
         },
         {
-          "id": "w.grounds.x74:52-54",
+          "id": "w.grounds.x74:52-52.5",
           "a": { "x": 74, "y": 52 },
-          "b": { "x": 74, "y": 54 },
+          "b": { "x": 74, "y": 52.5 },
           "thickness": 0.3,
           "height": 4,
           "material": "stone",
           "destructible": true
         },
         {
-          "id": "w.grounds.x74:58-60",
-          "a": { "x": 74, "y": 58 },
+          "id": "w.grounds.x74:55.5-60",
+          "a": { "x": 74, "y": 55.5 },
           "b": { "x": 74, "y": 60 },
           "thickness": 0.3,
           "height": 4,
@@ -614,8 +614,8 @@
         },
         {
           "id": "d.garage",
-          "at": { "x": 74, "y": 56 },
-          "width": 4,
+          "at": { "x": 74, "y": 54 },
+          "width": 3,
           "between": ["grounds.garage", "outside"],
           "kind": "shutter",
           "state": "closed",
@@ -1951,17 +1951,17 @@
           "destructible": false
         },
         {
-          "id": "w.ground.x74:52-53.4",
+          "id": "w.ground.x74:52-52.5",
           "a": { "x": 74, "y": 52 },
-          "b": { "x": 74, "y": 53.4 },
+          "b": { "x": 74, "y": 52.5 },
           "thickness": 0.3,
           "height": 4,
           "material": "stone",
           "destructible": true
         },
         {
-          "id": "w.ground.x74:54.6-56",
-          "a": { "x": 74, "y": 54.6 },
+          "id": "w.ground.x74:55.5-56",
+          "a": { "x": 74, "y": 55.5 },
           "b": { "x": 74, "y": 56 },
           "thickness": 0.3,
           "height": 4,
@@ -2630,7 +2630,7 @@
         {
           "id": "d.g.garage-link-garage",
           "at": { "x": 74, "y": 54 },
-          "width": 1.2,
+          "width": 3,
           "between": ["g.garage-link", "outside"],
           "kind": "standard",
           "state": "locked",

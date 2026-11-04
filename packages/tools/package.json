@@ -12,6 +12,8 @@
     "bake-navmesh": "tsx src/bake-navmesh.ts"
   },
   "dependencies": {
+    "@recast-navigation/core": "^0.44.0",
+    "@recast-navigation/generators": "^0.44.0",
     "@war-room/content": "workspace:*",
     "@war-room/sim": "workspace:*"
   },

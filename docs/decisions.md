@@ -63,3 +63,13 @@ Door fail mode is per-door data (`fail:open|secure`) rather than a global rule, 
 
 ## Map v12: services, camera coverage, phones (tier 1 complete)
 Approved by the user: building services, lift and fire alarm, camera coverage, phones. Declined: guard dogs, foyer mantrap. Per-door fail-mode table approved. Data only; no sim or contract change.
+
+## T8: navmesh (risk prototype)
+- Baker: `tools/src/navGeometry.ts` builds the triangle soup (flat floor slabs with holes for openings, wall and solid-cover blocks with a downward lid, closed windows, vertical links as off-mesh connections); `tools/src/bake-navmesh.ts` bakes one solo navmesh to `packages/content/generated/charon.navmesh.bin` (about 430 KB, about 2 s). A test checks the committed binary equals a fresh bake.
+- **Deviation from the task text (agent 0.35 m, cell 0.2 m):** the baker uses cell 0.1 m and agent radius 0.3 m. With 0.2 m cells and 0.35 m radius every 1.0 and 1.2 m doorway in the map erodes shut (the wall faces already take a voxel on each side). Doors keep a clear width of door width minus 0.6 m.
+- Cover 0.4 m high or lower (pool basins, kerbs) is stepped over; concealment (hedges, trees) is walkable; walls and cover are capped 0.2 m under the floor above so ground-floor walls cannot leak into the upper layer.
+- Sim API: `sim/src/nav.ts` exports async `createNav({ data, map })` returning `{ findPath(from, to): Pos[], isWalkable(pos) }`. `findPath` returns `[]` for unreachable targets (partial paths are rejected) and snaps waypoints to the 1 cm grid. Floors that share a height (grounds/ground, hill/upper) are told apart by which floor has a room under the point.
+- **createSim stays synchronous.** recast needs an async `init()`, so the caller (worker or test) awaits `createNav` and will pass the ready `Nav` into `createSim` as an option when T10 wires movement to it. Not wired yet; movement is still straight-line.
+- Vertical links are plain off-mesh connections: `restrictedTo` (principal and family only) is not enforced by the mesh; the sim will enforce it.
+- Map fix found by the baker: `d.garage` (grounds) and `d.g.garage-link-garage` (ground) sit in the same wall at the same height but their gaps did not line up, which sealed the door. Both are now at (74, 54), 3 m wide.
+- Web Worker check: `packages/client/nav-debug.html` runs the same queries inside a Web Worker in Chromium; results match Node exactly (tested in `tools/test/nav.test.ts`). Firefox is part of T12.
