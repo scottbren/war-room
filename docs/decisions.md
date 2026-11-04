@@ -73,3 +73,12 @@ Approved by the user: building services, lift and fire alarm, camera coverage, p
 - Vertical links are plain off-mesh connections: `restrictedTo` (principal and family only) is not enforced by the mesh; the sim will enforce it.
 - Map fix found by the baker: `d.garage` (grounds) and `d.g.garage-link-garage` (ground) sit in the same wall at the same height but their gaps did not line up, which sealed the door. Both are now at (74, 54), 3 m wide.
 - Web Worker check: `packages/client/nav-debug.html` runs the same queries inside a Web Worker in Chromium; results match Node exactly (tested in `tools/test/nav.test.ts`). Firefox is part of T12.
+
+## T9: line of sight (risk prototype)
+- `sim/src/los.ts`: `createLos(map)` returns `{ sight(from, to, stance), setDoor, setShutter, cellValue }`; also `effectiveRange(rangeCm, concealed)` (concealment halves detection range, integer). Per-floor grids of 0.5 m cells; ray tracing is an integer Amanatides-Woo DDA on centimetre coordinates (no division in the loop).
+- Cell values: 0 open, 1 low cover (0.41 to 1.59 m: hides a crouched target, not a standing one), 2 full block (walls, closed or locked doors, closed shutters, cover 1.6 m or taller). Cover 0.4 m or lower is ignored (same as the navmesh step-over rule). Concealment is a separate flag: never blocks, marks the target concealed if it stands in it or the ray passes through it.
+- Walls rasterize along their centre line (so a thin wall costs one cell, not two); doors and shuttered windows are dynamic overlays on the wall gap. A ray that passes exactly through a cell corner needs both side cells open (no squeezing between two blocked cells). A segment that ends exactly on a corner is handled (found by a test).
+- Vertical sight: only through an upper-floor opening whose `below` is the other floor, and only to a point under the opening. The observer is projected to the nearest point of the void; leg 1 (on the upper floor, low cover ignored: a balustrade is looked over) must be clear, leg 2 is traced on the lower floor with normal rules. Works both ways.
+- Diagonal walls are refused (the map has none; they would otherwise fill their whole bounding box).
+- Known limits: sight does not yet use elevation (a roof observer cannot look down through anything), and positions exactly on a wall line are ambiguous by design (units are never placed inside walls).
+- Not wired into the pipeline yet (perception system comes later); door and shutter changes will call `setDoor` and `setShutter` from the sim systems.
