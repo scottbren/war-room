@@ -62,6 +62,14 @@ describe("an operator walking the CHARON navmesh in the sim", () => {
     expect(r.events.filter((e) => e.type === "arrived")).toHaveLength(1);
   });
 
+  it("walks from the helipad to the panic room", () => {
+    const r = map.floors.find((f) => f.id === "ground")!.rooms.find((x) => x.id === "g.panic")!.rect;
+    const to = walkable({ floor: "ground", x: (r.min.x + r.max.x) / 2, y: (r.min.y + r.max.y) / 2 });
+    const walked = walk(createSim({ seed: 7, map, nav }), to);
+    expect(walked.last).toEqual(to);
+    expect(walked.floors).toEqual(["grounds", "ground"]);
+  });
+
   it("climbs to the upper floor", () => {
     const r = map.floors.find((f) => f.id === "upper")!.rooms.find((x) => x.id === "u.son")!.rect;
     const to = walkable({ floor: "upper", x: (r.min.x + r.max.x) / 2, y: (r.min.y + r.max.y) / 2 });

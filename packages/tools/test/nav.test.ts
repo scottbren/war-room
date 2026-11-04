@@ -133,4 +133,16 @@ describe("nav: findPath on the CHARON navmesh", () => {
       expect(Math.round(length(path) * 100) / 100).toBe(len);
     }
   });
+
+  it("isWalkable names the right floor where two floors share a height (a click must not land on a floor that is not there)", () => {
+    const panic = centre("ground", "g.panic");
+    const at = (floor: "grounds" | "ground" | "upper" | "hill", x: number, y: number) => ({ floor, x, y });
+    expect(nav.isWalkable(at("ground", panic.x, panic.y))).toBe(true);
+    expect(nav.isWalkable(at("grounds", panic.x, panic.y))).toBe(false); // inside the house, not open ground
+    // The hill floor shares a height with the upper floor but has nothing over the house.
+    const son = centre("upper", "u.son");
+    expect(nav.isWalkable(at("upper", son.x, son.y))).toBe(true);
+    expect(nav.isWalkable(at("hill", son.x, son.y))).toBe(false);
+    expect(nav.isWalkable(at("grounds", 48, 68))).toBe(true); // the helipad is open ground
+  });
 });

@@ -54,8 +54,10 @@ export async function createNav(options: { data: Uint8Array; map: MapFile }): Pr
 
   return {
     isWalkable(pos) {
-      const r = query.findClosestPoint({ x: pos.x, y: elevation.get(pos.floor)!, z: pos.y }, { halfExtents: { x: 0.2, y: 0.6, z: 0.2 } });
-      return r.success && dist2(r.point.x - pos.x, r.point.z - pos.y) < 0.12;
+      const height = elevation.get(pos.floor)!;
+      const r = query.findClosestPoint({ x: pos.x, y: height, z: pos.y }, { halfExtents: { x: 0.2, y: 0.6, z: 0.2 } });
+      // Floors at the same height share mesh cells, so the point must also belong to the floor it names.
+      return r.success && dist2(r.point.x - pos.x, r.point.z - pos.y) < 0.12 && floorAt(pos.x, pos.y, height) === pos.floor;
     },
     findPath(from, to) {
       const a = { x: from.x, y: elevation.get(from.floor)!, z: from.y };

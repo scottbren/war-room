@@ -1,3 +1,4 @@
+import "@babylonjs/core/Culling/ray"; // side effect: scene.createPickingRay needs it
 import { ArcRotateCamera } from "@babylonjs/core/Cameras/arcRotateCamera";
 import type { AbstractEngine } from "@babylonjs/core/Engines/abstractEngine";
 import { DirectionalLight } from "@babylonjs/core/Lights/directionalLight";

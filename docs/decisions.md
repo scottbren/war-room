@@ -104,3 +104,7 @@ Approved by the user: building services, lift and fire alarm, camera coverage, p
 - Browser check: `client/replay-debug.html` runs the recording in a Web Worker and exposes the hash list; `pnpm smoke` (Playwright, `e2e/replay-determinism.e2e.ts`, Chromium and Firefox, own dev server on port 5199) compares it with the Node list and reports the first diverging tick.
 - Result: Chromium and Firefox 157 both match Node on all 1200 ticks, including the recast WASM routes. No fix was needed.
 - Safari (WebKit) is not covered; add it if the target browsers include it.
+
+## T13 review fixes (found by clicking the panic room with a real mouse)
+- The click-to-move picking ray needed `import "@babylonjs/core/Culling/ray"` (Babylon side effect); without it every click threw. Added, and `e2e/click-move.e2e.ts` now tests a real click in Chromium and Firefox.
+- `Nav.isWalkable` now requires the point to belong to the floor it names. Floors at one height share navmesh cells (hill and upper, grounds and ground), so a click on the visible hill plane over the house used to resolve to the hidden upper floor. Pinned path results are unchanged.
