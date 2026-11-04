@@ -2250,17 +2250,17 @@
           "destructible": true
         },
         {
-          "id": "w.ground.y33:50-55",
+          "id": "w.ground.y33:50-54.9",
           "a": { "x": 50, "y": 33 },
-          "b": { "x": 55, "y": 33 },
+          "b": { "x": 54.9, "y": 33 },
           "thickness": 0.2,
           "height": 4,
           "material": "plaster",
           "destructible": true
         },
         {
-          "id": "w.ground.y33:56-58",
-          "a": { "x": 56, "y": 33 },
+          "id": "w.ground.y33:56.1-58",
+          "a": { "x": 56.1, "y": 33 },
           "b": { "x": 58, "y": 33 },
           "thickness": 0.2,
           "height": 4,
@@ -2902,7 +2902,7 @@
         {
           "id": "d.g.study-master",
           "at": { "x": 55.5, "y": 33 },
-          "width": 1,
+          "width": 1.2,
           "between": ["g.study", "g.master"],
           "kind": "standard",
           "state": "closed",

@@ -220,6 +220,6 @@ Foyer opens to the grand hall through a 6 m opening. The hall is clear of furnit
 Supersedes the flanking flights above. The hall is [30,41]-[52,52], 8 m ceiling. You enter from the foyer (door at (41,52), 6 m wide), pass under the upper gallery bridge (y 50-52), and meet one wide floating flight (3.6 m, x 39.2-42.8) at its foot (41, 49.8). It rises north to the north gallery (top (41, 42.8)). The void is [32.5,43]-[49.5,50]; galleries ring it on all four sides. The foyer is 10 x 4 m; the cloakroom and security office are 4 m deep.
 
 ## Secrets, the cellar lock and family routines (v14)
-- **Hidden bookcase door** `d.g.study-master` at (55.5, 33), 1 m wide, between the study and the master suite. Shown in the debug viewer as a dark-wood panel filling the gap. Not on any plan; both rooms have ordinary doors too.
+- **Hidden bookcase door** `d.g.study-master` at (55.5, 33), 1.2 m wide, between the study and the master suite. Shown in the debug viewer as a dark-wood panel filling the gap. Not on any plan; both rooms have ordinary doors too.
 - **Cellar keypad** at (30.75, 52) in basement corridor A, on `d.l.cellar-corridor` (now locked), level 2, fail secure. The library stairs still open into the cellar.
 - **Routine spots** (basement): `m.routine.wife.spa` at (60.5, 40) beside the spa pool, `m.routine.daughter.gym` at (48.2, 39.6) in the gym. Mission routines point at these.
