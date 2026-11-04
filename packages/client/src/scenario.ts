@@ -5,6 +5,7 @@ export const DEMO_OPERATOR = "op.alpha.1";
 
 /** The map plus one operator on the helipad (a debug scenario: real spawns come with the mission data). */
 export function withDemoOperator(map: MapFile): MapFile {
+  if (map.markers.some((m) => m.tags.includes(`entity:${DEMO_OPERATOR}`))) return map; // a map with its own operators (TESTBED)
   return {
     ...map,
     markers: [

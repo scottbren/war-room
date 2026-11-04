@@ -1,8 +1,7 @@
 import { MapFile } from "@war-room/content";
 import { createNav, createSim } from "@war-room/sim";
 import type { Sim, Snapshot } from "@war-room/sim";
-import mapJson from "../../content/maps/charon.json";
-import navmeshUrl from "../../content/generated/charon.navmesh.bin?url";
+import { MAPS, isMapName } from "./maps";
 import type { FromWorker, ToWorker } from "./protocol";
 import { withDemoOperator } from "./scenario";
 
@@ -15,8 +14,10 @@ let nav: Awaited<ReturnType<typeof createNav>> | undefined;
 let last: Snapshot | undefined;
 let timer: ReturnType<typeof setInterval> | undefined;
 
-async function init(seed: number): Promise<void> {
-  const map = MapFile.parse(mapJson);
+async function init(seed: number, mapName: string): Promise<void> {
+  const chosen = MAPS[isMapName(mapName) ? mapName : "charon"];
+  const map = MapFile.parse(chosen.json);
+  const navmeshUrl = chosen.navmeshUrl;
   const data = new Uint8Array(await (await fetch(navmeshUrl)).arrayBuffer());
   nav = await createNav({ data, map });
   sim = createSim({ seed, map: withDemoOperator(map), nav });
@@ -40,7 +41,7 @@ self.onmessage = (event: MessageEvent<ToWorker>) => {
   const message = event.data;
   try {
     if (message.type === "init") {
-      void init(message.seed).catch((e: unknown) => post({ type: "error", message: String(e) }));
+      void init(message.seed, message.map).catch((e: unknown) => post({ type: "error", message: String(e) }));
     } else if (sim && nav && last) {
       const to = message.candidates.find((p) => nav!.isWalkable(p));
       // A command at the last completed tick applies in the next step.

@@ -66,8 +66,8 @@ export class SimBridge {
     worker.onmessage = (event) => this.receive(event.data);
   }
 
-  start(seed: number): void {
-    this.worker.postMessage({ type: "init", seed });
+  start(seed: number, map = "charon"): void {
+    this.worker.postMessage({ type: "init", seed, map });
   }
 
   moveTo(entity: string, candidates: Pos[]): void {

@@ -1,13 +1,14 @@
 import { useEffect, useRef, useState } from "react";
 import { MapFile } from "@war-room/content";
 import type { FloorId } from "@war-room/content";
-import charonJson from "../../content/maps/charon.json";
+import { MAPS, mapNameFromSearch } from "./maps";
 import { FLOOR_KEYS, allFloorsVisible } from "./greybox/plan";
 import type { FloorVisibility } from "./greybox/plan";
 import { createViewer } from "./viewer";
 import type { Viewer } from "./viewer";
 
-const map = MapFile.parse(charonJson);
+const mapName = mapNameFromSearch(window.location.search);
+const map = MapFile.parse(MAPS[mapName].json);
 
 const FLOOR_LABELS: Record<FloorId, string> = {
   grounds: "Grounds",
@@ -64,7 +65,7 @@ export function App() {
     <div style={{ position: "relative", width: "100%", height: "100%" }}>
       <canvas ref={canvasRef} style={{ width: "100%", height: "100%", display: "block", outline: "none" }} />
       <div style={panel}>
-        <div style={{ fontWeight: 700, letterSpacing: 1 }}>CHARON · greybox</div>
+        <div style={{ fontWeight: 700, letterSpacing: 1 }}>{mapName === "charon" ? "CHARON" : mapName.toUpperCase()} · greybox</div>
         <div style={{ opacity: 0.7, marginBottom: 8 }}>
           {map.id} v{map.version} · {backend} · {Math.round(fps)} fps · tick {tick}
         </div>

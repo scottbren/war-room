@@ -1,0 +1,567 @@
+{
+  "id": "testbed",
+  "version": 1,
+  "bounds": { "min": { "x": -5, "y": -5 }, "max": { "x": 35, "y": 29 } },
+  "floors": [
+    {
+      "id": "grounds",
+      "elevation": 0,
+      "rooms": [],
+      "walls": [],
+      "doors": [],
+      "windows": [],
+      "openings": [],
+      "cover": [
+        {
+          "id": "cover.yard-hedge.1",
+          "rect": { "min": { "x": 2, "y": 8 }, "max": { "x": 4, "y": 14 } },
+          "type": "concealment",
+          "height": 1.6,
+          "facing": "all",
+          "destructible": true
+        },
+        {
+          "id": "cover.yard-hedge.2",
+          "rect": { "min": { "x": 26, "y": 8 }, "max": { "x": 28, "y": 14 } },
+          "type": "concealment",
+          "height": 1.6,
+          "facing": "all",
+          "destructible": true
+        },
+        {
+          "id": "cover.yard-planter",
+          "rect": { "min": { "x": 16, "y": 2 }, "max": { "x": 18, "y": 3 } },
+          "type": "light",
+          "height": 0.9,
+          "facing": "all",
+          "destructible": true
+        }
+      ]
+    },
+    {
+      "id": "ground",
+      "elevation": 0,
+      "rooms": [
+        {
+          "id": "t.lobby",
+          "name": "Lobby",
+          "rect": { "min": { "x": 6, "y": 6 }, "max": { "x": 14, "y": 12 } },
+          "ceiling": 3,
+          "tags": ["interior"]
+        },
+        {
+          "id": "t.hall",
+          "name": "Hall",
+          "rect": { "min": { "x": 14, "y": 6 }, "max": { "x": 24, "y": 12 } },
+          "ceiling": 3,
+          "tags": ["interior", "hall"]
+        },
+        {
+          "id": "t.office",
+          "name": "Office",
+          "rect": { "min": { "x": 6, "y": 12 }, "max": { "x": 14, "y": 18 } },
+          "ceiling": 3,
+          "tags": ["interior"]
+        },
+        {
+          "id": "t.study",
+          "name": "Study",
+          "rect": { "min": { "x": 14, "y": 12 }, "max": { "x": 19, "y": 18 } },
+          "ceiling": 3,
+          "tags": ["interior", "principal-option"]
+        },
+        {
+          "id": "t.vault",
+          "name": "Vault",
+          "rect": { "min": { "x": 19, "y": 12 }, "max": { "x": 24, "y": 18 } },
+          "ceiling": 3,
+          "tags": ["interior", "vault"]
+        }
+      ],
+      "walls": [
+        {
+          "id": "w.ground.x14:10-12",
+          "a": { "x": 14, "y": 10 },
+          "b": { "x": 14, "y": 12 },
+          "thickness": 0.2,
+          "height": 3,
+          "material": "plaster",
+          "destructible": true
+        },
+        {
+          "id": "w.ground.x14:12-18",
+          "a": { "x": 14, "y": 12 },
+          "b": { "x": 14, "y": 18 },
+          "thickness": 0.2,
+          "height": 3,
+          "material": "plaster",
+          "destructible": true
+        },
+        {
+          "id": "w.ground.x14:6-8",
+          "a": { "x": 14, "y": 6 },
+          "b": { "x": 14, "y": 8 },
+          "thickness": 0.2,
+          "height": 3,
+          "material": "plaster",
+          "destructible": true
+        },
+        {
+          "id": "w.ground.x19:12-14.4",
+          "a": { "x": 19, "y": 12 },
+          "b": { "x": 19, "y": 14.4 },
+          "thickness": 0.2,
+          "height": 3,
+          "material": "plaster",
+          "destructible": true
+        },
+        {
+          "id": "w.ground.x19:15.6-18",
+          "a": { "x": 19, "y": 15.6 },
+          "b": { "x": 19, "y": 18 },
+          "thickness": 0.2,
+          "height": 3,
+          "material": "plaster",
+          "destructible": true
+        },
+        {
+          "id": "w.ground.x24:12-18",
+          "a": { "x": 24, "y": 12 },
+          "b": { "x": 24, "y": 18 },
+          "thickness": 0.4,
+          "height": 3,
+          "material": "reinforced",
+          "destructible": true
+        },
+        {
+          "id": "w.ground.x24:6-12",
+          "a": { "x": 24, "y": 6 },
+          "b": { "x": 24, "y": 12 },
+          "thickness": 0.4,
+          "height": 3,
+          "material": "reinforced",
+          "destructible": true
+        },
+        {
+          "id": "w.ground.x6:12-18",
+          "a": { "x": 6, "y": 12 },
+          "b": { "x": 6, "y": 18 },
+          "thickness": 0.4,
+          "height": 3,
+          "material": "reinforced",
+          "destructible": true
+        },
+        {
+          "id": "w.ground.x6:6-12",
+          "a": { "x": 6, "y": 6 },
+          "b": { "x": 6, "y": 12 },
+          "thickness": 0.4,
+          "height": 3,
+          "material": "reinforced",
+          "destructible": true
+        },
+        {
+          "id": "w.ground.y12:10.6-14",
+          "a": { "x": 10.6, "y": 12 },
+          "b": { "x": 14, "y": 12 },
+          "thickness": 0.2,
+          "height": 3,
+          "material": "plaster",
+          "destructible": true
+        },
+        {
+          "id": "w.ground.y12:14-15.4",
+          "a": { "x": 14, "y": 12 },
+          "b": { "x": 15.4, "y": 12 },
+          "thickness": 0.2,
+          "height": 3,
+          "material": "plaster",
+          "destructible": true
+        },
+        {
+          "id": "w.ground.y12:16.6-19",
+          "a": { "x": 16.6, "y": 12 },
+          "b": { "x": 19, "y": 12 },
+          "thickness": 0.2,
+          "height": 3,
+          "material": "plaster",
+          "destructible": true
+        },
+        {
+          "id": "w.ground.y12:19-21.4",
+          "a": { "x": 19, "y": 12 },
+          "b": { "x": 21.4, "y": 12 },
+          "thickness": 0.2,
+          "height": 3,
+          "material": "plaster",
+          "destructible": true
+        },
+        {
+          "id": "w.ground.y12:22.6-24",
+          "a": { "x": 22.6, "y": 12 },
+          "b": { "x": 24, "y": 12 },
+          "thickness": 0.2,
+          "height": 3,
+          "material": "plaster",
+          "destructible": true
+        },
+        {
+          "id": "w.ground.y12:6-9.4",
+          "a": { "x": 6, "y": 12 },
+          "b": { "x": 9.4, "y": 12 },
+          "thickness": 0.2,
+          "height": 3,
+          "material": "plaster",
+          "destructible": true
+        },
+        {
+          "id": "w.ground.y18:14-19",
+          "a": { "x": 14, "y": 18 },
+          "b": { "x": 19, "y": 18 },
+          "thickness": 0.4,
+          "height": 3,
+          "material": "reinforced",
+          "destructible": true
+        },
+        {
+          "id": "w.ground.y18:19-24",
+          "a": { "x": 19, "y": 18 },
+          "b": { "x": 24, "y": 18 },
+          "thickness": 0.4,
+          "height": 3,
+          "material": "reinforced",
+          "destructible": true
+        },
+        {
+          "id": "w.ground.y18:6-14",
+          "a": { "x": 6, "y": 18 },
+          "b": { "x": 14, "y": 18 },
+          "thickness": 0.4,
+          "height": 3,
+          "material": "reinforced",
+          "destructible": true
+        },
+        {
+          "id": "w.ground.y6:10.7-14",
+          "a": { "x": 10.7, "y": 6 },
+          "b": { "x": 14, "y": 6 },
+          "thickness": 0.4,
+          "height": 3,
+          "material": "reinforced",
+          "destructible": true
+        },
+        {
+          "id": "w.ground.y6:14-24",
+          "a": { "x": 14, "y": 6 },
+          "b": { "x": 24, "y": 6 },
+          "thickness": 0.4,
+          "height": 3,
+          "material": "reinforced",
+          "destructible": true
+        },
+        {
+          "id": "w.ground.y6:6-9.3",
+          "a": { "x": 6, "y": 6 },
+          "b": { "x": 9.3, "y": 6 },
+          "thickness": 0.4,
+          "height": 3,
+          "material": "reinforced",
+          "destructible": true
+        }
+      ],
+      "doors": [
+        {
+          "id": "d.t.front",
+          "at": { "x": 10, "y": 6 },
+          "width": 1.4,
+          "between": ["t.lobby", "outside"],
+          "kind": "standard",
+          "state": "closed",
+          "breach": ["manual", "shotgun", "explosive"]
+        },
+        {
+          "id": "d.t.lobby-hall",
+          "at": { "x": 14, "y": 9 },
+          "width": 2,
+          "between": ["t.lobby", "t.hall"],
+          "kind": "standard",
+          "state": "open",
+          "breach": ["manual", "shotgun", "explosive"]
+        },
+        {
+          "id": "d.t.lobby-office",
+          "at": { "x": 10, "y": 12 },
+          "width": 1.2,
+          "between": ["t.lobby", "t.office"],
+          "kind": "standard",
+          "state": "locked",
+          "breach": ["manual", "shotgun", "explosive"]
+        },
+        {
+          "id": "d.t.hall-study",
+          "at": { "x": 16, "y": 12 },
+          "width": 1.2,
+          "between": ["t.hall", "t.study"],
+          "kind": "standard",
+          "state": "closed",
+          "breach": ["manual", "shotgun", "explosive"]
+        },
+        {
+          "id": "d.t.hall-vault",
+          "at": { "x": 22, "y": 12 },
+          "width": 1.2,
+          "between": ["t.hall", "t.vault"],
+          "kind": "standard",
+          "state": "locked",
+          "breach": ["manual", "shotgun", "explosive"]
+        },
+        {
+          "id": "d.t.study-vault",
+          "at": { "x": 19, "y": 15 },
+          "width": 1.2,
+          "between": ["t.study", "t.vault"],
+          "kind": "standard",
+          "state": "closed",
+          "breach": ["manual", "shotgun", "explosive"],
+          "hidden": true
+        }
+      ],
+      "windows": [
+        {
+          "id": "win.t.hall.s",
+          "at": { "x": 19, "y": 6 },
+          "width": 2,
+          "between": ["t.hall", "outside"],
+          "shutter": true,
+          "blastRated": true
+        }
+      ],
+      "openings": [],
+      "cover": [
+        {
+          "id": "cover.t.lobby-bench",
+          "rect": { "min": { "x": 7, "y": 7 }, "max": { "x": 9, "y": 8 } },
+          "type": "light",
+          "height": 0.5,
+          "facing": "all",
+          "destructible": true
+        },
+        {
+          "id": "cover.t.hall-table",
+          "rect": { "min": { "x": 17, "y": 8 }, "max": { "x": 21, "y": 10 } },
+          "type": "light",
+          "height": 0.8,
+          "facing": "all",
+          "destructible": true
+        },
+        {
+          "id": "cover.t.study-desk",
+          "rect": { "min": { "x": 15, "y": 15 }, "max": { "x": 18, "y": 16.5 } },
+          "type": "heavy",
+          "height": 0.9,
+          "facing": "all",
+          "destructible": true
+        }
+      ]
+    },
+    {
+      "id": "upper",
+      "elevation": 4,
+      "rooms": [
+        {
+          "id": "t.landing",
+          "name": "Landing",
+          "rect": { "min": { "x": 6, "y": 6 }, "max": { "x": 14, "y": 12 } },
+          "ceiling": 3,
+          "tags": ["interior", "hall"]
+        },
+        {
+          "id": "t.bedroom",
+          "name": "Bedroom",
+          "rect": { "min": { "x": 14, "y": 6 }, "max": { "x": 24, "y": 12 } },
+          "ceiling": 3,
+          "tags": ["interior", "family"]
+        }
+      ],
+      "walls": [
+        {
+          "id": "w.upper.x14:6-8.4",
+          "a": { "x": 14, "y": 6 },
+          "b": { "x": 14, "y": 8.4 },
+          "thickness": 0.2,
+          "height": 3,
+          "material": "plaster",
+          "destructible": true
+        },
+        {
+          "id": "w.upper.x14:9.6-12",
+          "a": { "x": 14, "y": 9.6 },
+          "b": { "x": 14, "y": 12 },
+          "thickness": 0.2,
+          "height": 3,
+          "material": "plaster",
+          "destructible": true
+        },
+        {
+          "id": "w.upper.x24:6-12",
+          "a": { "x": 24, "y": 6 },
+          "b": { "x": 24, "y": 12 },
+          "thickness": 0.4,
+          "height": 3,
+          "material": "reinforced",
+          "destructible": true
+        },
+        {
+          "id": "w.upper.x6:6-12",
+          "a": { "x": 6, "y": 6 },
+          "b": { "x": 6, "y": 12 },
+          "thickness": 0.4,
+          "height": 3,
+          "material": "reinforced",
+          "destructible": true
+        },
+        {
+          "id": "w.upper.y12:14-24",
+          "a": { "x": 14, "y": 12 },
+          "b": { "x": 24, "y": 12 },
+          "thickness": 0.4,
+          "height": 3,
+          "material": "reinforced",
+          "destructible": true
+        },
+        {
+          "id": "w.upper.y12:6-14",
+          "a": { "x": 6, "y": 12 },
+          "b": { "x": 14, "y": 12 },
+          "thickness": 0.4,
+          "height": 3,
+          "material": "reinforced",
+          "destructible": true
+        },
+        {
+          "id": "w.upper.y6:14-24",
+          "a": { "x": 14, "y": 6 },
+          "b": { "x": 24, "y": 6 },
+          "thickness": 0.4,
+          "height": 3,
+          "material": "reinforced",
+          "destructible": true
+        },
+        {
+          "id": "w.upper.y6:6-14",
+          "a": { "x": 6, "y": 6 },
+          "b": { "x": 14, "y": 6 },
+          "thickness": 0.4,
+          "height": 3,
+          "material": "reinforced",
+          "destructible": true
+        }
+      ],
+      "doors": [
+        {
+          "id": "d.t.landing-bedroom",
+          "at": { "x": 14, "y": 9 },
+          "width": 1.2,
+          "between": ["t.landing", "t.bedroom"],
+          "kind": "standard",
+          "state": "closed",
+          "breach": ["manual", "shotgun", "explosive"]
+        }
+      ],
+      "windows": [],
+      "openings": [],
+      "cover": [
+        {
+          "id": "cover.t.bed",
+          "rect": { "min": { "x": 19, "y": 7 }, "max": { "x": 23, "y": 9 } },
+          "type": "light",
+          "height": 0.6,
+          "facing": "all",
+          "destructible": true
+        }
+      ]
+    }
+  ],
+  "verticalLinks": [
+    {
+      "id": "link.stairs",
+      "kind": "stairs",
+      "from": { "floor": "ground", "at": { "x": 8, "y": 10 } },
+      "to": { "floor": "upper", "at": { "x": 8, "y": 10 } },
+      "bidirectional": true
+    }
+  ],
+  "zones": [
+    {
+      "id": "zone.yard",
+      "floor": "grounds",
+      "rect": { "min": { "x": 0, "y": 0 }, "max": { "x": 30, "y": 24 } },
+      "kind": "lawn"
+    },
+    {
+      "id": "zone.road",
+      "floor": "grounds",
+      "rect": { "min": { "x": -5, "y": 24 }, "max": { "x": 35, "y": 29 } },
+      "kind": "road"
+    }
+  ],
+  "markers": [
+    {
+      "id": "m.approach.A",
+      "floor": "grounds",
+      "kind": "approach",
+      "at": { "x": 10, "y": 0 },
+      "tags": ["approach:A", "approach:south"]
+    },
+    {
+      "id": "m.spawn.op1",
+      "floor": "grounds",
+      "kind": "spawn",
+      "at": { "x": 9, "y": 1 },
+      "tags": ["entity:op.alpha.1", "side:operator"]
+    },
+    {
+      "id": "m.spawn.op2",
+      "floor": "grounds",
+      "kind": "spawn",
+      "at": { "x": 11, "y": 1 },
+      "tags": ["entity:op.alpha.2", "side:operator"]
+    },
+    {
+      "id": "m.spawn.def1",
+      "floor": "ground",
+      "kind": "spawn",
+      "at": { "x": 18, "y": 8.5 },
+      "tags": ["entity:def.test.1", "side:defender"]
+    },
+    {
+      "id": "m.spawn.def2",
+      "floor": "ground",
+      "kind": "spawn",
+      "at": { "x": 16.5, "y": 14 },
+      "tags": ["entity:def.test.2", "side:defender"]
+    },
+    {
+      "id": "m.spawn.def3",
+      "floor": "grounds",
+      "kind": "spawn",
+      "at": { "x": 3, "y": 11 },
+      "tags": ["entity:def.test.3", "side:defender"]
+    },
+    {
+      "id": "m.principal.study",
+      "floor": "ground",
+      "kind": "poi",
+      "at": { "x": 17, "y": 14 },
+      "tags": ["principal-start:study"]
+    },
+    { "id": "m.family.wife", "floor": "upper", "kind": "poi", "at": { "x": 21, "y": 10 }, "tags": ["family:wife"] },
+    {
+      "id": "m.smart.camera.hall",
+      "floor": "ground",
+      "kind": "poi",
+      "at": { "x": 23, "y": 7 },
+      "tags": ["smart:camera", "covers:hall"]
+    }
+  ]
+}

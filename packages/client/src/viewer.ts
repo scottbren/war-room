@@ -45,8 +45,10 @@ export async function createViewer(canvas: HTMLCanvasElement, map: MapFile, call
   const scene = new Scene(engine);
   scene.clearColor = new Color4(0.04, 0.06, 0.09, 1);
 
-  // Look at the middle of the walled estate (map x 50, y 40) from the south, north up the screen.
-  const camera = new ArcRotateCamera("camera", -Math.PI / 2, Math.PI / 3, 170, new Vector3(50, 0, 40), scene);
+  // Look at the middle of the map from the south, north up the screen (CHARON: the walled estate at x 50, y 40).
+  const small = map.id !== "charon";
+  const centre = small ? new Vector3((map.bounds.min.x + map.bounds.max.x) / 2, 0, (map.bounds.min.y + map.bounds.max.y) / 2) : new Vector3(50, 0, 40);
+  const camera = new ArcRotateCamera("camera", -Math.PI / 2, Math.PI / 3, small ? 45 : 170, centre, scene);
   camera.lowerBetaLimit = 0.1;
   camera.upperBetaLimit = Math.PI / 2 - 0.03;
   camera.lowerRadiusLimit = 8;
@@ -115,7 +117,7 @@ export async function createViewer(canvas: HTMLCanvasElement, map: MapFile, call
   // Simulation in a worker; units drawn from interpolated snapshots.
   const bridge = new SimBridge(new Worker(new URL("./sim.worker.ts", import.meta.url), { type: "module" }) as never, () => performance.now());
   bridge.onError = callbacks.onError;
-  bridge.start(1);
+  bridge.start(1, map.id);
   const elevations = Object.fromEntries(map.floors.map((f) => [f.id, f.elevation])) as Record<FloorId, number>;
   const unitLayer = createUnitLayer(scene, elevations, (f) => greybox.floorVisible(f), map.verticalLinks);
   let lastTick = -1;

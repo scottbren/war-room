@@ -44,14 +44,18 @@ export async function bakeNavmesh(map: MapFile): Promise<Uint8Array> {
 }
 
 const here = dirname(fileURLToPath(import.meta.url));
-const mapPath = `${here}/../../content/maps/charon.json`;
-export const navmeshPath = `${here}/../../content/generated/charon.navmesh.bin`;
+const isMain = Boolean(process.argv[1]) && fileURLToPath(import.meta.url) === process.argv[1];
+// Only the command line picks a map; importing this file always means CHARON.
+const mapName = (isMain ? process.argv.slice(2).find((a) => a !== "--") : undefined) ?? "charon";
+if (!/^[A-Za-z0-9][A-Za-z0-9_-]*$/.test(mapName)) throw new Error(`Invalid map name "${mapName}"`);
+const mapPath = `${here}/../../content/maps/${mapName}.json`;
+export const navmeshPath = `${here}/../../content/generated/${mapName}.navmesh.bin`;
 
-if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
+if (isMain) {
   const map = MapFile.parse(JSON.parse(readFileSync(mapPath, "utf8")));
   const started = Date.now();
   const data = await bakeNavmesh(map);
   mkdirSync(dirname(navmeshPath), { recursive: true });
   writeFileSync(navmeshPath, data);
-  console.log(`Wrote charon.navmesh.bin (${data.length} bytes, ${Date.now() - started} ms)`);
+  console.log(`Wrote ${mapName}.navmesh.bin (${data.length} bytes, ${Date.now() - started} ms)`);
 }
