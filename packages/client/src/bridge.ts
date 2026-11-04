@@ -12,6 +12,8 @@ export interface RenderUnit {
   facing: number;
   state: Snapshot["entities"][number]["state"];
   health: number;
+  /** A last-known position of a unit no longer in view (drawn faded). */
+  ghost?: boolean;
 }
 
 /** Shortest-way blend between two compass angles in degrees. */

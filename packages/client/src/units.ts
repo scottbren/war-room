@@ -50,6 +50,7 @@ export function createUnitLayer(
         }
         // Map (x, y) -> Babylon (x, z); capsule origin is its centre.
         mesh.position.set(u.x, elevations[u.floor] + stairLift(links, elevations, u.floor, u.x, u.y) + HEIGHT / 2, u.y);
+        mesh.visibility = u.ghost ? 0.35 : 1;
         mesh.setEnabled(floorVisible(u.floor));
       }
       for (const [id, mesh] of meshes) {

@@ -15,6 +15,8 @@ import { SimBridge } from "./bridge";
 import { floorCandidates } from "./picking";
 import { DEMO_OPERATOR } from "./scenario";
 import { createUnitLayer } from "./units";
+import { createKnowledge } from "@war-room/sim";
+import type { RenderUnit } from "./bridge";
 import { planLabels } from "./greybox/labels";
 import { FLOOR_KEYS } from "./greybox/plan";
 import type { FloorVisibility } from "./greybox/plan";
@@ -29,6 +31,8 @@ export interface Viewer {
   toggleFloor(floor: FloorId): void;
   /** Room name labels (key L). */
   toggleLabels(): boolean;
+  /** Debug: draw every unit from simulation truth instead of the operators' knowledge (key T). Returns the new setting. */
+  toggleTruth(): boolean;
   dispose(): void;
 }
 
@@ -109,6 +113,7 @@ export async function createViewer(canvas: HTMLCanvasElement, map: MapFile, call
   const onKey = (event: KeyboardEvent): void => {
     if (event.ctrlKey || event.metaKey || event.altKey) return;
     if (event.key === "l" || event.key === "L") toggleLabels();
+    if (event.key === "t" || event.key === "T") toggleTruth();
     const floor = (FLOOR_KEYS as Record<string, FloorId | undefined>)[event.key];
     if (floor) toggleFloor(floor);
   };
@@ -120,9 +125,30 @@ export async function createViewer(canvas: HTMLCanvasElement, map: MapFile, call
   bridge.start(1, map.id);
   const elevations = Object.fromEntries(map.floors.map((f) => [f.id, f.elevation])) as Record<FloorId, number>;
   const unitLayer = createUnitLayer(scene, elevations, (f) => greybox.floorVisible(f), map.verticalLinks);
+  // What the player sees comes from the operators' knowledge, not from truth: their own units, anyone in view right
+  // now, and faded last-known positions. Key T switches to the raw truth for debugging.
+  const knowledge = createKnowledge(map, "operator");
+  bridge.onEvents = (events) => {
+    const snapshot = bridge.snapshot;
+    if (snapshot) knowledge.update(snapshot, events);
+  };
+  let truthView = false;
+  const toggleTruth = (): boolean => (truthView = !truthView);
+  const knownUnits = (units: RenderUnit[]): RenderUnit[] => {
+    if (truthView) return units;
+    const out: RenderUnit[] = [];
+    for (const u of units) {
+      const k = knowledge.unit(u.id);
+      if (k?.live) out.push(u);
+    }
+    for (const k of knowledge.units()) {
+      if (!k.live) out.push({ id: k.id, side: k.side, floor: k.floor, x: k.x, y: k.y, facing: 0, state: "idle", health: 100, ghost: true });
+    }
+    return out;
+  };
   let lastTick = -1;
   scene.onBeforeRenderObservable.add(() => {
-    unitLayer.update(bridge.units(performance.now()));
+    unitLayer.update(knownUnits(bridge.units(performance.now())));
     if (bridge.tick !== lastTick) {
       lastTick = bridge.tick;
       callbacks.onTick(lastTick);
@@ -160,6 +186,7 @@ export async function createViewer(canvas: HTMLCanvasElement, map: MapFile, call
     bridge,
     toggleFloor,
     toggleLabels,
+    toggleTruth,
     dispose() {
       labelLayer.remove();
       canvas.removeEventListener("pointerdown", onDown);

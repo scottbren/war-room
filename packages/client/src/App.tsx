@@ -82,7 +82,7 @@ export function App() {
           </button>
         ))}
         <div style={{ opacity: 0.55, marginTop: 8, fontSize: 11, lineHeight: 1.4 }}>
-          Drag: orbit · Right-drag / Ctrl-drag: pan · Wheel: zoom · L: room labels · Click: move operator
+          Drag: orbit · Right-drag / Ctrl-drag: pan · Wheel: zoom · L: room labels · T: truth view (debug) · Click: move operator
         </div>
       </div>
     </div>

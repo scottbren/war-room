@@ -66,11 +66,13 @@ export interface World {
   queue: QueuedCommand[];
   /** Rolled mission facts (raid time, drive location); present only when the sim was created with a mission. */
   setup?: MissionSetup;
+  /** Perception memory: "observer>target" for each pair currently in view, with the tick of its last `contact` event. */
+  sight: Record<string, number>;
 }
 
 export function createWorld(): World {
   // Null-prototype records so ids like "__proto__" are ordinary keys.
-  return { tick: 0, seq: 0, entities: Object.create(null), doors: Object.create(null), devices: Object.create(null), shutters: Object.create(null), alert: 0, alertApplied: 0, queue: [] };
+  return { tick: 0, seq: 0, entities: Object.create(null), doors: Object.create(null), devices: Object.create(null), shutters: Object.create(null), alert: 0, alertApplied: 0, queue: [], sight: Object.create(null) };
 }
 
 export function addEntity(world: World, entity: Entity): void {

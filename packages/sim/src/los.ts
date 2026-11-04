@@ -3,7 +3,7 @@ import { toCm } from "./quantize";
 import type { Pos } from "./types";
 
 /**
- * Line of sight on per-floor grids of 0.5 m cells.
+ * Line of sight on grids of 0.5 m cells, one per floor height.
  * Cell value: 0 open, 1 low cover (hides a crouched target, not a standing one), 2 full block (walls, closed
  * doors and shutters, tall cover). Concealment (hedges, trees) is a separate flag that never blocks sight but
  * cuts detection range. Rays are traced with an integer Amanatides-Woo DDA on centimetre coordinates: the
@@ -86,8 +86,30 @@ export function createLos(map: MapFile): Los {
     return horizontal ? lineSpan(at.x - half, at.y, at.x + half, at.y) : lineSpan(at.x, at.y - half, at.x, at.y + half);
   };
 
+  /**
+   * A window sits inside a solid wall (derived walls are not cut for windows), so unlike a door the wall ends do not
+   * mark it. Find the wall that carries it and run the span along that wall.
+   */
+  const windowSpan = (floor: Floor, at: { x: number; y: number }, width: number): Span => {
+    const half = width / 2;
+    for (const w of floor.walls) {
+      const horizontal = Math.abs(w.a.y - w.b.y) < 0.06 && Math.abs(at.y - w.a.y) < 0.06 && at.x >= Math.min(w.a.x, w.b.x) - 0.06 && at.x <= Math.max(w.a.x, w.b.x) + 0.06;
+      if (horizontal) return lineSpan(at.x - half, at.y, at.x + half, at.y);
+      const vertical = Math.abs(w.a.x - w.b.x) < 0.06 && Math.abs(at.x - w.a.x) < 0.06 && at.y >= Math.min(w.a.y, w.b.y) - 0.06 && at.y <= Math.max(w.a.y, w.b.y) + 0.06;
+      if (vertical) return lineSpan(at.x, at.y - half, at.x, at.y + half);
+    }
+    return gapSpan(floor, at, width);
+  };
+
+  // Floors at the same height are one space (the outdoor grounds and the house's ground floor; the hill and the
+  // upper floor), so they share a grid: someone in the yard can see in through a window.
+  const byElevation = new Map<number, Grid>();
   for (const floor of map.floors) {
-    const grid: Grid = { base: new Uint8Array(W * H), dyn: new Uint8Array(W * H) };
+    let grid = byElevation.get(floor.elevation);
+    if (!grid) {
+      grid = { base: new Uint8Array(W * H), dyn: new Uint8Array(W * H) };
+      byElevation.set(floor.elevation, grid);
+    }
     grids.set(floor.id, grid);
     for (const w of floor.walls) fillBase(grid, lineSpan(w.a.x, w.a.y, w.b.x, w.b.y), 2);
     for (const c of floor.cover) {
@@ -111,9 +133,23 @@ export function createLos(map: MapFile): Los {
       applyDyn(grid, span, d.state === "open" ? 0 : 2);
     }
     for (const w of floor.windows) {
-      if (w.shutter) windowCells.set(w.id, { floor: floor.id, span: gapSpan(floor, w.at, w.width) });
+      if (w.shutter) windowCells.set(w.id, { floor: floor.id, span: windowSpan(floor, w.at, w.width) });
     }
     for (const o of floor.openings) openings.push({ floor: floor.id, below: o.below, min: o.rect.min, max: o.rect.max });
+  }
+
+  // Glass lets sight through: clear the wall cells behind each window. A closed shutter blocks them again. This runs
+  // after every floor's walls and cover are in, because floors at one height share a grid and a later floor must not refill them.
+  for (const floor of map.floors) {
+    const grid = grids.get(floor.id)!;
+    for (const w of floor.windows) {
+      const span = windowSpan(floor, w.at, w.width);
+      for (let r = span.rows[0]; r <= span.rows[1]; r++) {
+        for (let c = span.cols[0]; c <= span.cols[1]; c++) {
+          if (inGrid(c, r)) grid.base[r * W + c] = grid.base[r * W + c]! & CONCEAL;
+        }
+      }
+    }
   }
 
   const cellAt = (grid: Grid, c: number, r: number): number => {
@@ -197,7 +233,7 @@ export function createLos(map: MapFile): Los {
 
   return {
     sight(from, to, targetStance = "standing") {
-      if (from.floor === to.floor) {
+      if (grids.get(from.floor) !== undefined && grids.get(from.floor) === grids.get(to.floor)) {
         const a = cm(from), b = cm(to);
         return trace(from.floor, a.x, a.y, b.x, b.y, targetStance);
       }

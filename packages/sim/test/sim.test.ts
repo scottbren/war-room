@@ -225,7 +225,9 @@ describe("determinism", () => {
   it("has a stable final hash (regression pin)", () => {
     const hashes = scripted(7);
     expect(hashes[hashes.length - 1]).toMatch(/^[0-9a-f]{8}$/);
-    expect(hashes[hashes.length - 1]).toBe("f5963f5a");
+    // Re-pinned when perception arrived: the operator and the defender in this scenario can see each other, so the
+    // state now carries their sight memory. (See packages/tools/test/perception.test.ts for that behaviour.)
+    expect(hashes[hashes.length - 1]).toBe("3618c764");
   });
 });
 

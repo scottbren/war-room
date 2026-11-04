@@ -9,6 +9,7 @@ import type { MissionSetup } from "./mission";
 import { createRng } from "./rng";
 import type { Rng } from "./rng";
 import { createCtx } from "./systems/context";
+import { createSightEnv } from "./systems/perception";
 import { hubOnline } from "./systems/smart-home";
 import type { AlertLevel, Command, CreateSimOptions, DeviceKind, DeviceState, DoorState, EntityState, ShutterState, Sim, Snapshot } from "./types";
 import { addEntity, createWorld, sortedDeviceIds, sortedDoorIds, sortedEntities, sortedShutterIds } from "./world";
@@ -36,6 +37,8 @@ interface SimState {
   queue: QueuedCommand[];
   /** Only present for a sim created with a mission, so runs without one hash exactly as before. */
   setup?: MissionSetup;
+  /** Pairs in view with their last contact tick, sorted by key; only present when someone is in view, so quiet runs hash as before. */
+  sight?: { k: string; t: number }[];
 }
 
 function tagValue(tags: string[], prefix: string): string | undefined {
@@ -115,6 +118,7 @@ function toState(map: MapFile, world: World, rng: Rng): SimState {
     alertApplied: world.alertApplied,
     queue: [...world.queue].sort((a, b) => a.seq - b.seq),
     ...(world.setup !== undefined ? { setup: world.setup } : {}),
+    ...(Object.keys(world.sight).length > 0 ? { sight: Object.keys(world.sight).sort().map((k) => ({ k, t: world.sight[k] as number })) } : {}),
   };
 }
 
@@ -226,7 +230,7 @@ function parseState(text: string, map: MapFile): { world: World; rng: number[] }
   if (!isRecord(m) || m["id"] !== map.id || m["version"] !== map.version) {
     return fail("state was saved from a different map or map version");
   }
-  const { tick, seq, rng, entities, doors, queue, devices, shutters, alert, alertApplied, setup } = raw;
+  const { tick, seq, rng, entities, doors, queue, devices, shutters, alert, alertApplied, setup, sight } = raw;
   if (!isInt(tick) || tick < 0 || !isInt(seq) || seq < 0) return fail("invalid tick or seq");
   if (!Array.isArray(rng) || rng.length !== 4) return fail("invalid rng state");
   if (!Array.isArray(entities) || !Array.isArray(doors) || !Array.isArray(queue) || !Array.isArray(devices) || !Array.isArray(shutters)) {
@@ -249,10 +253,24 @@ function parseState(text: string, map: MapFile): { world: World; rng: number[] }
     world.setup = { ...(raidMinute !== undefined ? { raidMinute } : {}), ...(driveMarker !== undefined ? { driveMarker } : {}) };
   }
 
+  if (sight !== undefined) {
+    if (!Array.isArray(sight)) return fail("invalid sight memory");
+    for (const s of sight) {
+      if (!isRecord(s) || typeof s["k"] !== "string" || !s["k"].includes(">") || !isInt(s["t"]) || s["t"] < 0 || s["t"] > tick) return fail("invalid sight memory");
+      if (Object.hasOwn(world.sight, s["k"])) return fail("duplicate sight memory");
+      world.sight[s["k"]] = s["t"];
+    }
+  }
+
   for (const e of entities) {
     const entity = parseEntity(e);
     if (Object.hasOwn(world.entities, entity.id)) return fail(`duplicate entity ${entity.id}`);
     world.entities[entity.id] = entity;
+  }
+
+  for (const key of Object.keys(world.sight)) {
+    const named = Object.keys(world.entities).some((o) => key.startsWith(`${o}>`) && Object.hasOwn(world.entities, key.slice(o.length + 1)));
+    if (!named) return fail("sight memory names a unit that is not in the state");
   }
 
   const expectedDoors = buildWorld(map).doors;
@@ -304,6 +322,7 @@ export function createSim(opts: CreateSimOptions): Sim {
   const { map } = opts;
   let world = buildWorld(map);
   const rng = createRng(opts.seed);
+  const sight = createSightEnv(map);
   if (opts.mission) {
     const plan = planMission(map, opts.mission, rng);
     world.setup = plan.setup;
@@ -347,7 +366,7 @@ export function createSim(opts: CreateSimOptions): Sim {
     },
 
     step() {
-      const ctx = createCtx(world.tick + 1, rng, opts.nav);
+      const ctx = createCtx(world.tick + 1, rng, opts.nav, sight);
       for (const system of pipeline) system(world, ctx);
       world.tick += 1;
       return { snapshot: snapshot(), events: ctx.events };
@@ -361,6 +380,7 @@ export function createSim(opts: CreateSimOptions): Sim {
       const parsed = parseState(serialized, map);
       rng.restore(parsed.rng as unknown as readonly [number, number, number, number]);
       world = parsed.world;
+      sight.reset();
     },
   };
 }
