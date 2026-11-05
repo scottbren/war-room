@@ -1,4 +1,7 @@
-import type { MapFile, Side } from "@war-room/content";
+import type { MapFile } from "@war-room/content";
+import type { Pos } from "../types";
+import { hearingSystem } from "./hearing";
+import { canObserve } from "./observe";
 import { CONTACT_REFRESH_TICKS, SIGHT_CHECK_EVERY, SIGHT_RANGE_CM } from "../defaults";
 import { createLos, effectiveRange } from "../los";
 import type { Los } from "../los";
@@ -13,6 +16,8 @@ import type { System } from "./context";
  */
 export interface SightEnv {
   los(): Los;
+  /** Where a door is (meters), for sounds made at it. */
+  doorPos(doorId: string): Pos | undefined;
   /** Forget which door and shutter states were pushed into the line-of-sight grid (after a restore). */
   reset(): void;
   syncWorld(doors: Readonly<Record<string, string>>, shutters: Readonly<Record<string, string>>): void;
@@ -23,8 +28,11 @@ export function createSightEnv(map: MapFile): SightEnv {
   let doors: Record<string, string> = {};
   let shutters: Record<string, string> = {};
   const get = (): Los => (los ??= createLos(map));
+  const doorAt = new Map<string, Pos>();
+  for (const f of map.floors) for (const d of f.doors) doorAt.set(d.id, { floor: f.id, x: d.at.x, y: d.at.y });
   return {
     los: get,
+    doorPos: (id) => doorAt.get(id),
     reset() {
       doors = {};
       shutters = {};
@@ -47,13 +55,6 @@ export function createSightEnv(map: MapFile): SightEnv {
   };
 }
 
-/** Who can notice whom. Operators watch everyone who is not theirs; defenders watch operators. */
-function canObserve(observer: Side, target: Side): boolean {
-  if (observer === "operator") return target !== "operator";
-  if (observer === "defender") return target === "operator";
-  return false;
-}
-
 /**
  * Perception: each observer checks line of sight to its possible targets every SIGHT_CHECK_EVERY ticks (staggered by
  * the unit's place in id order). A sighting emits a `contact` event at once, then repeats it every
@@ -62,6 +63,11 @@ function canObserve(observer: Side, target: Side): boolean {
  * Facing and field of view are not used yet.
  */
 export const perceptionSystem: System = (world, ctx) => {
+  sightSystem(world, ctx);
+  hearingSystem(world, ctx);
+};
+
+const sightSystem: System = (world, ctx) => {
   const env = ctx.sight;
   if (!env) return;
   const ids = sortedIds(world);

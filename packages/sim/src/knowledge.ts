@@ -27,11 +27,25 @@ export interface KnownUnit {
   own: boolean;
 }
 
+/** Something this side heard: roughly where, what kind, and when. The source is not known. */
+export interface KnownNoise {
+  floor: FloorId;
+  x: number;
+  y: number;
+  kind: "steps" | "door";
+  tick: number;
+}
+
+/** A side remembers this many sounds, newest last. */
+export const NOISE_MEMORY = 32;
+
 export interface Knowledge {
   /** Feed one tick's snapshot and events, in tick order. */
   update(snapshot: Snapshot, events: readonly SimEvent[]): void;
   /** Every unit this side knows about, sorted by id. Anyone never seen is absent. */
   units(): KnownUnit[];
+  /** Sounds heard by this side's units, oldest first (at most NOISE_MEMORY). */
+  noises(): KnownNoise[];
   /** The unit, if known. */
   unit(id: string): KnownUnit | undefined;
   /** Doors on this side's plans: every door except hidden ones nobody has found yet. Sorted. */
@@ -56,6 +70,7 @@ export function createKnowledge(map: MapFile, side: Side): Knowledge {
   for (const floor of map.floors) for (const d of floor.doors) allDoors.set(d.id, d.hidden === true);
   const revealed = new Set<string>();
   const seen = new Map<string, Seen>();
+  const noises: KnownNoise[] = [];
   let now = 0;
 
   return {
@@ -67,6 +82,12 @@ export function createKnowledge(map: MapFile, side: Side): Knowledge {
         if (e.side === side) seen.set(e.id, { side: e.side, floor: e.pos.floor, x: e.pos.x, y: e.pos.y, tick: snapshot.tick });
       }
       for (const ev of events) {
+        if (ev.type === "noise") {
+          if (sideOf(ev.observer) !== side) continue;
+          noises.push({ floor: ev.at.floor, x: ev.at.x, y: ev.at.y, kind: ev.kind, tick: ev.tick });
+          if (noises.length > NOISE_MEMORY) noises.shift();
+          continue;
+        }
         if (ev.type !== "contact" || sideOf(ev.observer) !== side) continue;
         const target = byId.get(ev.target);
         if (!target || target.side === side) continue;
@@ -76,6 +97,10 @@ export function createKnowledge(map: MapFile, side: Side): Knowledge {
 
     units() {
       return [...seen.keys()].sort().map((id) => this.unit(id) as KnownUnit);
+    },
+
+    noises() {
+      return noises.map((n) => ({ ...n }));
     },
 
     unit(id) {

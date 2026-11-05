@@ -77,6 +77,8 @@ export type SimEvent =
   | (SimEventBase & { type: "shutter"; windowId: string; state: ShutterState })
   | (SimEventBase & { type: "alert"; level: AlertLevel })
   | (SimEventBase & { type: "contact"; observer: EntityId; target: EntityId })
+  // `observer` heard something. `at` is an approximate spot (the farther the sound, the larger the error); the source is never named.
+  | (SimEventBase & { type: "noise"; observer: EntityId; at: Pos; kind: "steps" | "door" })
   // Emitted when a command targets a tick that has already passed (see T3).
   | (SimEventBase & { type: "commandRejected"; command: Command["kind"]; reason: string });
 // more event types are added in week 2 under the same base

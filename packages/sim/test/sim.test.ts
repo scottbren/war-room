@@ -184,7 +184,8 @@ describe("setDoor command", () => {
     const sim = newSim();
     sim.enqueue({ kind: "setDoor", tick: 0, doorId: "d.front", state: "open" });
     const { events, snapshot } = sim.step();
-    expect(events).toEqual([{ id: "1.0", tick: 1, type: "door", doorId: "d.front", state: "open", v: 1 }]);
+    // Listeners in range also get a `noise` event for the door; this test is about the door event itself.
+    expect(events.filter((e) => e.type !== "noise")).toEqual([{ id: "1.0", tick: 1, type: "door", doorId: "d.front", state: "open", v: 1 }]);
     expect(snapshot.doors).toContainEqual({ id: "d.front", state: "open" });
   });
 
@@ -227,7 +228,9 @@ describe("determinism", () => {
     expect(hashes[hashes.length - 1]).toMatch(/^[0-9a-f]{8}$/);
     // Re-pinned when perception arrived: the operator and the defender in this scenario can see each other, so the
     // state now carries their sight memory. (See packages/tools/test/perception.test.ts for that behaviour.)
-    expect(hashes[hashes.length - 1]).toBe("3618c764");
+    // Re-pinned again when hearing arrived: heard sounds draw their position error from the seeded PRNG, so the
+    // generator state in the hash moves. (See packages/tools/test/hearing.test.ts.)
+    expect(hashes[hashes.length - 1]).toBe("d385cd80");
   });
 });
 

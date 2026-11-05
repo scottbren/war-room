@@ -19,7 +19,7 @@ export function isqrt(n: number): number {
 export const movementSystem: System = (world, ctx) => {
   for (const e of sortedEntities(world)) {
     const m = e.motion;
-    if (!m) continue;
+    if (!m || e.state === "down") continue; // a downed unit stays where it fell
 
     const dx = m.toXCm - e.pos.xCm;
     const dy = m.toYCm - e.pos.yCm;
