@@ -85,3 +85,46 @@ Rules of engagement as part of plans (`rules` already exists on tasks), capture 
 - Replay: the same seed gives the same hashes; a save restored mid-firefight matches an uninterrupted run.
 - Headless batch (`pnpm run:headless`) over 100 seeds on the testbed: no crashes, and nobody acts after being downed.
 - The determinism reviewer on every sim change; the sim regression pin will move and be re-pinned with a note, as before.
+
+## C5 proposal: morale and wounds (status: proposal, nothing built)
+
+Written after C1 to C4 were built. Items marked **[approval]** need an explicit yes. Numbers are starting values.
+
+### What exists
+- `UnitType.loyalty` ("hired" | "veteran" | "inner-circle") is in the content schema, but **the sim never reads unit types**: units come from spawn markers. CHARON's defender markers already carry `guard:hired` (6, the outer ring) and `guard:veteran` (12). There are no inner-circle markers yet, and the testbed defenders have no `guard:` tag.
+- Suppression, health, cover, fallback and `down` exist. There is no wounded state and nothing makes a unit run away or give up.
+
+### Loyalty comes from a spawn-marker tag (no schema change)
+- The sim reads `guard:<hired|veteran|inner-circle>` from a defender's spawn marker, strictly, like `facing:` (a malformed or unknown value is a map error, not a silent default).
+- **A defender with no tag counts as a veteran**, so every map and test that exists today behaves exactly as now.
+- Operators get no morale in this slice. The design gives each team morale; that waits for team-level behavior.
+
+### Wounds (step C5a, no contract change)
+- Derived from health, so there is **no new saved state**. Bands for any unit: healthy above 60; **wounded** 31 to 60: walks at 75% speed and aims at 85%; **badly wounded** 30 or less: walks at 50% speed and aims at 65%. They multiply with cover, movement and suppression.
+- Unit speed scaling is integer: the per-tick step is multiplied by per-mille and truncated, with at least 1 cm per tick.
+- Operators: nothing else changes (the player still decides). Carrying, stabilizing and medevac are plan actions (`evacuate`) and decision cards, and belong with plan execution.
+- Defenders: a **badly wounded** defender that is not a veteran or inner-circle behaves as broken (below). A badly wounded veteran keeps fighting.
+
+### Morale (step C5b, no contract change)
+- Only **hired** guards break. A hired defender breaks when suppression reaches 60, or it is badly wounded, or it is alone: no other living defender alerted within 15 m.
+- **Broken** is a new internal defender mode. It drops its cover or fallback choice, stops shooting (except at point-blank, as with running to cover), and runs for the **point on its side of the map farthest from the last known threat within 25 m, reachable by the navmesh** (or its own post if none is better). With no navmesh route it stays put.
+- A broken guard does not recover on its own in this slice, and it is still evidence-neutral (it does not radio anyone new).
+- **Veterans never break.** When under fire they take cover as now, and a veteran that sees the principal in danger is left to the later "rush the principal" behavior.
+- **Inner-circle** guards (when the map has them): never break, and always fall back to the principal when under fire (instead of the outnumbered test), then fight to the last.
+
+### Surrender (step C5c) **[approval]**
+- A broken hired guard that cannot flee, or that an operator comes within 10 m of, **surrenders**: it stops shooting and moving and operators no longer shoot at it. This is what lets the debrief count prisoners, and it is what the design means by "hired guards break under pressure".
+- Showing it needs something the player side can see. Options:
+  1. **Recommended:** a new `SimEvent` `{ type: "surrender"; entity: EntityId }`, truth-level like `down`, and a `surrendered` flag on `KnownUnit` for units the side has seen surrender. This is a public contract change.
+  2. No contract change: a surrendered guard is simply an idle unit that never shoots. The UI and the debrief cannot tell it from a defender who is just standing there.
+- Capture itself (restraining, searching, moving a prisoner, the capture kit) stays out of this slice.
+
+### Build order
+1. **C5a, wounds.** Speed and aim by health band. Tests: bands, speed in cm per tick, aim in hit statistics, a wounded unit still reaches its goal, restore is unaffected (nothing new is saved).
+2. **C5b, loyalty tag and morale.** Parse `guard:` strictly, the break rules, the flee destination, veterans and inner-circle unchanged, determinism and restore tests, and `guard:` tags added to the testbed so a hired guard can be tested.
+3. **C5c, surrender**, after the approval above.
+
+### Decisions I need
+- Go-ahead for C5a and C5b as written (untagged defenders being veterans keeps everything that exists unchanged).
+- Option 1 or 2 for surrender (a contract change, or none).
+- Whether the guard's break thresholds (suppression 60, badly wounded 30, alone) feel right as starting values. The design says the outer ring "breaks"; how fast is a tuning question for play, not for this spec.
