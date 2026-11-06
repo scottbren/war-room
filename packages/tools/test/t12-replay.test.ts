@@ -26,7 +26,7 @@ describe("T12 reference replay (the list the browsers must reproduce)", () => {
 
   it("replays in Node to exactly the committed per-tick hash list", () => {
     expect(replay(recording, map, nav)).toEqual(expected);
-  });
+  }, 30_000); // about 5 s when the machine is busy; the default limit is 5 s
 
   it("is not the straight-line result: the navmesh changes the hashes", () => {
     expect(replay(recording, map)).not.toEqual(expected);

@@ -1,6 +1,6 @@
 import { FloorId, Side } from "@war-room/content";
 import type { MapFile } from "@war-room/content";
-import { DEFAULT_HEALTH } from "./defaults";
+import { DEFAULT_HEALTH, SUPPRESS_MAX } from "./defaults";
 import { canonicalize, hashState } from "./hash";
 import { pipeline } from "./pipeline";
 import { fromCm, quantizePos, toCm } from "./quantize";
@@ -39,6 +39,8 @@ interface SimState {
   setup?: MissionSetup;
   /** Pairs in view with their last contact tick, sorted by key; only present when someone is in view, so quiet runs hash as before. */
   sight?: { k: string; t: number }[];
+  /** Suppression of units under fire, sorted by id; only present when there is any. */
+  suppression?: { id: string; v: number }[];
   /** Defenders that are not simply at their post, sorted by id; only present when there are any. */
   minds?: ({ id: string } & Mind)[];
   /** Evidence defenders have noticed, sorted by key; only present when there is any. */
@@ -132,6 +134,7 @@ function toState(map: MapFile, world: World, rng: Rng): SimState {
     ...(world.setup !== undefined ? { setup: world.setup } : {}),
     ...(Object.keys(world.noticed).length > 0 ? { noticed: Object.keys(world.noticed).sort().map((k) => ({ k, t: world.noticed[k] as number })) } : {}),
     ...(Object.keys(world.minds).length > 0 ? { minds: Object.keys(world.minds).sort().map((id) => ({ id, ...(world.minds[id] as Mind) })) } : {}),
+    ...(Object.keys(world.suppression).length > 0 ? { suppression: Object.keys(world.suppression).sort().map((id) => ({ id, v: world.suppression[id] as number })) } : {}),
     ...(Object.keys(world.sight).length > 0 ? { sight: Object.keys(world.sight).sort().map((k) => ({ k, t: world.sight[k] as number })) } : {}),
   };
 }
@@ -249,7 +252,7 @@ function parseState(text: string, map: MapFile): { world: World; rng: number[] }
   if (!isRecord(m) || m["id"] !== map.id || m["version"] !== map.version) {
     return fail("state was saved from a different map or map version");
   }
-  const { tick, seq, rng, entities, doors, queue, devices, shutters, alert, alertApplied, setup, sight, minds, noticed } = raw;
+  const { tick, seq, rng, entities, doors, queue, devices, shutters, alert, alertApplied, setup, sight, minds, noticed, suppression } = raw;
   if (!isInt(tick) || tick < 0 || !isInt(seq) || seq < 0) return fail("invalid tick or seq");
   if (!Array.isArray(rng) || rng.length !== 4) return fail("invalid rng state");
   if (!Array.isArray(entities) || !Array.isArray(doors) || !Array.isArray(queue) || !Array.isArray(devices) || !Array.isArray(shutters)) {
@@ -322,6 +325,17 @@ function parseState(text: string, map: MapFile): { world: World; rng: number[] }
       }
       if (mode === "routine" && parsedRelay === undefined) return fail("a routine defender mind needs a pending radio report");
       world.minds[id] = { mode, post: pos(raw["post"]), spot: pos(raw["spot"]), t, ...(waitFrom !== undefined ? { waitFrom } : {}), ...(parsedRelay ? { relay: parsedRelay } : {}) };
+    }
+  }
+
+  if (suppression !== undefined) {
+    if (!Array.isArray(suppression)) return fail("invalid suppression");
+    for (const s of suppression) {
+      if (!isRecord(s) || typeof s["id"] !== "string" || !isInt(s["v"]) || s["v"] < 1 || s["v"] > SUPPRESS_MAX) return fail("invalid suppression");
+      const who = world.entities[s["id"]];
+      if (!who || who.state === "down") return fail("suppression names a unit that is not alive in the state");
+      if (Object.hasOwn(world.suppression, s["id"])) return fail("duplicate suppression");
+      world.suppression[s["id"]] = s["v"];
     }
   }
 

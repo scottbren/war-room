@@ -5,7 +5,7 @@ import { canObserve, reachCm } from "./observe";
 import { CONTACT_REFRESH_TICKS, SIGHT_CHECK_EVERY } from "../defaults";
 import { createLos, effectiveRange } from "../los";
 import type { Los } from "../los";
-import { fromCm } from "../quantize";
+import { fromCm, toCm } from "../quantize";
 import { sortedIds } from "../world";
 import type { Entity } from "../world";
 import type { System } from "./context";
@@ -21,7 +21,19 @@ export interface CameraInfo {
   rooms: { floor: string; minX: number; minY: number; maxX: number; maxY: number }[];
 }
 
+/** A cover rectangle that shields from fire (heavy or light; concealment does not), in centimeters. */
+export interface CoverInfo {
+  floor: string;
+  kind: "heavy" | "light";
+  x0: number;
+  y0: number;
+  x1: number;
+  y1: number;
+}
+
 export interface SightEnv {
+  /** Every heavy or light cover rectangle on the map (static data). */
+  cover(): readonly CoverInfo[];
   los(): Los;
   /** Where a door is (meters), for sounds made at it. */
   doorPos(doorId: string): Pos | undefined;
@@ -60,8 +72,16 @@ export function createSightEnv(map: MapFile): SightEnv {
     }
     cameras.push({ id: m.id, at: { floor: m.floor, x: m.at.x, y: m.at.y }, rooms });
   }
+  const covers: CoverInfo[] = [];
+  for (const f of map.floors) {
+    for (const c of f.cover) {
+      if (c.type === "concealment") continue;
+      covers.push({ floor: f.id, kind: c.type, x0: toCm(c.rect.min.x), y0: toCm(c.rect.min.y), x1: toCm(c.rect.max.x), y1: toCm(c.rect.max.y) });
+    }
+  }
   return {
     los: get,
+    cover: () => covers,
     cameras: () => cameras,
     doorPos: (id) => doorAt.get(id),
     doorStart: (id) => doorStarts.get(id),

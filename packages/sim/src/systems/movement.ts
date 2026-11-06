@@ -1,3 +1,4 @@
+import { PINNED_AT } from "../defaults";
 import { fromCm } from "../quantize";
 import { angleBetween } from "../trig";
 import { sortedEntities } from "../world";
@@ -20,6 +21,7 @@ export const movementSystem: System = (world, ctx) => {
   for (const e of sortedEntities(world)) {
     const m = e.motion;
     if (!m || e.state === "down") continue; // a downed unit stays where it fell
+    if (world.suppression[e.id] !== undefined && (world.suppression[e.id] as number) >= PINNED_AT) continue; // pinned down: it holds until it recovers
     if (e.state === "firing") continue; // a unit that is shooting stands and shoots; it walks on when the fight is over
 
     const dx = m.toXCm - e.pos.xCm;

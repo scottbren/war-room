@@ -71,3 +71,22 @@ export const DAMAGE_MAX = 35;
 export const POINT_BLANK_CM = 1000;
 /** A shot is heard out to 60 m in the open. */
 export const SHOT_NOISE_CM = 6000;
+
+/** Cover must be within this distance (80 cm) of the target, on the shooter's side, to count. */
+export const COVER_REACH_CM = 80;
+/** Hit-chance multipliers in per mille. */
+export const HEAVY_COVER_PM = 500;
+export const LIGHT_COVER_PM = 750;
+export const MOVING_TARGET_PM = 750;
+/** A shooter this suppressed (50+, 80+) shoots at 60% / 40% of its normal accuracy. */
+export const SUPPRESSED_AIM: readonly (readonly [number, number])[] = [
+  [80, 400],
+  [50, 600],
+];
+/** A shot passing within this distance (2 m) of a unit suppresses it; a hit adds more than a miss. Capped at 100, decays 1 per tick. */
+export const SUPPRESS_RADIUS_CM = 200;
+export const SUPPRESS_NEAR = 10;
+export const SUPPRESS_HIT = 25;
+export const SUPPRESS_MAX = 100;
+/** At this suppression a unit will not advance: it stays put until it recovers. */
+export const PINNED_AT = 80;
