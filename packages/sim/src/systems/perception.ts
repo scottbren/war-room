@@ -2,12 +2,11 @@ import type { MapFile } from "@war-room/content";
 import type { Pos } from "../types";
 import { hearingSystem } from "./hearing";
 import { mindSystem } from "./mind";
-import { canObserve } from "./observe";
-import { BEHIND_RANGE_CM, CONTACT_REFRESH_TICKS, FOV_FULL_DEG, FOV_SIDE_DEG, PERIPHERAL_RANGE_CM, SIGHT_CHECK_EVERY, SIGHT_RANGE_CM } from "../defaults";
+import { canObserve, reachCm } from "./observe";
+import { CONTACT_REFRESH_TICKS, SIGHT_CHECK_EVERY } from "../defaults";
 import { createLos, effectiveRange } from "../los";
 import type { Los } from "../los";
 import { fromCm } from "../quantize";
-import { angleBetween } from "../trig";
 import { sortedIds } from "../world";
 import type { Entity } from "../world";
 import type { System } from "./context";
@@ -20,6 +19,8 @@ export interface SightEnv {
   los(): Los;
   /** Where a door is (meters), for sounds made at it. */
   doorPos(doorId: string): Pos | undefined;
+  /** The state a door has on the untouched map, to tell when someone has changed it. */
+  doorStart(doorId: string): string | undefined;
   /** Forget which door and shutter states were pushed into the line-of-sight grid (after a restore). */
   reset(): void;
   syncWorld(doors: Readonly<Record<string, string>>, shutters: Readonly<Record<string, string>>): void;
@@ -31,10 +32,17 @@ export function createSightEnv(map: MapFile): SightEnv {
   let shutters: Record<string, string> = {};
   const get = (): Los => (los ??= createLos(map));
   const doorAt = new Map<string, Pos>();
-  for (const f of map.floors) for (const d of f.doors) doorAt.set(d.id, { floor: f.id, x: d.at.x, y: d.at.y });
+  const doorStarts = new Map<string, string>();
+  for (const f of map.floors) {
+    for (const d of f.doors) {
+      doorAt.set(d.id, { floor: f.id, x: d.at.x, y: d.at.y });
+      doorStarts.set(d.id, d.state);
+    }
+  }
   return {
     los: get,
     doorPos: (id) => doorAt.get(id),
+    doorStart: (id) => doorStarts.get(id),
     reset() {
       doors = {};
       shutters = {};
@@ -98,7 +106,7 @@ const sightSystem: System = (world, ctx) => {
       if (tid === oid || !canObserve(o.side, t.side)) continue;
       const key = `${oid}>${tid}`;
       const sight = los.sight(from, { floor: t.pos.floor, x: fromCm(t.pos.xCm), y: fromCm(t.pos.yCm) });
-      const range = effectiveRange(sight.visible ? reachCm(o, t) : 0, sight.concealed);
+      const range = effectiveRange(sight.visible ? reachCm(o, t.pos.xCm, t.pos.yCm) : 0, sight.concealed);
       const dx = t.pos.xCm - o.pos.xCm, dy = t.pos.yCm - o.pos.yCm;
       if (sight.visible && dx * dx + dy * dy <= range * range) {
         const last = world.sight[key];
@@ -112,12 +120,3 @@ const sightSystem: System = (world, ctx) => {
     }
   });
 };
-
-/** How far this observer can see toward this target, by where the observer is facing. Operators see all around. */
-function reachCm(o: Entity, t: Entity): number {
-  if (o.side !== "defender") return SIGHT_RANGE_CM;
-  const bearing = angleBetween({ x: fromCm(o.pos.xCm), y: fromCm(o.pos.yCm) }, { x: fromCm(t.pos.xCm), y: fromCm(t.pos.yCm) });
-  const off = Math.abs(((bearing - o.facing + 540) % 360) - 180); // 0 straight ahead .. 180 straight behind
-  if (off <= FOV_FULL_DEG) return SIGHT_RANGE_CM;
-  return off <= FOV_SIDE_DEG ? PERIPHERAL_RANGE_CM : BEHIND_RANGE_CM;
-}

@@ -41,6 +41,8 @@ interface SimState {
   sight?: { k: string; t: number }[];
   /** Defenders that are not simply at their post, sorted by id; only present when there are any. */
   minds?: ({ id: string } & Mind)[];
+  /** Evidence defenders have noticed, sorted by key; only present when there is any. */
+  noticed?: { k: string; t: number }[];
 }
 
 /** A spawn marker's `facing:<degrees>` tag (clockwise from north, whole degrees); 0 when absent. A malformed tag is an error. */
@@ -128,6 +130,7 @@ function toState(map: MapFile, world: World, rng: Rng): SimState {
     alertApplied: world.alertApplied,
     queue: [...world.queue].sort((a, b) => a.seq - b.seq),
     ...(world.setup !== undefined ? { setup: world.setup } : {}),
+    ...(Object.keys(world.noticed).length > 0 ? { noticed: Object.keys(world.noticed).sort().map((k) => ({ k, t: world.noticed[k] as number })) } : {}),
     ...(Object.keys(world.minds).length > 0 ? { minds: Object.keys(world.minds).sort().map((id) => ({ id, ...(world.minds[id] as Mind) })) } : {}),
     ...(Object.keys(world.sight).length > 0 ? { sight: Object.keys(world.sight).sort().map((k) => ({ k, t: world.sight[k] as number })) } : {}),
   };
@@ -241,7 +244,7 @@ function parseState(text: string, map: MapFile): { world: World; rng: number[] }
   if (!isRecord(m) || m["id"] !== map.id || m["version"] !== map.version) {
     return fail("state was saved from a different map or map version");
   }
-  const { tick, seq, rng, entities, doors, queue, devices, shutters, alert, alertApplied, setup, sight, minds } = raw;
+  const { tick, seq, rng, entities, doors, queue, devices, shutters, alert, alertApplied, setup, sight, minds, noticed } = raw;
   if (!isInt(tick) || tick < 0 || !isInt(seq) || seq < 0) return fail("invalid tick or seq");
   if (!Array.isArray(rng) || rng.length !== 4) return fail("invalid rng state");
   if (!Array.isArray(entities) || !Array.isArray(doors) || !Array.isArray(queue) || !Array.isArray(devices) || !Array.isArray(shutters)) {
@@ -313,6 +316,26 @@ function parseState(text: string, map: MapFile): { world: World; rng: number[] }
       }
       if (mode === "routine" && parsedRelay === undefined) return fail("a routine defender mind needs a pending radio report");
       world.minds[id] = { mode, post: pos(raw["post"]), spot: pos(raw["spot"]), t, ...(waitFrom !== undefined ? { waitFrom } : {}), ...(parsedRelay ? { relay: parsedRelay } : {}) };
+    }
+  }
+
+  if (noticed !== undefined) {
+    if (!Array.isArray(noticed)) return fail("invalid noticed evidence");
+    const startDoors = buildWorld(map).doors;
+    for (const n of noticed) {
+      if (!isRecord(n) || typeof n["k"] !== "string" || !isInt(n["t"]) || n["t"] < 0 || n["t"] > tick) return fail("invalid noticed evidence");
+      const at = n["k"].indexOf(">");
+      const who = world.entities[n["k"].slice(0, at)];
+      const what = n["k"].slice(at + 1);
+      const doorNow = what.startsWith("door:") ? doors.find((d) => isRecord(d) && d["id"] === what.slice(5)) : undefined;
+      const body = what.startsWith("body:") ? world.entities[what.slice(5)] : undefined;
+      const ok =
+        at > 0 && who?.side === "defender" && who.state !== "down" &&
+        ((isRecord(doorNow) && Object.hasOwn(startDoors, what.slice(5)) && doorNow["state"] !== startDoors[what.slice(5)]) ||
+          (body !== undefined && body.state === "down" && body.side !== "operator"));
+      if (!ok) return fail("noticed evidence names something that is not evidence in the state");
+      if (Object.hasOwn(world.noticed, n["k"])) return fail("duplicate noticed evidence");
+      world.noticed[n["k"]] = n["t"];
     }
   }
 

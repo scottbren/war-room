@@ -88,11 +88,13 @@ export interface World {
   sight: Record<string, number>;
   /** Defenders that are not simply at their post, by id. */
   minds: Record<string, Mind>;
+  /** Evidence a defender has already noticed and acted on: "defender>door:<id>" or "defender>body:<id>", with the tick. */
+  noticed: Record<string, number>;
 }
 
 export function createWorld(): World {
   // Null-prototype records so ids like "__proto__" are ordinary keys.
-  return { tick: 0, seq: 0, entities: Object.create(null), doors: Object.create(null), devices: Object.create(null), shutters: Object.create(null), alert: 0, alertApplied: 0, queue: [], sight: Object.create(null), minds: Object.create(null) };
+  return { tick: 0, seq: 0, entities: Object.create(null), doors: Object.create(null), devices: Object.create(null), shutters: Object.create(null), alert: 0, alertApplied: 0, queue: [], sight: Object.create(null), minds: Object.create(null), noticed: Object.create(null) };
 }
 
 export function addEntity(world: World, entity: Entity): void {

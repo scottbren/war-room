@@ -234,7 +234,9 @@ describe("determinism", () => {
     // the state carries its mind. (See packages/tools/test/defender.test.ts.)
     // And a fourth time when defenders got a field of view: this one faces north by default, so it no longer sees the
     // operator who is behind it. (See packages/tools/test/fov.test.ts.)
-    expect(hashes[hashes.length - 1]).toBe("2591c2f8");
+    // A fifth time when defenders began noticing evidence: the scripted door change is seen by the defender here.
+    // (See packages/tools/test/evidence.test.ts.)
+    expect(hashes[hashes.length - 1]).toBe("2d4f625c");
   });
 });
 

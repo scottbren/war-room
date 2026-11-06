@@ -1,10 +1,12 @@
-import { ALERT_CALM_TICKS, RADIO_DELAY_TICKS, RETARGET_CM, SEARCH_TICKS } from "../defaults";
+import { ALERT_CALM_TICKS, RADIO_DELAY_TICKS, RETARGET_CM, SEARCH_TICKS, SIGHT_CHECK_EVERY } from "../defaults";
 import { fromCm, toCm } from "../quantize";
 import { angleBetween } from "../trig";
-import { sortedIds } from "../world";
+import { sortedDoorIds, sortedIds } from "../world";
 import type { Entity, EntityPos, Mind, World } from "../world";
 import type { Ctx } from "./context";
 import { startMove } from "./commands";
+import { isqrt } from "./movement";
+import { reachCm } from "./observe";
 
 /**
  * Defender behavior, driven only by what each defender itself sensed this tick (a `contact` or `noise` event naming it
@@ -30,8 +32,9 @@ export function mindSystem(world: World, ctx: Ctx): void {
     const e = world.entities[id] as Entity;
     return e.side === "defender" && e.state !== "down";
   });
-  if (living.length === 0) return;
   const isLiving = new Set(living);
+  pruneNoticed(world, ctx, isLiving);
+  if (living.length === 0) return;
 
   // What each defender sensed this tick (the last event wins; events are in a fixed order).
   const saw = new Map<string, EntityPos>();
@@ -44,6 +47,8 @@ export function mindSystem(world: World, ctx: Ctx): void {
       heard.set(ev.observer, { floor: ev.at.floor, xCm: toCm(ev.at.x), yCm: toCm(ev.at.y) });
     }
   }
+
+  noticeEvidence(world, ctx, isLiving, saw, heard);
 
   // A sighting is radioed to every other living defender. A report already on its way keeps its time but takes the newer spot.
   for (const id of living) {
@@ -153,4 +158,71 @@ function goTo(e: Entity, spot: EntityPos, ctx: Ctx): void {
 function dist2(a: EntityPos, b: EntityPos): number {
   const dx = a.xCm - b.xCm, dy = a.yCm - b.yCm;
   return dx * dx + dy * dy;
+}
+
+/**
+ * Evidence: a defender who looks at a door that has been changed from how the map starts (opened, closed or unlocked),
+ * or at a downed unit that is not an operator, notices it once. A changed door makes it suspicious (it goes to look);
+ * a body alerts it, and that is radioed like a sighting. Defenders look on the same staggered schedule as sight, with
+ * the same field of view and line of sight. Noticed evidence is remembered in `world.noticed` until it stops being
+ * evidence (the door goes back to its start state), so putting a door back lets it be noticed again.
+ */
+/** Forgets noticed evidence that is no longer evidence, or whose defender is gone or down. */
+function pruneNoticed(world: World, ctx: Ctx, living: ReadonlySet<string>): void {
+  const env = ctx.sight;
+  if (!env) return;
+  for (const key of Object.keys(world.noticed).sort()) {
+    const at = key.indexOf(">");
+    const who = key.slice(0, at);
+    const what = key.slice(at + 1);
+    const stillEvidence = what.startsWith("door:")
+      ? world.doors[what.slice(5)] !== env.doorStart(what.slice(5))
+      : world.entities[what.slice(5)]?.state === "down";
+    if (!living.has(who) || !stillEvidence) delete world.noticed[key];
+  }
+}
+
+function noticeEvidence(world: World, ctx: Ctx, living: ReadonlySet<string>, saw: Map<string, EntityPos>, heard: Map<string, EntityPos>): void {
+  const env = ctx.sight;
+  if (!env) return;
+  const ids = sortedIds(world);
+  const doors = sortedDoorIds(world).filter((d) => world.doors[d] !== env.doorStart(d));
+  const bodies = ids.filter((id) => {
+    const e = world.entities[id] as Entity;
+    return e.state === "down" && e.side !== "operator";
+  });
+  if (doors.length === 0 && bodies.length === 0) return;
+  const los = env.los();
+
+  for (const id of ids) {
+    if (!living.has(id) || (ctx.tick + ids.indexOf(id)) % SIGHT_CHECK_EVERY !== 0) continue;
+    const d = world.entities[id] as Entity;
+    const from = { floor: d.pos.floor, x: fromCm(d.pos.xCm), y: fromCm(d.pos.yCm) };
+    // `face` looks at a point a little (30 cm) in front of the spot, on this defender's side: a closed door is itself a
+    // wall to the line of sight, but its face can be seen.
+    const sees = (floor: EntityPos["floor"], xCm: number, yCm: number, face = false): boolean => {
+      const dx = xCm - d.pos.xCm, dy = yCm - d.pos.yCm;
+      const reach = reachCm(d, xCm, yCm);
+      if (dx * dx + dy * dy > reach * reach) return false;
+      const len = isqrt(dx * dx + dy * dy);
+      const k = face && len > 30 ? 30 : 0;
+      const px = k ? xCm - Math.trunc((dx * k) / len) : xCm;
+      const py = k ? yCm - Math.trunc((dy * k) / len) : yCm;
+      return los.sight(from, { floor, x: fromCm(px), y: fromCm(py) }).visible;
+    };
+    for (const doorId of doors) {
+      const key = `${id}>door:${doorId}`;
+      const at = env.doorPos(doorId);
+      if (Object.hasOwn(world.noticed, key) || !at || !sees(at.floor, toCm(at.x), toCm(at.y), true)) continue;
+      world.noticed[key] = ctx.tick;
+      if (!heard.has(id)) heard.set(id, { floor: at.floor, xCm: toCm(at.x), yCm: toCm(at.y) });
+    }
+    for (const bodyId of bodies) {
+      const key = `${id}>body:${bodyId}`;
+      const b = world.entities[bodyId] as Entity;
+      if (Object.hasOwn(world.noticed, key) || !sees(b.pos.floor, b.pos.xCm, b.pos.yCm)) continue;
+      world.noticed[key] = ctx.tick;
+      if (!saw.has(id)) saw.set(id, { ...b.pos });
+    }
+  }
 }
