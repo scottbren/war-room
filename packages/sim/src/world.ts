@@ -54,6 +54,10 @@ export interface Mind {
   t: number;
   /** Suspicious: the tick it reached the spot (it searches there for a while). */
   waitFrom?: number;
+  /** Alerted and under fire: the cover spot it chose (its own place when it is already covered or there is none), so it picks once per alert. */
+  cover?: EntityPos;
+  /** Alerted, outnumbered and under fire: it is falling back toward the principal. */
+  fallback?: true;
   /** A radio report from another defender, arriving at tick `due`. */
   /** `camera`: a security-office report of a camera sighting (it sends the defender to look) rather than a radio call from a defender who saw an operator (it makes the defender alert). */
   relay?: { due: number; spot: EntityPos; camera?: true };

@@ -1,4 +1,4 @@
-import { ALERT_CALM_TICKS, CAMERA_REPORT_DELAY_TICKS, RADIO_DELAY_TICKS, RETARGET_CM, SEARCH_TICKS, SIGHT_CHECK_EVERY } from "../defaults";
+import { ALERT_CALM_TICKS, ALLY_RADIUS_CM, CAMERA_REPORT_DELAY_TICKS, COVER_SEEK_CM, COVER_STAND_OFF_CM, FALLBACK_STOP_CM, RADIO_DELAY_TICKS, RETARGET_CM, SEARCH_TICKS, SIGHT_CHECK_EVERY } from "../defaults";
 import { fromCm, toCm } from "../quantize";
 import { angleBetween } from "../trig";
 import { sortedDoorIds, sortedIds } from "../world";
@@ -6,6 +6,7 @@ import type { Entity, EntityPos, Mind, World } from "../world";
 import type { Ctx } from "./context";
 import { startMove } from "./commands";
 import { isqrt } from "./movement";
+import { coverAt } from "./combat";
 import { reachCm } from "./observe";
 
 /**
@@ -19,7 +20,11 @@ import { reachCm } from "./observe";
  *               RADIO_DELAY_TICKS. With no new sighting or report for ALERT_CALM_TICKS it goes to look at the last spot.
  *   returning   walking back to its post; gone from `world.minds` on arrival.
  *
- * Alerted defenders hold position for now; there is no combat, cover-seeking or alert level change yet.
+ * An alerted defender engages from where it stands. Once it is under fire (suppressed) it reacts, once per alert: if it
+ * sees more operators than it has allies near and the principal is alive it falls back toward the principal; otherwise
+ * it moves to the best cover near it on the threat's side (heavy before light, then the nearest, skipping spots another
+ * defender has taken), or stays put when it is already covered or there is none. It does not stop to shoot while it
+ * runs (see combat). Alert level changes are still not made.
  */
 export function mindSystem(world: World, ctx: Ctx, cameraReports: readonly EntityPos[] = []): void {
   const ids = sortedIds(world);
@@ -117,6 +122,8 @@ export function mindSystem(world: World, ctx: Ctx, cameraReports: readonly Entit
         if (ctx.tick - m.t >= ALERT_CALM_TICKS) {
           m.mode = "suspicious";
           delete m.waitFrom;
+          delete m.cover;
+          delete m.fallback;
           goTo(e, m.spot, ctx);
         }
       } else if (m.mode === "suspicious") {
@@ -133,10 +140,65 @@ export function mindSystem(world: World, ctx: Ctx, cameraReports: readonly Entit
         continue;
       }
     }
+    const alertedNow = world.minds[id];
+    if (alertedNow?.mode === "alerted" && alertedNow.cover === undefined && !alertedNow.fallback && (world.suppression[id] ?? 0) > 0) {
+      underFire(world, ctx, e, alertedNow, living);
+    }
     // An unaware defender with nothing on its way needs no entry.
     const now = world.minds[id];
     if (now && now.mode === "routine" && !now.relay) delete world.minds[id];
   }
+}
+
+/** An alerted defender is being shot at: fall back if outnumbered, otherwise take cover. */
+function underFire(world: World, ctx: Ctx, e: Entity, m: Mind, living: readonly string[]): void {
+  const seen = Object.keys(world.sight).filter((k) => {
+    if (!k.startsWith(`${e.id}>`)) return false;
+    const t = world.entities[k.slice(e.id.length + 1)];
+    return t !== undefined && t.side === "operator" && t.state !== "down";
+  }).length;
+  const near2 = ALLY_RADIUS_CM * ALLY_RADIUS_CM;
+  const allies = living.filter((id) => {
+    const a = world.entities[id] as Entity;
+    return world.minds[id]?.mode === "alerted" && a.pos.floor === e.pos.floor && dist2(a.pos, e.pos) <= near2;
+  }).length;
+  const principal = world.entities["principal"];
+  if (seen > allies && principal && principal.side === "principal" && principal.state !== "down") {
+    m.fallback = true;
+    const dx = principal.pos.xCm - e.pos.xCm, dy = principal.pos.yCm - e.pos.yCm;
+    const len = isqrt(dx * dx + dy * dy);
+    // Stops a couple of metres short of the principal, on the side it comes from.
+    const k = len > FALLBACK_STOP_CM ? len - FALLBACK_STOP_CM : 0;
+    if (principal.pos.floor !== e.pos.floor) goTo(e, principal.pos, ctx);
+    else if (len > 0) goTo(e, { floor: e.pos.floor, xCm: e.pos.xCm + Math.trunc((dx * k) / len), yCm: e.pos.yCm + Math.trunc((dy * k) / len) }, ctx);
+    return;
+  }
+  m.cover = { ...e.pos };
+  const spot = m.spot;
+  if (spot.floor !== e.pos.floor) return;
+  if (coverAt(ctx, e.pos.floor, e.pos.xCm, e.pos.yCm, spot.xCm, spot.yCm) < 1000) return; // already covered
+  const taken = living.filter((id) => id !== e.id).flatMap((id) => {
+    const c = world.minds[id]?.cover;
+    return c ? [c] : [];
+  });
+  const reach2 = COVER_SEEK_CM * COVER_SEEK_CM;
+  let best: { x: number; y: number; heavy: number; d2: number } | undefined;
+  for (const c of ctx.sight?.cover() ?? []) {
+    if (c.floor !== e.pos.floor) continue;
+    const mx = Math.trunc((c.x0 + c.x1) / 2), my = Math.trunc((c.y0 + c.y1) / 2), o = COVER_STAND_OFF_CM;
+    for (const [px, py] of [[mx, c.y1 + o], [mx, c.y0 - o], [c.x1 + o, my], [c.x0 - o, my]] as const) {
+      const spotPos = { floor: e.pos.floor, xCm: px, yCm: py };
+      const d2 = dist2(e.pos, spotPos);
+      if (d2 > reach2) continue;
+      if (coverAt(ctx, e.pos.floor, px, py, spot.xCm, spot.yCm) >= 1000) continue;
+      if (taken.some((t) => t.floor === e.pos.floor && dist2(t, spotPos) < 100 * 100)) continue;
+      const heavy = c.kind === "heavy" ? 0 : 1;
+      if (!best || heavy < best.heavy || (heavy === best.heavy && d2 < best.d2)) best = { x: px, y: py, heavy, d2 };
+    }
+  }
+  if (!best) return;
+  const why = startMove(e, { floor: e.pos.floor, x: fromCm(best.x), y: fromCm(best.y) }, ctx);
+  if (why === undefined) m.cover = { floor: e.pos.floor, xCm: best.x, yCm: best.y };
 }
 
 function mindOf(world: World, id: string): Mind {
@@ -150,12 +212,17 @@ function mindOf(world: World, id: string): Mind {
 }
 
 function alert(m: Mind, e: Entity, spot: EntityPos, tick: number): void {
+  const relocating = m.mode === "alerted" && (m.cover !== undefined || m.fallback === true) && e.motion !== undefined;
+  if (m.mode !== "alerted") {
+    delete m.cover;
+    delete m.fallback;
+  }
   m.mode = "alerted";
   m.spot = { ...spot };
   m.t = tick;
   delete m.waitFrom;
   delete m.relay;
-  stop(e);
+  if (!relocating) stop(e); // a defender already running for cover keeps running
   turnToward(e, spot);
 }
 

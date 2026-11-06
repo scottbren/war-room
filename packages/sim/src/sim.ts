@@ -308,7 +308,7 @@ function parseState(text: string, map: MapFile): { world: World; rng: number[] }
       const who = world.entities[id];
       if (!who || who.side !== "defender") return fail("a defender mind names a unit that is not a defender in the state");
       if (Object.hasOwn(world.minds, id)) return fail("duplicate defender mind");
-      if (Object.keys(raw).some((k) => !["id", "mode", "post", "spot", "t", "waitFrom", "relay"].includes(k))) return fail("a defender mind has unknown fields");
+      if (Object.keys(raw).some((k) => !["id", "mode", "post", "spot", "t", "waitFrom", "relay", "cover", "fallback"].includes(k))) return fail("a defender mind has unknown fields");
       if (who.state === "down") return fail("a downed defender cannot have a mind");
       const mode = raw["mode"];
       if (mode !== "routine" && mode !== "suspicious" && mode !== "alerted" && mode !== "returning") return fail("invalid defender mind mode");
@@ -323,8 +323,12 @@ function parseState(text: string, map: MapFile): { world: World; rng: number[] }
         if (relay["camera"] !== undefined && relay["camera"] !== true) return fail("invalid defender mind relay");
         parsedRelay = { due: relay["due"], spot: pos(relay["spot"]), ...(relay["camera"] === true ? { camera: true as const } : {}) };
       }
+      const coverSpot = raw["cover"] !== undefined ? pos(raw["cover"]) : undefined;
+      const fallback = raw["fallback"];
+      if (fallback !== undefined && fallback !== true) return fail("invalid defender mind fallback");
+      if ((coverSpot !== undefined || fallback === true) && mode !== "alerted") return fail("only an alerted defender can have a cover spot or be falling back");
       if (mode === "routine" && parsedRelay === undefined) return fail("a routine defender mind needs a pending radio report");
-      world.minds[id] = { mode, post: pos(raw["post"]), spot: pos(raw["spot"]), t, ...(waitFrom !== undefined ? { waitFrom } : {}), ...(parsedRelay ? { relay: parsedRelay } : {}) };
+      world.minds[id] = { mode, post: pos(raw["post"]), spot: pos(raw["spot"]), t, ...(waitFrom !== undefined ? { waitFrom } : {}), ...(parsedRelay ? { relay: parsedRelay } : {}), ...(coverSpot ? { cover: coverSpot } : {}), ...(fallback === true ? { fallback: true as const } : {}) };
     }
   }
 

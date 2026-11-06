@@ -90,3 +90,12 @@ export const SUPPRESS_HIT = 25;
 export const SUPPRESS_MAX = 100;
 /** At this suppression a unit will not advance: it stays put until it recovers. */
 export const PINNED_AT = 80;
+
+/** An alerted defender under fire looks for cover within this distance (10 m) of where it stands. */
+export const COVER_SEEK_CM = 1000;
+/** It stands this far (50 cm) outside the cover rectangle. */
+export const COVER_STAND_OFF_CM = 50;
+/** Allies this close (15 m) count when deciding whether a defender is outnumbered. */
+export const ALLY_RADIUS_CM = 1500;
+/** A fallback stops this close (2 m) to the principal. */
+export const FALLBACK_STOP_CM = 200;

@@ -17,21 +17,24 @@ export function hitChance(distCm: number): number {
   return 0;
 }
 
-/** Hit-chance multiplier in per mille for a target behind cover against this shooter: the best cover within reach that lies on the shooter's side. */
-export function coverMultiplier(ctx: Parameters<System>[1], shooter: Entity, target: Entity): number {
+/** Hit-chance multiplier in per mille for someone at (tx, ty) against fire from (sx, sy): the best cover within reach that lies on the shooter's side. */
+export function coverAt(ctx: Parameters<System>[1], floor: string, tx: number, ty: number, sx: number, sy: number): number {
   let best = 1000;
   for (const c of ctx.sight?.cover() ?? []) {
-    if (c.floor !== target.pos.floor) continue;
-    const tx = target.pos.xCm, ty = target.pos.yCm;
+    if (c.floor !== floor) continue;
     const nx = Math.min(Math.max(tx, c.x0), c.x1), ny = Math.min(Math.max(ty, c.y0), c.y1);
     const vx = nx - tx, vy = ny - ty;
     if (vx * vx + vy * vy > COVER_REACH_CM * COVER_REACH_CM) continue;
     // On the shooter's side: the way to the cover points toward the shooter (standing inside it counts).
     const inside = vx === 0 && vy === 0;
-    if (!inside && (shooter.pos.xCm - tx) * vx + (shooter.pos.yCm - ty) * vy <= 0) continue;
+    if (!inside && (sx - tx) * vx + (sy - ty) * vy <= 0) continue;
     best = Math.min(best, c.kind === "heavy" ? HEAVY_COVER_PM : LIGHT_COVER_PM);
   }
   return best;
+}
+
+export function coverMultiplier(ctx: Parameters<System>[1], shooter: Entity, target: Entity): number {
+  return coverAt(ctx, target.pos.floor, target.pos.xCm, target.pos.yCm, shooter.pos.xCm, shooter.pos.yCm);
 }
 
 /** Final hit chance in per mille: range band, then cover, a moving target, and a suppressed shooter. */
@@ -149,6 +152,9 @@ function pickTarget(world: World, ids: string[], u: Entity): Entity | undefined 
     const d2 = dx * dx + dy * dy;
     // Both sides hold fire until the fight is on. A defender fires once it is alerted, or when an operator is at
     // point-blank range. An operator keeps a covert approach and fires only at a defender that is alerted or firing.
+    // A defender running for cover or falling back does not stop to shoot, unless an operator is at point-blank range.
+    const m = world.minds[u.id];
+    if (u.side === "defender" && u.motion !== undefined && m?.mode === "alerted" && (m.cover !== undefined || m.fallback) && d2 > POINT_BLANK_CM * POINT_BLANK_CM) continue;
     const hot = u.side === "defender" ? alerted(u) || d2 <= POINT_BLANK_CM * POINT_BLANK_CM : alerted(t);
     if (!hot) continue;
     if (hitChance(isqrt(d2)) === 0) continue;
