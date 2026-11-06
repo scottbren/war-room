@@ -3,10 +3,11 @@ import type { Pos } from "../types";
 import { hearingSystem } from "./hearing";
 import { mindSystem } from "./mind";
 import { canObserve } from "./observe";
-import { CONTACT_REFRESH_TICKS, SIGHT_CHECK_EVERY, SIGHT_RANGE_CM } from "../defaults";
+import { BEHIND_RANGE_CM, CONTACT_REFRESH_TICKS, FOV_FULL_DEG, FOV_SIDE_DEG, PERIPHERAL_RANGE_CM, SIGHT_CHECK_EVERY, SIGHT_RANGE_CM } from "../defaults";
 import { createLos, effectiveRange } from "../los";
 import type { Los } from "../los";
 import { fromCm } from "../quantize";
+import { angleBetween } from "../trig";
 import { sortedIds } from "../world";
 import type { Entity } from "../world";
 import type { System } from "./context";
@@ -61,7 +62,7 @@ export function createSightEnv(map: MapFile): SightEnv {
  * the unit's place in id order). A sighting emits a `contact` event at once, then repeats it every
  * CONTACT_REFRESH_TICKS while the target stays in view, so the knowledge layer can tell "in view now" from "last seen".
  * Losing sight emits nothing; the next sighting is a fresh contact. Distance is integer squared centimeters (no sqrt).
- * Facing and field of view are not used yet.
+ * Defenders only see within their field of view (see `reachCm`); operators see all around.
  */
 export const perceptionSystem: System = (world, ctx) => {
   sightSystem(world, ctx);
@@ -97,7 +98,7 @@ const sightSystem: System = (world, ctx) => {
       if (tid === oid || !canObserve(o.side, t.side)) continue;
       const key = `${oid}>${tid}`;
       const sight = los.sight(from, { floor: t.pos.floor, x: fromCm(t.pos.xCm), y: fromCm(t.pos.yCm) });
-      const range = effectiveRange(SIGHT_RANGE_CM, sight.concealed);
+      const range = effectiveRange(sight.visible ? reachCm(o, t) : 0, sight.concealed);
       const dx = t.pos.xCm - o.pos.xCm, dy = t.pos.yCm - o.pos.yCm;
       if (sight.visible && dx * dx + dy * dy <= range * range) {
         const last = world.sight[key];
@@ -111,3 +112,12 @@ const sightSystem: System = (world, ctx) => {
     }
   });
 };
+
+/** How far this observer can see toward this target, by where the observer is facing. Operators see all around. */
+function reachCm(o: Entity, t: Entity): number {
+  if (o.side !== "defender") return SIGHT_RANGE_CM;
+  const bearing = angleBetween({ x: fromCm(o.pos.xCm), y: fromCm(o.pos.yCm) }, { x: fromCm(t.pos.xCm), y: fromCm(t.pos.yCm) });
+  const off = Math.abs(((bearing - o.facing + 540) % 360) - 180); // 0 straight ahead .. 180 straight behind
+  if (off <= FOV_FULL_DEG) return SIGHT_RANGE_CM;
+  return off <= FOV_SIDE_DEG ? PERIPHERAL_RANGE_CM : BEHIND_RANGE_CM;
+}

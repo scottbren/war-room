@@ -232,7 +232,9 @@ describe("determinism", () => {
     // generator state in the hash moves. (See packages/tools/test/hearing.test.ts.)
     // Re-pinned a third time when defenders got minds: the defender here sees the operator, so it is now alerted and
     // the state carries its mind. (See packages/tools/test/defender.test.ts.)
-    expect(hashes[hashes.length - 1]).toBe("7ec462c3");
+    // And a fourth time when defenders got a field of view: this one faces north by default, so it no longer sees the
+    // operator who is behind it. (See packages/tools/test/fov.test.ts.)
+    expect(hashes[hashes.length - 1]).toBe("2591c2f8");
   });
 });
 

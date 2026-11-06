@@ -83,6 +83,7 @@ export function mindSystem(world: World, ctx: Ctx): void {
         m.spot = noise;
         m.t = ctx.tick;
         delete m.waitFrom;
+        turnToward(e, noise);
         goTo(e, noise, ctx);
       }
     } else if (m) {
@@ -129,6 +130,10 @@ function alert(m: Mind, e: Entity, spot: EntityPos, tick: number): void {
   delete m.waitFrom;
   delete m.relay;
   stop(e);
+  turnToward(e, spot);
+}
+
+function turnToward(e: Entity, spot: EntityPos): void {
   if (spot.xCm !== e.pos.xCm || spot.yCm !== e.pos.yCm) {
     e.facing = angleBetween({ x: fromCm(e.pos.xCm), y: fromCm(e.pos.yCm) }, { x: fromCm(spot.xCm), y: fromCm(spot.yCm) });
   }

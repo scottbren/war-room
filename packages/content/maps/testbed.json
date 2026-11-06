@@ -532,21 +532,21 @@
       "floor": "ground",
       "kind": "spawn",
       "at": { "x": 18, "y": 8.5 },
-      "tags": ["entity:def.test.1", "side:defender"]
+      "tags": ["entity:def.test.1", "side:defender", "facing:180"]
     },
     {
       "id": "m.spawn.def2",
       "floor": "ground",
       "kind": "spawn",
       "at": { "x": 16.5, "y": 14 },
-      "tags": ["entity:def.test.2", "side:defender"]
+      "tags": ["entity:def.test.2", "side:defender", "facing:180"]
     },
     {
       "id": "m.spawn.def3",
       "floor": "grounds",
       "kind": "spawn",
       "at": { "x": 3, "y": 11 },
-      "tags": ["entity:def.test.3", "side:defender"]
+      "tags": ["entity:def.test.3", "side:defender", "facing:90"]
     },
     {
       "id": "m.principal.study",

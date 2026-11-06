@@ -43,6 +43,14 @@ interface SimState {
   minds?: ({ id: string } & Mind)[];
 }
 
+/** A spawn marker's `facing:<degrees>` tag (clockwise from north, whole degrees); 0 when absent. A malformed tag is an error. */
+function facingTag(tags: string[]): number {
+  const raw = tagValue(tags, "facing");
+  if (raw === undefined) return 0;
+  if (!/^-?\d{1,4}$/.test(raw)) throw new Error(`spawn marker has a bad facing tag: facing:${raw} (use whole degrees, e.g. facing:180)`);
+  return ((Number(raw) % 360) + 360) % 360;
+}
+
 function tagValue(tags: string[], prefix: string): string | undefined {
   const hit = tags.find((t) => t.startsWith(`${prefix}:`));
   return hit?.slice(prefix.length + 1);
@@ -94,7 +102,7 @@ function buildWorld(map: MapFile): World {
       id,
       side: side.data,
       pos: { floor: marker.floor, xCm: toCm(marker.at.x), yCm: toCm(marker.at.y) },
-      facing: 0,
+      facing: facingTag(marker.tags),
       health: DEFAULT_HEALTH,
       state: "idle",
     });

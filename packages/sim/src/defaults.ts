@@ -39,3 +39,13 @@ export const SEARCH_TICKS = 50;
 export const ALERT_CALM_TICKS = 150;
 /** A suspicious defender already walking to a spot only changes course for a new sound this far (3 m) from it. */
 export const RETARGET_CM = 300;
+
+/**
+ * Defenders do not see all around (operators do: a team covers its own sides). Within FOV_FULL_DEG of where a defender
+ * faces it sees the full range; out to FOV_SIDE_DEG it sees only PERIPHERAL_RANGE_CM; beyond that (behind it) only
+ * BEHIND_RANGE_CM. Angles are whole degrees either side of its facing.
+ */
+export const FOV_FULL_DEG = 60;
+export const FOV_SIDE_DEG = 120;
+export const PERIPHERAL_RANGE_CM = 500;
+export const BEHIND_RANGE_CM = 200;
