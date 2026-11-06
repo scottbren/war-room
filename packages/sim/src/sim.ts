@@ -189,7 +189,7 @@ function commandProblem(c: unknown, doorIds: ReadonlySet<string>): string | unde
 
 function parseEntity(raw: unknown): Entity {
   if (!isRecord(raw)) return fail("entity is not an object");
-  const { id, side, pos, facing, health, state, motion } = raw;
+  const { id, side, pos, facing, health, state, motion, reload } = raw;
   if (typeof id !== "string" || id === "") return fail("entity without an id");
   const sideOk = Side.safeParse(side);
   if (!sideOk.success) return fail(`entity ${id} has an invalid side`);
@@ -200,6 +200,7 @@ function parseEntity(raw: unknown): Entity {
   if (!isInt(health) || health < 0) return fail(`entity ${id} has invalid health`);
   if (typeof state !== "string" || !ENTITY_STATES.includes(state)) return fail(`entity ${id} has an invalid state`);
 
+  if (state === "down" && (health !== 0 || motion !== undefined)) return fail(`entity ${id} is down but has health or motion`);
   const entity: Entity = {
     id,
     side: sideOk.data,
@@ -208,6 +209,10 @@ function parseEntity(raw: unknown): Entity {
     health,
     state: state as EntityState,
   };
+  if (reload !== undefined) {
+    if (!isInt(reload) || reload < 0 || state === "down") return fail(`entity ${id} has an invalid reload`);
+    entity.reload = reload;
+  }
   if (motion !== undefined) {
     if (!isRecord(motion) || !isInt(motion["toXCm"]) || !isInt(motion["toYCm"]) || !isInt(motion["speedCmPerTick"]) || motion["speedCmPerTick"] <= 0) {
       return fail(`entity ${id} has invalid motion`);

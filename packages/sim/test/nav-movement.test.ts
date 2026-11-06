@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import type { MapFile } from "@war-room/content";
 import { createSim } from "../src";
 import type { Nav } from "../src/nav";
 import type { Pos, Sim, SimEvent, Snapshot } from "../src/types";
@@ -17,7 +18,13 @@ function stubNav(route: Pos[] | ((from: Pos, to: Pos) => Pos[])): Nav & { calls:
   };
 }
 
-const withNav = (nav: Nav): Sim => createSim({ seed: 1, map: makeTestMap(), nav });
+/** The test map without its defender: these tests are about walking, and a defender who sees the walker starts a fight. */
+const peacefulMap = (): MapFile => {
+  const map = makeTestMap();
+  map.markers = map.markers.filter((m) => !m.tags.includes("side:defender"));
+  return map;
+};
+const withNav = (nav: Nav): Sim => createSim({ seed: 1, map: peacefulMap(), nav });
 const run = (sim: Sim, ticks: number) => {
   const out: { snapshot: Snapshot; events: SimEvent[] }[] = [];
   for (let i = 0; i < ticks; i++) out.push(sim.step());

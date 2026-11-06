@@ -8,7 +8,7 @@ test("clicking the panic room walks the operator there", async ({ page }) => {
   const errors: string[] = [];
   page.on("pageerror", (e) => errors.push(e.message));
   page.on("console", (m) => m.type() === "error" && errors.push(m.text()));
-  await page.goto("/");
+  await page.goto("/?peaceful=1"); // no defenders: one who sees the operator on the way would start a firefight
   await page.waitForFunction(() => {
     const v = (window as unknown as { __warRoom?: { bridge: { ready: boolean } } }).__warRoom;
     return v?.bridge.ready === true;

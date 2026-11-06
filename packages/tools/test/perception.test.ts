@@ -38,9 +38,10 @@ describe("perception", () => {
     const s = sim();
     moveTo(s, 0, "op.alpha.1", yard(18.5, 2));
     const events = run(s, 100);
-    const n = events.filter((e) => e.observer === "op.alpha.1" && e.target === "def.test.1").length;
-    expect(n).toBeGreaterThanOrEqual(14); // in view for about the last 50 of 100 ticks, one contact per 3-tick check
-    expect(n).toBeLessThanOrEqual(22);
+    const ticks = events.filter((e) => e.observer === "op.alpha.1" && e.target === "def.test.1").map((e) => e.tick);
+    expect(ticks.length).toBeGreaterThanOrEqual(5); // (the defender may be shot down before the 100 ticks are over)
+    // One contact per 3-tick check for as long as he stays in view.
+    ticks.slice(1).forEach((t, i) => expect(t - ticks[i]!).toBe(3));
   });
 
   it("concealment halves the range: a defender in the hedge is seen from 6 m but not from 12 m", () => {

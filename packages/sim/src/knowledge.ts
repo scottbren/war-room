@@ -25,6 +25,18 @@ export interface KnownUnit {
   /** In view right now (or one of ours). A unit that is not live is a last-known position: it may have moved. */
   live: boolean;
   own: boolean;
+  /** Known to be down: one of ours that is down, or a unit this side saw go down or saw lying down. */
+  down: boolean;
+}
+
+/** A shot this side saw being fired (it had the shooter in view, or the shooter is its own). */
+export interface KnownShot {
+  shooter: string;
+  /** Where it was aimed: the target's position. */
+  floor: FloorId;
+  x: number;
+  y: number;
+  tick: number;
 }
 
 /** Something this side heard: roughly where, what kind, and when. The source is not known. */
@@ -32,7 +44,7 @@ export interface KnownNoise {
   floor: FloorId;
   x: number;
   y: number;
-  kind: "steps" | "door";
+  kind: "steps" | "door" | "shot";
   tick: number;
 }
 
@@ -46,6 +58,8 @@ export interface Knowledge {
   units(): KnownUnit[];
   /** Sounds heard by this side's units, oldest first (at most NOISE_MEMORY). */
   noises(): KnownNoise[];
+  /** Shots this side saw fired, oldest first (at most NOISE_MEMORY). Gunfire it only heard is in `noises()`. */
+  shots(): KnownShot[];
   /** The unit, if known. */
   unit(id: string): KnownUnit | undefined;
   /** Doors on this side's plans: every door except hidden ones nobody has found yet. Sorted. */
@@ -63,6 +77,7 @@ interface Seen {
   x: number;
   y: number;
   tick: number;
+  down: boolean;
 }
 
 export function createKnowledge(map: MapFile, side: Side): Knowledge {
@@ -71,6 +86,7 @@ export function createKnowledge(map: MapFile, side: Side): Knowledge {
   const revealed = new Set<string>();
   const seen = new Map<string, Seen>();
   const noises: KnownNoise[] = [];
+  const shots: KnownShot[] = [];
   let now = 0;
 
   return {
@@ -79,7 +95,7 @@ export function createKnowledge(map: MapFile, side: Side): Knowledge {
       const byId = new Map(snapshot.entities.map((e) => [e.id, e]));
       const sideOf = (id: string): Side | undefined => byId.get(id)?.side ?? seen.get(id)?.side;
       for (const e of snapshot.entities) {
-        if (e.side === side) seen.set(e.id, { side: e.side, floor: e.pos.floor, x: e.pos.x, y: e.pos.y, tick: snapshot.tick });
+        if (e.side === side) seen.set(e.id, { side: e.side, floor: e.pos.floor, x: e.pos.x, y: e.pos.y, tick: snapshot.tick, down: e.state === "down" });
       }
       for (const ev of events) {
         if (ev.type === "noise") {
@@ -88,10 +104,24 @@ export function createKnowledge(map: MapFile, side: Side): Knowledge {
           if (noises.length > NOISE_MEMORY) noises.shift();
           continue;
         }
+ 
+        if (ev.type === "down") {
+          const s = seen.get(ev.entity);
+          if (s && (s.side === side || now - s.tick <= LIVE_TICKS)) s.down = true;
+          continue;
+        }
+        if (ev.type === "shot") {
+          const s = seen.get(ev.shooter);
+          if (s && (s.side === side || ev.tick - s.tick <= LIVE_TICKS)) {
+            shots.push({ shooter: ev.shooter, floor: ev.at.floor, x: ev.at.x, y: ev.at.y, tick: ev.tick });
+            if (shots.length > NOISE_MEMORY) shots.shift();
+          }
+          continue;
+        }
         if (ev.type !== "contact" || sideOf(ev.observer) !== side) continue;
         const target = byId.get(ev.target);
         if (!target || target.side === side) continue;
-        seen.set(target.id, { side: target.side, floor: target.pos.floor, x: target.pos.x, y: target.pos.y, tick: ev.tick });
+        seen.set(target.id, { side: target.side, floor: target.pos.floor, x: target.pos.x, y: target.pos.y, tick: ev.tick, down: target.state === "down" });
       }
     },
 
@@ -103,11 +133,15 @@ export function createKnowledge(map: MapFile, side: Side): Knowledge {
       return noises.map((n) => ({ ...n }));
     },
 
+    shots() {
+      return shots.map((s) => ({ ...s }));
+    },
+
     unit(id) {
       const s = seen.get(id);
       if (!s) return undefined;
       const own = s.side === side;
-      return { id, side: s.side, floor: s.floor, x: s.x, y: s.y, lastSeenTick: s.tick, live: own || now - s.tick <= LIVE_TICKS, own };
+      return { id, side: s.side, floor: s.floor, x: s.x, y: s.y, lastSeenTick: s.tick, live: own || now - s.tick <= LIVE_TICKS, own, down: s.down };
     },
 
     knownDoorIds() {

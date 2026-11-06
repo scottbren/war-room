@@ -144,7 +144,9 @@ type SimEvent =
   | SimEventBase & { type: "arrived"; entity: EntityId }
   | SimEventBase & { type: "door"; doorId: string; state: string }
   | SimEventBase & { type: "contact"; observer: EntityId; target: EntityId }
-  | SimEventBase & { type: "noise"; observer: EntityId; at: Pos; kind: "steps" | "door" }
+  | SimEventBase & { type: "noise"; observer: EntityId; at: Pos; kind: "steps" | "door" | "shot" }
+  | SimEventBase & { type: "shot"; shooter: EntityId; at: Pos; hit: boolean }
+  | SimEventBase & { type: "down"; entity: EntityId }
   // more types are added in week 2 under the same base
 
 interface Plan {

@@ -54,3 +54,20 @@ export const BEHIND_RANGE_CM = 200;
 export const CAMERA_RANGE_CM = 2500;
 /** A camera sighting reaches the defenders this many ticks later (2 s): someone in the security office has to notice. */
 export const CAMERA_REPORT_DELAY_TICKS = 20;
+
+/** A unit fires at most once per this many ticks (0.5 s). */
+export const FIRE_INTERVAL_TICKS = 5;
+/** Hit chance per mille by distance: [farthest cm of the band, chance]. Beyond the last band there is no shot. */
+export const HIT_BANDS: readonly (readonly [number, number])[] = [
+  [1000, 800],
+  [2000, 550],
+  [3000, 300],
+  [4000, 150],
+];
+/** Damage of one hit, inclusive. A unit has 100 health. */
+export const DAMAGE_MIN = 15;
+export const DAMAGE_MAX = 35;
+/** An unaware defender still fires at an operator this close (10 m). */
+export const POINT_BLANK_CM = 1000;
+/** A shot is heard out to 60 m in the open. */
+export const SHOT_NOISE_CM = 6000;

@@ -14,3 +14,8 @@ export function withDemoOperator(map: MapFile): MapFile {
     ],
   };
 }
+
+/** The map without its defenders (the `?peaceful=1` dev switch). */
+export function withoutDefenders(map: MapFile): MapFile {
+  return { ...map, markers: map.markers.filter((m) => !m.tags.includes("side:defender")) };
+}

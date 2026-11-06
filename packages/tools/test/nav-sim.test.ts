@@ -12,7 +12,8 @@ const baseMap = MapFile.parse(JSON.parse(read("../../content/maps/charon.json").
 /** CHARON plus one operator on the helipad (operators normally arrive by insertion, which does not exist yet). */
 const map: MapFile = {
   ...baseMap,
-  markers: [...baseMap.markers, { id: "m.spawn.op.test", floor: "grounds", kind: "spawn", at: { x: 48, y: 68 }, tags: ["entity:op.alpha.1", "side:operator"] }],
+  // No defenders: these tests are about walking, and a defender who sees the walker starts a fight.
+  markers: [...baseMap.markers.filter((m) => !m.tags.includes("side:defender")), { id: "m.spawn.op.test", floor: "grounds", kind: "spawn", at: { x: 48, y: 68 }, tags: ["entity:op.alpha.1", "side:operator"] }],
 };
 
 let nav: Nav;

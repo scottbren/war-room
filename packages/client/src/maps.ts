@@ -17,6 +17,11 @@ export function isMapName(name: string | null | undefined): name is MapName {
   return name === "charon" || name === "testbed";
 }
 
+/** `?peaceful=1` removes the defenders (a dev and test switch: with them, an operator walking past is in a firefight). */
+export function peacefulFromSearch(search: string): boolean {
+  return new URLSearchParams(search).get("peaceful") === "1";
+}
+
 /** `?map=testbed` picks the dev map; anything else is CHARON. */
 export function mapNameFromSearch(search: string): MapName {
   const name = new URLSearchParams(search).get("map");

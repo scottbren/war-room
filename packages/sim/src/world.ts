@@ -36,6 +36,8 @@ export interface Entity {
   health: number;
   state: EntityState;
   motion?: Motion;
+  /** Tick at which the unit may fire again; present only while it is still cooling down. */
+  reload?: number;
 }
 
 /**

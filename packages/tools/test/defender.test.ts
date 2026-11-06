@@ -15,7 +15,7 @@ beforeAll(async () => {
 const yard = (x: number, y: number): Pos => ({ floor: "grounds", x, y }) as Pos;
 const sim = (): Sim => createSim({ seed: 1, map, nav });
 
-interface MindOut { id: string; mode: string }
+interface MindOut { id: string; mode: string; relay?: unknown }
 const minds = (s: Sim): MindOut[] => (JSON.parse(s.serialize()) as { minds?: MindOut[] }).minds ?? [];
 const modeOf = (s: Sim, id: string): string => minds(s).find((m) => m.id === id)?.mode ?? "routine";
 const where = (s: Sim, id: string): { x: number; y: number; facing: number } => {
@@ -77,24 +77,28 @@ describe("defender behavior", () => {
     expect((JSON.parse(s.serialize()) as { alert: number }).alert).toBe(0); // alert levels are not touched
   });
 
-  it("calms down when the operator is gone: alerted, then suspicious, then back to routine", () => {
+  it("calms down when nothing more happens: alerted, then suspicious (goes to look), then back to routine", () => {
+    // Start from a defender who is already alerted, with no operator anywhere near, so that no fight interferes.
+    const s0 = sim();
+    run(s0, 5);
+    const state = JSON.parse(s0.serialize()) as { tick: number; minds?: unknown[] };
+    state.minds = [{
+      id: "def.test.2",
+      mode: "alerted",
+      post: { floor: "ground", xCm: 1650, yCm: 1400 },
+      spot: { floor: "ground", xCm: 1800, yCm: 800 },
+      t: state.tick,
+    }];
     const s = sim();
-    showOperator(s);
-    s.enqueue({ kind: "setShutter", tick: 80, windowId: "win.t.hall.s", state: "closed" }); // the operators drop out of sight
-    // Both operators walk to the far corner of the yard, more than 20 m from anywhere a defender will go to look.
-    s.enqueue({ kind: "move", tick: 80, entity: "op.alpha.1", to: yard(29, 23) });
-    s.enqueue({ kind: "move", tick: 80, entity: "op.alpha.2", to: yard(29, 23) });
+    s.restore(JSON.stringify(state));
     const modes: string[] = [];
-    for (let i = 0; i < 900; i++) {
+    for (let i = 0; i < 700; i++) {
       s.step();
-      const m = modeOf(s, "def.test.1");
+      const m = modeOf(s, "def.test.2");
       if (modes[modes.length - 1] !== m) modes.push(m);
     }
-    expect(modes[0]).toBe("routine");
-    expect(modes).toContain("alerted");
-    expect(modes).toContain("suspicious");
-    expect(modes.indexOf("alerted")).toBeLessThan(modes.indexOf("suspicious"));
-    expect(modes[modes.length - 1]).toBe("routine");
+    expect(modes[0]).toBe("alerted");
+    expect(modes).toEqual(["alerted", "suspicious", "returning", "routine"]);
   });
 
   it("never gives operators a mind, and is deterministic through a save in the middle of an alert", () => {
@@ -121,7 +125,7 @@ describe("defender behavior", () => {
     const radio = sim();
     showOperator(radio);
     run(radio, 60); // def.test.1 has seen the operator at about tick 47; the report reaches the others at about 77
-    expect(minds(radio).some((m) => m.id === "def.test.2" && m.mode === "routine")).toBe(true); // a report is pending
+    expect(minds(radio).some((m) => m.id === "def.test.2" && m.relay !== undefined)).toBe(true); // a report is pending
     const walk = sim();
     walk.enqueue({ kind: "setShutter", tick: 0, windowId: "win.t.hall.s", state: "closed" });
     walk.enqueue({ kind: "setDoor", tick: 1, doorId: "d.t.hall-vault", state: "open" });

@@ -26,9 +26,7 @@ describe("hearing", () => {
   it("carries footsteps through an open window but muffles them when the shutter is closed", () => {
     const open = sim();
     walk(open, yard(18.5, 2)); // ends about 6.5 m from the defender in the hall: inside 8 m with a clear path, outside the 4 m muffled reach
-    const steps = heardBy(run(open, 80), "def.test.1");
-    expect(steps.length).toBeGreaterThan(0);
-    expect(steps.every((e) => e.kind === "steps")).toBe(true);
+    expect(heardBy(run(open, 80), "def.test.1").length).toBeGreaterThan(0); // steps, then gunfire once he is seen
 
     const shut = sim();
     shut.enqueue({ kind: "setShutter", tick: 0, windowId: "win.t.hall.s", state: "closed" });
@@ -40,21 +38,19 @@ describe("hearing", () => {
     const s = sim();
     walk(s, yard(18.5, 2));
     const events = run(s, 80);
-    expect(heardBy(events, "op.alpha.1").length).toBe(0);
+    expect(heardBy(events, "op.alpha.1").filter((e) => e.kind === "steps").length).toBe(0); // he hears gunfire once it starts, never himself
     for (const e of events) expect(Object.keys(e).sort()).toEqual(["at", "id", "kind", "observer", "tick", "type", "v"]);
   });
 
-  it("makes no footsteps once the walker is down", () => {
+  it("refuses a saved state in which a downed unit still has a walk in progress", () => {
     const s = sim();
     walk(s, yard(18.5, 2));
     run(s, 5);
-    const saved = JSON.parse(s.serialize()) as { entities: { id: string; state: string }[] };
-    const walker = saved.entities.find((e) => e.id === "op.alpha.1");
-    expect(walker).toBeDefined();
-    (walker as { state: string }).state = "down";
-    const copy = sim();
-    copy.restore(JSON.stringify(saved));
-    expect(run(copy, 80)).toEqual([]);
+    const saved = JSON.parse(s.serialize()) as { entities: { id: string; state: string; health: number }[] };
+    const walker = saved.entities.find((e) => e.id === "op.alpha.1")!;
+    walker.state = "down";
+    walker.health = 0;
+    expect(() => sim().restore(JSON.stringify(saved))).toThrow(); // a downed unit cannot be walking
   });
 
   it("hears a door at once, near its true spot and not from far away", () => {

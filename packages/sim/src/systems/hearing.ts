@@ -2,13 +2,13 @@ import { DEFAULT_SPEED_CM_PER_TICK, DOOR_NOISE_CM, HEAR_EVERY, MUFFLE_FLOOR_DIV,
 import { fromCm, toCm } from "../quantize";
 import type { Pos } from "../types";
 import { sortedIds } from "../world";
-import type { Entity } from "../world";
+import type { Entity, World } from "../world";
 import type { Ctx, System } from "./context";
 import { isqrt } from "./movement";
 import { canObserve } from "./observe";
 
-interface Sound {
-  kind: "steps" | "door";
+export interface Sound {
+  kind: "steps" | "door" | "shot";
   at: Pos;
   radiusCm: number;
   /** Who made it, so they do not hear themselves, and which side's ears care. Doors have no side. */
@@ -25,8 +25,13 @@ interface Sound {
 export const hearingSystem: System = (world, ctx) => {
   const env = ctx.sight;
   if (!env) return;
-  const sounds = collect(world.entities, ctx, env.doorPos);
-  if (sounds.length === 0) return;
+  deliverSounds(world, ctx, collect(world.entities, ctx, env.doorPos));
+};
+
+/** Carries the given sounds to everyone who can hear them, emitting a `noise` event per listener (see above). */
+export function deliverSounds(world: World, ctx: Ctx, sounds: readonly Sound[]): void {
+  const env = ctx.sight;
+  if (!env || sounds.length === 0) return;
   const ids = sortedIds(world);
   const listeners = ids.filter((id) => {
     const e = world.entities[id] as Entity;
@@ -55,7 +60,7 @@ export const hearingSystem: System = (world, ctx) => {
       ctx.emit({ type: "noise", observer: lid, kind: sound.kind, at: { floor: sound.at.floor, x: fromCm(sx + ex), y: fromCm(sy + ey) } });
     }
   }
-};
+}
 
 /** Sounds made this tick, in a fixed order: footsteps by entity id, then doors in event order. */
 function collect(entities: Record<string, Entity>, ctx: Ctx, doorPos: (id: string) => Pos | undefined): Sound[] {

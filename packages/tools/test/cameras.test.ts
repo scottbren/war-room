@@ -61,14 +61,12 @@ describe("cameras", () => {
     const s = createSim({ seed: 1, map, nav });
     s.restore(JSON.stringify(state));
     s.enqueue({ kind: "setShutter", tick: 0, windowId: "win.t.hall.s", state: "closed" });
-    const first: Record<string, string> = {};
-    for (let i = 0; i < 45; i++) {
-      s.step();
-      for (const [id, mode] of Object.entries(modes(s))) if (mode !== "routine" && first[id] === undefined) first[id] = mode;
-    }
-    expect(first["def.test.1"]).toBe("alerted");
-    expect(first["def.test.2"]).toBe("alerted");
-    expect(first["def.test.3"]).toBe("alerted");
+    // (The gunfire that follows also sends them to look, so they may be suspicious first; the point is that the
+    // radio call is not lost behind the camera report: all three end up alerted well within the radio delay of the call.)
+    run(s, 45);
+    // (def.test.1, who made the sighting, is point-blank to an operator and may well be dead by now.)
+    expect(modes(s)["def.test.2"]).toBe("alerted");
+    expect(modes(s)["def.test.3"]).toBe("alerted");
   });
 
   it("see nothing when the camera is off or looped, or when the hub is down", () => {

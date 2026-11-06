@@ -72,6 +72,8 @@ describe("SimBridge", () => {
     expect(w.posted).toEqual([{ type: "init", seed: 42, map: "charon" }]);
     bridge.start(7, "testbed");
     expect(w.posted[1]).toEqual({ type: "init", seed: 7, map: "testbed" });
+    bridge.start(7, "testbed", true);
+    expect(w.posted[2]).toEqual({ type: "init", seed: 7, map: "testbed", peaceful: true });
     w.posted.length = 1;
     expect(bridge.ready).toBe(false);
     w.send({ type: "ready", snapshot: snap(0, { id: "a", x: 0, y: 0 }) });

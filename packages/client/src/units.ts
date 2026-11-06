@@ -49,7 +49,10 @@ export function createUnitLayer(
           meshes.set(u.id, mesh);
         }
         // Map (x, y) -> Babylon (x, z); capsule origin is its centre.
-        mesh.position.set(u.x, elevations[u.floor] + stairLift(links, elevations, u.floor, u.x, u.y) + HEIGHT / 2, u.y);
+        // A downed unit lies on the floor.
+        const down = u.state === "down";
+        mesh.rotation.x = down ? Math.PI / 2 : 0;
+        mesh.position.set(u.x, elevations[u.floor] + stairLift(links, elevations, u.floor, u.x, u.y) + (down ? 0.3 : HEIGHT / 2), u.y);
         mesh.visibility = u.ghost ? 0.35 : 1;
         mesh.setEnabled(floorVisible(u.floor));
       }

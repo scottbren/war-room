@@ -13,6 +13,7 @@ import { createEngine } from "./engine";
 import type { Backend } from "./engine";
 import { SimBridge } from "./bridge";
 import { floorCandidates } from "./picking";
+import { peacefulFromSearch } from "./maps";
 import { DEMO_OPERATOR } from "./scenario";
 import { createUnitLayer } from "./units";
 import { createKnowledge } from "@war-room/sim";
@@ -122,7 +123,7 @@ export async function createViewer(canvas: HTMLCanvasElement, map: MapFile, call
   // Simulation in a worker; units drawn from interpolated snapshots.
   const bridge = new SimBridge(new Worker(new URL("./sim.worker.ts", import.meta.url), { type: "module" }) as never, () => performance.now());
   bridge.onError = callbacks.onError;
-  bridge.start(1, map.id);
+  bridge.start(1, map.id, peacefulFromSearch(window.location.search));
   const elevations = Object.fromEntries(map.floors.map((f) => [f.id, f.elevation])) as Record<FloorId, number>;
   const unitLayer = createUnitLayer(scene, elevations, (f) => greybox.floorVisible(f), map.verticalLinks);
   // What the player sees comes from the operators' knowledge, not from truth: their own units, anyone in view right
@@ -142,7 +143,7 @@ export async function createViewer(canvas: HTMLCanvasElement, map: MapFile, call
       if (k?.live) out.push(u);
     }
     for (const k of knowledge.units()) {
-      if (!k.live) out.push({ id: k.id, side: k.side, floor: k.floor, x: k.x, y: k.y, facing: 0, state: "idle", health: 100, ghost: true });
+      if (!k.live) out.push({ id: k.id, side: k.side, floor: k.floor, x: k.x, y: k.y, facing: 0, state: k.down ? "down" : "idle", health: k.down ? 0 : 100, ghost: true });
     }
     return out;
   };

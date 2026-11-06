@@ -68,6 +68,7 @@ Each tick runs the systems in a fixed order:
 4. Perception, with line of sight staggered across ticks.
 5. Smart home: alert-level automation (floodlights, shutters, locks), run once per level and only while a hub is online.
 6. Combat.
+   - 6b. Defender minds react to everything sensed this tick, including shots just fired (a step added when combat was built; their orders are carried out by movement on the next tick).
 7. Suppression and morale.
 8. Objectives, complications, and hidden models.
 9. Emit events and the snapshot.

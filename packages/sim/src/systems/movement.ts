@@ -20,6 +20,7 @@ export const movementSystem: System = (world, ctx) => {
   for (const e of sortedEntities(world)) {
     const m = e.motion;
     if (!m || e.state === "down") continue; // a downed unit stays where it fell
+    if (e.state === "firing") continue; // a unit that is shooting stands and shoots; it walks on when the fight is over
 
     const dx = m.toXCm - e.pos.xCm;
     const dy = m.toYCm - e.pos.yCm;

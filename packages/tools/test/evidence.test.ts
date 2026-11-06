@@ -16,7 +16,7 @@ const sim = (): Sim => createSim({ seed: 1, map, nav });
 const run = (s: Sim, n: number): void => {
   for (let i = 0; i < n; i++) s.step();
 };
-interface Saved { noticed?: { k: string; t: number }[]; minds?: { id: string; mode: string }[]; entities: { id: string; state: string; pos: { floor: string; xCm: number; yCm: number } }[] }
+interface Saved { noticed?: { k: string; t: number }[]; minds?: { id: string; mode: string }[]; entities: { id: string; state: string; health: number; motion?: unknown; pos: { floor: string; xCm: number; yCm: number } }[] }
 const saved = (s: Sim): Saved => JSON.parse(s.serialize()) as Saved;
 const noticed = (s: Sim): string[] => (saved(s).noticed ?? []).map((n) => n.k);
 const modeOf = (s: Sim, id: string): string => saved(s).minds?.find((m) => m.id === id)?.mode ?? "routine";
@@ -61,6 +61,7 @@ describe("evidence", () => {
     const state = saved(s);
     const victim = state.entities.find((e) => e.id === "def.test.2")!;
     victim.state = "down";
+    victim.health = 0;
     victim.pos = { floor: "ground", xCm: 1800, yCm: 700 }; // in the hall, south-east of def.test.1 and in front of it
     const copy = sim();
     copy.restore(JSON.stringify(state));
@@ -85,7 +86,7 @@ describe("evidence", () => {
     s.enqueue({ kind: "setDoor", tick: 1, doorId: "d.t.hall-study", state: "open" });
     run(s, 15);
     const state = saved(s);
-    for (const e of state.entities) if (e.id.startsWith("def.")) e.state = "down";
+    for (const e of state.entities) if (e.id.startsWith("def.")) { e.state = "down"; e.health = 0; delete e.motion; }
     const copy = sim();
     expect(() => copy.restore(JSON.stringify(state))).toThrow(); // a downed defender cannot have noticed anything
     delete state.noticed;

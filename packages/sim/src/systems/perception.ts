@@ -1,8 +1,6 @@
 import type { MapFile } from "@war-room/content";
 import type { Pos } from "../types";
 import { hearingSystem } from "./hearing";
-import { cameraSystem } from "./cameras";
-import { mindSystem } from "./mind";
 import { canObserve, reachCm } from "./observe";
 import { CONTACT_REFRESH_TICKS, SIGHT_CHECK_EVERY } from "../defaults";
 import { createLos, effectiveRange } from "../los";
@@ -99,7 +97,6 @@ export function createSightEnv(map: MapFile): SightEnv {
 export const perceptionSystem: System = (world, ctx) => {
   sightSystem(world, ctx);
   hearingSystem(world, ctx);
-  mindSystem(world, ctx, cameraSystem(world, ctx));
 };
 
 const sightSystem: System = (world, ctx) => {

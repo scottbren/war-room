@@ -52,9 +52,11 @@ describe("testbed: the small dev map", () => {
   });
 
   it("runs in the sim: all five starting units appear and an operator can be ordered to the hall", () => {
-    const sim = createSim({ seed: 1, map, nav });
+    expect(createSim({ seed: 1, map, nav }).step().snapshot.entities.length).toBe(5);
+    // Walk in a copy without the defenders: one who sees the operator would start a fight (see combat.test.ts).
+    const peaceful = { ...map, markers: map.markers.filter((m) => !m.tags.includes("side:defender")) };
+    const sim = createSim({ seed: 1, map: peaceful, nav });
     const first = sim.step();
-    expect(first.snapshot.entities.length).toBe(5);
     sim.enqueue({ kind: "move", tick: first.snapshot.tick, entity: "op.alpha.1", to: p("ground", 16, 7.5) });
     let last = first.snapshot;
     for (let i = 0; i < 300; i++) last = sim.step().snapshot;

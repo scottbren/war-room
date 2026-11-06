@@ -42,7 +42,7 @@ export function mindSystem(world: World, ctx: Ctx, cameraReports: readonly Entit
   for (const ev of ctx.events) {
     if (ev.type === "contact" && isLiving.has(ev.observer)) {
       const t = world.entities[ev.target];
-      if (t) saw.set(ev.observer, { ...t.pos });
+      if (t && t.state !== "down") saw.set(ev.observer, { ...t.pos }); // a body is evidence (see noticeEvidence), not a live threat
     } else if (ev.type === "noise" && isLiving.has(ev.observer)) {
       heard.set(ev.observer, { floor: ev.at.floor, xCm: toCm(ev.at.x), yCm: toCm(ev.at.y) });
     }
