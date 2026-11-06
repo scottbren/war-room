@@ -30,3 +30,12 @@ export const SIGHT_RANGE_CM = 2000;
 export const SIGHT_CHECK_EVERY = 3;
 /** While a target stays in view, its `contact` event repeats after this many ticks (a heartbeat for the knowledge layer; with checks every 3 ticks that is every check). */
 export const CONTACT_REFRESH_TICKS = 3;
+
+/** A defender who sees an operator radios the others; they learn the position this many ticks later (3 s). */
+export const RADIO_DELAY_TICKS = 30;
+/** A suspicious defender searches the spot this long after arriving (5 s) before going back to its post. */
+export const SEARCH_TICKS = 50;
+/** An alerted defender with no new sighting or report for this long (15 s) goes to look at the last spot. */
+export const ALERT_CALM_TICKS = 150;
+/** A suspicious defender already walking to a spot only changes course for a new sound this far (3 m) from it. */
+export const RETARGET_CM = 300;

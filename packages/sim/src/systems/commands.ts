@@ -1,11 +1,30 @@
 import { DEFAULT_SPEED_CM_PER_TICK } from "../defaults";
 import { fromCm, toCm } from "../quantize";
-import type { Command } from "../types";
-import type { QueuedCommand, World } from "../world";
+import type { Command, Pos } from "../types";
+import type { Entity, QueuedCommand, World } from "../world";
 import type { Ctx, System } from "./context";
 
 function reject(ctx: Ctx, command: Command, reason: string): void {
   ctx.emit({ type: "commandRejected", command: command.kind, reason });
+}
+
+/**
+ * Starts an entity walking to `to`: along a navmesh route when the sim has one, otherwise in a straight line on the
+ * same floor. Returns why it could not (and leaves any current motion untouched), or undefined on success.
+ */
+export function startMove(entity: Entity, to: Pos, ctx: Ctx): string | undefined {
+  const speedCmPerTick = DEFAULT_SPEED_CM_PER_TICK[entity.side];
+  if (ctx.nav) {
+    const from = { floor: entity.pos.floor, x: fromCm(entity.pos.xCm), y: fromCm(entity.pos.yCm) };
+    const route = ctx.nav.findPath(from, to).slice(1); // the first point is where the unit already is
+    if (route.length === 0) return "no route to target";
+    const [next, ...rest] = route.map((p) => ({ floor: p.floor, xCm: toCm(p.x), yCm: toCm(p.y) }));
+    entity.motion = { toXCm: next!.xCm, toYCm: next!.yCm, toFloor: next!.floor, speedCmPerTick, ...(rest.length > 0 ? { rest } : {}) };
+    return undefined;
+  }
+  if (to.floor !== entity.pos.floor) return "cross-floor moves need a navmesh";
+  entity.motion = { toXCm: toCm(to.x), toYCm: toCm(to.y), speedCmPerTick };
+  return undefined;
 }
 
 function apply(world: World, ctx: Ctx, command: Command): void {
@@ -13,19 +32,8 @@ function apply(world: World, ctx: Ctx, command: Command): void {
     case "move": {
       const entity = world.entities[command.entity];
       if (!entity) return reject(ctx, command, `unknown entity: ${command.entity}`);
-      const speedCmPerTick = DEFAULT_SPEED_CM_PER_TICK[entity.side];
-      if (ctx.nav) {
-        const from = { floor: entity.pos.floor, x: fromCm(entity.pos.xCm), y: fromCm(entity.pos.yCm) };
-        const route = ctx.nav.findPath(from, command.to).slice(1); // the first point is where the unit already is
-        if (route.length === 0) return reject(ctx, command, "no route to target");
-        const [next, ...rest] = route.map((p) => ({ floor: p.floor, xCm: toCm(p.x), yCm: toCm(p.y) }));
-        entity.motion = { toXCm: next!.xCm, toYCm: next!.yCm, toFloor: next!.floor, speedCmPerTick, ...(rest.length > 0 ? { rest } : {}) };
-        return;
-      }
-      if (command.to.floor !== entity.pos.floor) {
-        return reject(ctx, command, "cross-floor moves need a navmesh");
-      }
-      entity.motion = { toXCm: toCm(command.to.x), toYCm: toCm(command.to.y), speedCmPerTick };
+      const why = startMove(entity, command.to, ctx);
+      if (why !== undefined) return reject(ctx, command, why);
       return;
     }
     case "setDoor": {

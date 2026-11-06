@@ -230,7 +230,9 @@ describe("determinism", () => {
     // state now carries their sight memory. (See packages/tools/test/perception.test.ts for that behaviour.)
     // Re-pinned again when hearing arrived: heard sounds draw their position error from the seeded PRNG, so the
     // generator state in the hash moves. (See packages/tools/test/hearing.test.ts.)
-    expect(hashes[hashes.length - 1]).toBe("d385cd80");
+    // Re-pinned a third time when defenders got minds: the defender here sees the operator, so it is now alerted and
+    // the state carries its mind. (See packages/tools/test/defender.test.ts.)
+    expect(hashes[hashes.length - 1]).toBe("7ec462c3");
   });
 });
 

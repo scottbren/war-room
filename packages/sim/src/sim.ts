@@ -13,7 +13,7 @@ import { createSightEnv } from "./systems/perception";
 import { hubOnline } from "./systems/smart-home";
 import type { AlertLevel, Command, CreateSimOptions, DeviceKind, DeviceState, DoorState, EntityState, ShutterState, Sim, Snapshot } from "./types";
 import { addEntity, createWorld, sortedDeviceIds, sortedDoorIds, sortedEntities, sortedShutterIds } from "./world";
-import type { Device, Entity, QueuedCommand, Waypoint, World } from "./world";
+import type { Device, Entity, EntityPos, Mind, QueuedCommand, Waypoint, World } from "./world";
 
 const STATE_VERSION = 2;
 
@@ -39,6 +39,8 @@ interface SimState {
   setup?: MissionSetup;
   /** Pairs in view with their last contact tick, sorted by key; only present when someone is in view, so quiet runs hash as before. */
   sight?: { k: string; t: number }[];
+  /** Defenders that are not simply at their post, sorted by id; only present when there are any. */
+  minds?: ({ id: string } & Mind)[];
 }
 
 function tagValue(tags: string[], prefix: string): string | undefined {
@@ -118,6 +120,7 @@ function toState(map: MapFile, world: World, rng: Rng): SimState {
     alertApplied: world.alertApplied,
     queue: [...world.queue].sort((a, b) => a.seq - b.seq),
     ...(world.setup !== undefined ? { setup: world.setup } : {}),
+    ...(Object.keys(world.minds).length > 0 ? { minds: Object.keys(world.minds).sort().map((id) => ({ id, ...(world.minds[id] as Mind) })) } : {}),
     ...(Object.keys(world.sight).length > 0 ? { sight: Object.keys(world.sight).sort().map((k) => ({ k, t: world.sight[k] as number })) } : {}),
   };
 }
@@ -230,7 +233,7 @@ function parseState(text: string, map: MapFile): { world: World; rng: number[] }
   if (!isRecord(m) || m["id"] !== map.id || m["version"] !== map.version) {
     return fail("state was saved from a different map or map version");
   }
-  const { tick, seq, rng, entities, doors, queue, devices, shutters, alert, alertApplied, setup, sight } = raw;
+  const { tick, seq, rng, entities, doors, queue, devices, shutters, alert, alertApplied, setup, sight, minds } = raw;
   if (!isInt(tick) || tick < 0 || !isInt(seq) || seq < 0) return fail("invalid tick or seq");
   if (!Array.isArray(rng) || rng.length !== 4) return fail("invalid rng state");
   if (!Array.isArray(entities) || !Array.isArray(doors) || !Array.isArray(queue) || !Array.isArray(devices) || !Array.isArray(shutters)) {
@@ -271,6 +274,38 @@ function parseState(text: string, map: MapFile): { world: World; rng: number[] }
   for (const key of Object.keys(world.sight)) {
     const named = Object.keys(world.entities).some((o) => key.startsWith(`${o}>`) && Object.hasOwn(world.entities, key.slice(o.length + 1)));
     if (!named) return fail("sight memory names a unit that is not in the state");
+  }
+
+  if (minds !== undefined) {
+    if (!Array.isArray(minds)) return fail("invalid defender minds");
+    const floors = map.floors.map((f) => f.id as string);
+    const pos = (v: unknown): EntityPos => {
+      if (!isRecord(v) || typeof v["floor"] !== "string" || !floors.includes(v["floor"]) || !isInt(v["xCm"]) || !isInt(v["yCm"])) return fail("invalid defender mind position");
+      return { floor: v["floor"] as EntityPos["floor"], xCm: v["xCm"], yCm: v["yCm"] };
+    };
+    for (const raw of minds) {
+      if (!isRecord(raw) || typeof raw["id"] !== "string") return fail("invalid defender mind");
+      const id = raw["id"];
+      const who = world.entities[id];
+      if (!who || who.side !== "defender") return fail("a defender mind names a unit that is not a defender in the state");
+      if (Object.hasOwn(world.minds, id)) return fail("duplicate defender mind");
+      if (Object.keys(raw).some((k) => !["id", "mode", "post", "spot", "t", "waitFrom", "relay"].includes(k))) return fail("a defender mind has unknown fields");
+      if (who.state === "down") return fail("a downed defender cannot have a mind");
+      const mode = raw["mode"];
+      if (mode !== "routine" && mode !== "suspicious" && mode !== "alerted" && mode !== "returning") return fail("invalid defender mind mode");
+      const t = raw["t"];
+      if (!isInt(t) || t < 0 || t > tick) return fail("invalid defender mind time");
+      const waitFrom = raw["waitFrom"];
+      if (waitFrom !== undefined && (!isInt(waitFrom) || waitFrom < 0 || waitFrom > tick)) return fail("invalid defender mind wait");
+      const relay = raw["relay"];
+      let parsedRelay: Mind["relay"];
+      if (relay !== undefined) {
+        if (!isRecord(relay) || !isInt(relay["due"]) || relay["due"] < 0) return fail("invalid defender mind relay");
+        parsedRelay = { due: relay["due"], spot: pos(relay["spot"]) };
+      }
+      if (mode === "routine" && parsedRelay === undefined) return fail("a routine defender mind needs a pending radio report");
+      world.minds[id] = { mode, post: pos(raw["post"]), spot: pos(raw["spot"]), t, ...(waitFrom !== undefined ? { waitFrom } : {}), ...(parsedRelay ? { relay: parsedRelay } : {}) };
+    }
   }
 
   const expectedDoors = buildWorld(map).doors;
