@@ -99,3 +99,7 @@ export const COVER_STAND_OFF_CM = 50;
 export const ALLY_RADIUS_CM = 1500;
 /** A fallback stops this close (2 m) to the principal. */
 export const FALLBACK_STOP_CM = 200;
+
+/** Rules of engagement for operators: "hold" never fires, "return" fires at defenders that are alerted or already firing (the default), "free" fires at any defender it sees. */
+export const ROES = ["hold", "return", "free"] as const;
+export type Roe = (typeof ROES)[number];

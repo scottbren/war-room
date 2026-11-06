@@ -5,7 +5,7 @@ describe("pipeline", () => {
   it("runs the systems in the order from the technical design", () => {
     expect(pipeline.map((system) => system.name)).toEqual([
       "commandsSystem",
-      "aiSystem",
+      "operatorSystem",
       "movementSystem",
       "perceptionSystem",
       "smartHomeSystem",

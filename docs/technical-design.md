@@ -63,7 +63,7 @@ Three runtimes: the browser main thread (rendering, UI, audio, advisor agents), 
 Each tick runs the systems in a fixed order:
 
 1. Apply queued commands.
-2. AI decisions.
+2. AI decisions (today: operator behavior between orders, `operatorSystem`; defenders react in step 6b).
 3. Movement.
 4. Perception, with line of sight staggered across ticks.
 5. Smart home: alert-level automation (floodlights, shutters, locks), run once per level and only while a hub is online.

@@ -34,6 +34,7 @@ function apply(world: World, ctx: Ctx, command: Command): void {
       if (!entity) return reject(ctx, command, `unknown entity: ${command.entity}`);
       const why = startMove(entity, command.to, ctx);
       if (why !== undefined) return reject(ctx, command, why);
+      delete world.opCover[command.entity]; // the player's order replaces any cover the unit took by itself
       return;
     }
     case "setDoor": {

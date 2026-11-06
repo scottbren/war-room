@@ -1,4 +1,4 @@
-import { ALERT_CALM_TICKS, ALLY_RADIUS_CM, CAMERA_REPORT_DELAY_TICKS, COVER_SEEK_CM, COVER_STAND_OFF_CM, FALLBACK_STOP_CM, RADIO_DELAY_TICKS, RETARGET_CM, SEARCH_TICKS, SIGHT_CHECK_EVERY } from "../defaults";
+import { ALERT_CALM_TICKS, ALLY_RADIUS_CM, CAMERA_REPORT_DELAY_TICKS, FALLBACK_STOP_CM, RADIO_DELAY_TICKS, RETARGET_CM, SEARCH_TICKS, SIGHT_CHECK_EVERY } from "../defaults";
 import { fromCm, toCm } from "../quantize";
 import { angleBetween } from "../trig";
 import { sortedDoorIds, sortedIds } from "../world";
@@ -6,7 +6,7 @@ import type { Entity, EntityPos, Mind, World } from "../world";
 import type { Ctx } from "./context";
 import { startMove } from "./commands";
 import { isqrt } from "./movement";
-import { coverAt } from "./combat";
+import { findCover } from "./cover";
 import { reachCm } from "./observe";
 
 /**
@@ -174,31 +174,14 @@ function underFire(world: World, ctx: Ctx, e: Entity, m: Mind, living: readonly 
     return;
   }
   m.cover = { ...e.pos };
-  const spot = m.spot;
-  if (spot.floor !== e.pos.floor) return;
-  if (coverAt(ctx, e.pos.floor, e.pos.xCm, e.pos.yCm, spot.xCm, spot.yCm) < 1000) return; // already covered
   const taken = living.filter((id) => id !== e.id).flatMap((id) => {
     const c = world.minds[id]?.cover;
     return c ? [c] : [];
   });
-  const reach2 = COVER_SEEK_CM * COVER_SEEK_CM;
-  let best: { x: number; y: number; heavy: number; d2: number } | undefined;
-  for (const c of ctx.sight?.cover() ?? []) {
-    if (c.floor !== e.pos.floor) continue;
-    const mx = Math.trunc((c.x0 + c.x1) / 2), my = Math.trunc((c.y0 + c.y1) / 2), o = COVER_STAND_OFF_CM;
-    for (const [px, py] of [[mx, c.y1 + o], [mx, c.y0 - o], [c.x1 + o, my], [c.x0 - o, my]] as const) {
-      const spotPos = { floor: e.pos.floor, xCm: px, yCm: py };
-      const d2 = dist2(e.pos, spotPos);
-      if (d2 > reach2) continue;
-      if (coverAt(ctx, e.pos.floor, px, py, spot.xCm, spot.yCm) >= 1000) continue;
-      if (taken.some((t) => t.floor === e.pos.floor && dist2(t, spotPos) < 100 * 100)) continue;
-      const heavy = c.kind === "heavy" ? 0 : 1;
-      if (!best || heavy < best.heavy || (heavy === best.heavy && d2 < best.d2)) best = { x: px, y: py, heavy, d2 };
-    }
-  }
-  if (!best) return;
-  const why = startMove(e, { floor: e.pos.floor, x: fromCm(best.x), y: fromCm(best.y) }, ctx);
-  if (why === undefined) m.cover = { floor: e.pos.floor, xCm: best.x, yCm: best.y };
+  const found = findCover(ctx, e, m.spot, taken);
+  if (found === undefined || found === "covered") return;
+  const why = startMove(e, { floor: e.pos.floor, x: fromCm(found.xCm), y: fromCm(found.yCm) }, ctx);
+  if (why === undefined) m.cover = { floor: e.pos.floor, xCm: found.xCm, yCm: found.yCm };
 }
 
 function mindOf(world: World, id: string): Mind {

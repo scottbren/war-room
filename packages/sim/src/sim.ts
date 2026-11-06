@@ -41,6 +41,10 @@ interface SimState {
   sight?: { k: string; t: number }[];
   /** Suppression of units under fire, sorted by id; only present when there is any. */
   suppression?: { id: string; v: number }[];
+  /** Operators' rules of engagement; only present when it is not the default "return". */
+  roe?: "hold" | "free";
+  /** Operators that have taken cover in a fight, sorted by id; only present when there is any. */
+  opCover?: ({ id: string } & EntityPos)[];
   /** Defenders that are not simply at their post, sorted by id; only present when there are any. */
   minds?: ({ id: string } & Mind)[];
   /** Evidence defenders have noticed, sorted by key; only present when there is any. */
@@ -134,6 +138,8 @@ function toState(map: MapFile, world: World, rng: Rng): SimState {
     ...(world.setup !== undefined ? { setup: world.setup } : {}),
     ...(Object.keys(world.noticed).length > 0 ? { noticed: Object.keys(world.noticed).sort().map((k) => ({ k, t: world.noticed[k] as number })) } : {}),
     ...(Object.keys(world.minds).length > 0 ? { minds: Object.keys(world.minds).sort().map((id) => ({ id, ...(world.minds[id] as Mind) })) } : {}),
+    ...(world.roe !== "return" ? { roe: world.roe } : {}),
+    ...(Object.keys(world.opCover).length > 0 ? { opCover: Object.keys(world.opCover).sort().map((id) => ({ id, ...(world.opCover[id] as EntityPos) })) } : {}),
     ...(Object.keys(world.suppression).length > 0 ? { suppression: Object.keys(world.suppression).sort().map((id) => ({ id, v: world.suppression[id] as number })) } : {}),
     ...(Object.keys(world.sight).length > 0 ? { sight: Object.keys(world.sight).sort().map((k) => ({ k, t: world.sight[k] as number })) } : {}),
   };
@@ -252,7 +258,7 @@ function parseState(text: string, map: MapFile): { world: World; rng: number[] }
   if (!isRecord(m) || m["id"] !== map.id || m["version"] !== map.version) {
     return fail("state was saved from a different map or map version");
   }
-  const { tick, seq, rng, entities, doors, queue, devices, shutters, alert, alertApplied, setup, sight, minds, noticed, suppression } = raw;
+  const { tick, seq, rng, entities, doors, queue, devices, shutters, alert, alertApplied, setup, sight, minds, noticed, suppression, roe, opCover } = raw;
   if (!isInt(tick) || tick < 0 || !isInt(seq) || seq < 0) return fail("invalid tick or seq");
   if (!Array.isArray(rng) || rng.length !== 4) return fail("invalid rng state");
   if (!Array.isArray(entities) || !Array.isArray(doors) || !Array.isArray(queue) || !Array.isArray(devices) || !Array.isArray(shutters)) {
@@ -332,6 +338,21 @@ function parseState(text: string, map: MapFile): { world: World; rng: number[] }
     }
   }
 
+  if (roe !== undefined) {
+    if (roe !== "hold" && roe !== "free") return fail("invalid rules of engagement");
+    world.roe = roe;
+  }
+  if (opCover !== undefined) {
+    if (!Array.isArray(opCover)) return fail("invalid operator cover");
+    const floors = map.floors.map((f) => f.id as string);
+    for (const o of opCover) {
+      if (!isRecord(o) || typeof o["id"] !== "string" || typeof o["floor"] !== "string" || !floors.includes(o["floor"]) || !isInt(o["xCm"]) || !isInt(o["yCm"])) return fail("invalid operator cover");
+      const who = world.entities[o["id"]];
+      if (!who || who.side !== "operator" || who.state === "down") return fail("operator cover names a unit that is not a living operator in the state");
+      if (Object.hasOwn(world.opCover, o["id"])) return fail("duplicate operator cover");
+      world.opCover[o["id"]] = { floor: o["floor"] as EntityPos["floor"], xCm: o["xCm"], yCm: o["yCm"] };
+    }
+  }
   if (suppression !== undefined) {
     if (!Array.isArray(suppression)) return fail("invalid suppression");
     for (const s of suppression) {

@@ -1,4 +1,5 @@
 import type { FloorId, Side } from "@war-room/content";
+import type { Roe } from "./defaults";
 import type { MissionSetup } from "./mission";
 import type { AlertLevel, Command, DeviceKind, DeviceState, DoorState, EntityState, ShutterState } from "./types";
 
@@ -99,11 +100,15 @@ export interface World {
   noticed: Record<string, number>;
   /** Suppression 1-100 by unit id; a unit with none has no entry. */
   suppression: Record<string, number>;
+  /** Operators' rules of engagement. Saved only when it is not "return". */
+  roe: Roe;
+  /** Operators that have taken (or been told to take) cover in a fight, with the spot; cleared when the fight is over or they are given a move order. */
+  opCover: Record<string, EntityPos>;
 }
 
 export function createWorld(): World {
   // Null-prototype records so ids like "__proto__" are ordinary keys.
-  return { tick: 0, seq: 0, entities: Object.create(null), doors: Object.create(null), devices: Object.create(null), shutters: Object.create(null), alert: 0, alertApplied: 0, queue: [], sight: Object.create(null), minds: Object.create(null), noticed: Object.create(null), suppression: Object.create(null) };
+  return { tick: 0, seq: 0, entities: Object.create(null), doors: Object.create(null), devices: Object.create(null), shutters: Object.create(null), alert: 0, alertApplied: 0, queue: [], sight: Object.create(null), minds: Object.create(null), noticed: Object.create(null), suppression: Object.create(null), roe: "return", opCover: Object.create(null) };
 }
 
 export function addEntity(world: World, entity: Entity): void {

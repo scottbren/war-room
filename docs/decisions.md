@@ -243,3 +243,13 @@ Third step of `docs/combat-spec.md`. No public type changed; two optional fields
 - **Calming down** clears `cover` and `fallback`. Restore rejects either on a defender that is not alerted.
 - **Facing known threats** needed no new code: a defender already faces its alert spot and, when it fires, its target.
 - **Not done:** peeking in and out of cover, leaving cover when the threat moves, wounded retreat (C5), calling for help beyond the existing radio, reacting to being flanked. Only defenders do this; operators come in C4. — Scott
+
+## 2026-11-06: Combat C4 built: operator behavior and rules of engagement (no contract change)
+Fourth step of `docs/combat-spec.md`. No public type changed; new internal state (`roe`, `opCover`) is saved only when set, so quiet runs hash as before.
+- **Rules of engagement** (`world.roe`): `hold` never fires, `return` (the default, and what operators did since C1) fires only at defenders that are alerted or already firing, `free` fires at any defender in view. Saved only when not `return`.
+- **Not wired to plans yet.** `issuePlan` is still rejected ("not implemented until week 2"), and the `Plan` type is unchanged. When plans are executed, the ROE should come from `rules` strings on tasks; the vocabulary proposed is `roe:hold`, `roe:return`, `roe:free`. For now ROE can only be set by editing saved state (tests do this), so there is no way to change it in play.
+- **Cover for operators** (`systems/operators.ts`, in the `ai` slot, step 2 of the pipeline; it acts on the previous tick's sight and suppression): a standing operator who is suppressed while a defender is in view picks the best cover near him against the closest such defender, once per fight, using the same rule as defenders (now `systems/cover.ts`, shared). An operator with a move order keeps to it. A move command cancels his cover choice. It ends when he has no suppression and no defender in view, or when he goes down.
+- **No shooting on the run**, as for defenders: a running operator holds fire unless a defender is within 10 m.
+- **Technical design:** step 2 note updated. The pipeline test names the step `operatorSystem` now.
+- **Not done:** operators moving up or leaving cover on their own, covering each other, healing and carrying wounded (C5), anything team-level (stack, breach, clear). Operators with no orders and no fight stand where they are. — Scott
+- **Pinned units can still retreat (fix to C2's rule).** A unit at suppression 80+ used to be frozen by movement, which also froze one running for cover, defeating the point. Now a unit that has chosen cover (operator `opCover`, defender `cover`) or is falling back keeps moving while pinned; only advancing is held. A test covers it (`operator-behavior.test.ts`). — Scott

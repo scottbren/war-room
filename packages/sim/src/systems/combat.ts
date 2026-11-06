@@ -155,7 +155,8 @@ function pickTarget(world: World, ids: string[], u: Entity): Entity | undefined 
     // A defender running for cover or falling back does not stop to shoot, unless an operator is at point-blank range.
     const m = world.minds[u.id];
     if (u.side === "defender" && u.motion !== undefined && m?.mode === "alerted" && (m.cover !== undefined || m.fallback) && d2 > POINT_BLANK_CM * POINT_BLANK_CM) continue;
-    const hot = u.side === "defender" ? alerted(u) || d2 <= POINT_BLANK_CM * POINT_BLANK_CM : alerted(t);
+    if (u.side === "operator" && u.motion !== undefined && world.opCover[u.id] !== undefined && d2 > POINT_BLANK_CM * POINT_BLANK_CM) continue; // running for cover
+    const hot = u.side === "defender" ? alerted(u) || d2 <= POINT_BLANK_CM * POINT_BLANK_CM : world.roe === "free" || (world.roe === "return" && alerted(t));
     if (!hot) continue;
     if (hitChance(isqrt(d2)) === 0) continue;
     if (d2 < bestD2) {

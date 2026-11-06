@@ -17,6 +17,7 @@ interface Saved {
   entities: Ent[];
   minds?: MindOut[];
   suppression?: { id: string; v: number }[];
+  opCover?: ({ id: string } & Pos)[];
   sight?: { k: string; t: number }[];
 }
 const place = (s: Saved, id: string, x: number, y: number): Ent => {
@@ -118,6 +119,9 @@ describe("defender combat behavior", () => {
 
   it("does not stop to shoot while running for cover, but shoots once there", () => {
     const sim = underFire((s) => {
+      // (He has chosen to stay where he is, and is kept busy being suppressed, so only the defender's behavior is under test.)
+      s.opCover = [{ id: "op.alpha.1", ...at(28, 4) }];
+      s.suppression!.push({ id: "op.alpha.1", v: 100 });
       place(s, "op.alpha.1", 28, 4); // the threat is real: an operator 16 m away, in view, and still over 10 m from the cover
     });
     let ranAndShot = false;
