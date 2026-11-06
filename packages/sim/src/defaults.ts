@@ -49,3 +49,8 @@ export const FOV_FULL_DEG = 60;
 export const FOV_SIDE_DEG = 120;
 export const PERIPHERAL_RANGE_CM = 500;
 export const BEHIND_RANGE_CM = 200;
+
+/** A working camera sees this far (25 m), less if the target is concealed. */
+export const CAMERA_RANGE_CM = 2500;
+/** A camera sighting reaches the defenders this many ticks later (2 s): someone in the security office has to notice. */
+export const CAMERA_REPORT_DELAY_TICKS = 20;

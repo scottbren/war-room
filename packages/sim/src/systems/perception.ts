@@ -1,6 +1,7 @@
 import type { MapFile } from "@war-room/content";
 import type { Pos } from "../types";
 import { hearingSystem } from "./hearing";
+import { cameraSystem } from "./cameras";
 import { mindSystem } from "./mind";
 import { canObserve, reachCm } from "./observe";
 import { CONTACT_REFRESH_TICKS, SIGHT_CHECK_EVERY } from "../defaults";
@@ -15,10 +16,19 @@ import type { System } from "./context";
  * Line of sight for one sim: built on first use (so sims that never need it do not pay for it) and kept in step with
  * the world's doors and shutters. Not part of the saved state; rebuilt from the world after a restore.
  */
+export interface CameraInfo {
+  id: string;
+  at: Pos;
+  /** Rooms it watches (`sees:<room>` tags), as rectangles in meters on a floor; empty for an outdoor camera, which watches everything it can see. */
+  rooms: { floor: string; minX: number; minY: number; maxX: number; maxY: number }[];
+}
+
 export interface SightEnv {
   los(): Los;
   /** Where a door is (meters), for sounds made at it. */
   doorPos(doorId: string): Pos | undefined;
+  /** Every camera on the map (static data; whether it works is `world.devices`). */
+  cameras(): readonly CameraInfo[];
   /** The state a door has on the untouched map, to tell when someone has changed it. */
   doorStart(doorId: string): string | undefined;
   /** Forget which door and shutter states were pushed into the line-of-sight grid (after a restore). */
@@ -39,8 +49,22 @@ export function createSightEnv(map: MapFile): SightEnv {
       doorStarts.set(d.id, d.state);
     }
   }
+  const cameras: CameraInfo[] = [];
+  for (const m of [...map.markers].sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0))) {
+    if (!m.at || !m.tags.includes("smart:camera")) continue;
+    const rooms: CameraInfo["rooms"] = [];
+    for (const tag of m.tags.filter((t) => t.startsWith("sees:")).sort()) {
+      for (const f of map.floors) {
+        for (const r of f.rooms) {
+          if (r.id === tag.slice(5)) rooms.push({ floor: f.id, minX: r.rect.min.x, minY: r.rect.min.y, maxX: r.rect.max.x, maxY: r.rect.max.y });
+        }
+      }
+    }
+    cameras.push({ id: m.id, at: { floor: m.floor, x: m.at.x, y: m.at.y }, rooms });
+  }
   return {
     los: get,
+    cameras: () => cameras,
     doorPos: (id) => doorAt.get(id),
     doorStart: (id) => doorStarts.get(id),
     reset() {
@@ -75,7 +99,7 @@ export function createSightEnv(map: MapFile): SightEnv {
 export const perceptionSystem: System = (world, ctx) => {
   sightSystem(world, ctx);
   hearingSystem(world, ctx);
-  mindSystem(world, ctx);
+  mindSystem(world, ctx, cameraSystem(world, ctx));
 };
 
 const sightSystem: System = (world, ctx) => {

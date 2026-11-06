@@ -575,7 +575,14 @@
       "floor": "ground",
       "kind": "poi",
       "at": { "x": 23, "y": 7 },
-      "tags": ["smart:camera", "covers:hall"]
+      "tags": ["smart:camera", "covers:hall", "sees:t.hall", "feeds:t.office"]
+    },
+    {
+      "id": "m.smart.hub",
+      "floor": "ground",
+      "kind": "poi",
+      "at": { "x": 10, "y": 15 },
+      "tags": ["smart:hub", "hub:primary", "in:t.office"]
     }
   ]
 }

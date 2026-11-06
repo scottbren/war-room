@@ -1,4 +1,4 @@
-import { ALERT_CALM_TICKS, RADIO_DELAY_TICKS, RETARGET_CM, SEARCH_TICKS, SIGHT_CHECK_EVERY } from "../defaults";
+import { ALERT_CALM_TICKS, CAMERA_REPORT_DELAY_TICKS, RADIO_DELAY_TICKS, RETARGET_CM, SEARCH_TICKS, SIGHT_CHECK_EVERY } from "../defaults";
 import { fromCm, toCm } from "../quantize";
 import { angleBetween } from "../trig";
 import { sortedDoorIds, sortedIds } from "../world";
@@ -21,7 +21,7 @@ import { reachCm } from "./observe";
  *
  * Alerted defenders hold position for now; there is no combat, cover-seeking or alert level change yet.
  */
-export function mindSystem(world: World, ctx: Ctx): void {
+export function mindSystem(world: World, ctx: Ctx, cameraReports: readonly EntityPos[] = []): void {
   const ids = sortedIds(world);
   // Forget minds of defenders that are gone or down.
   for (const id of Object.keys(world.minds).sort()) {
@@ -57,16 +57,37 @@ export function mindSystem(world: World, ctx: Ctx): void {
     for (const other of living) {
       if (other === id) continue;
       const m = mindOf(world, other);
+      if (m.relay) {
+        m.relay.spot = { ...spot };
+        // A defender's radio call outranks a camera report already on its way: it alerts, no later than that report.
+        if (m.relay.camera) {
+          delete m.relay.camera;
+          m.relay.due = Math.min(m.relay.due, ctx.tick + RADIO_DELAY_TICKS);
+        }
+      } else m.relay = { due: ctx.tick + RADIO_DELAY_TICKS, spot: { ...spot } };
+    }
+  }
+
+  // A camera sighting reaches every living defender after a delay. A report already on its way keeps its time but takes the newer spot.
+  for (const spot of cameraReports) {
+    for (const other of living) {
+      const m = mindOf(world, other);
       if (m.relay) m.relay.spot = { ...spot };
-      else m.relay = { due: ctx.tick + RADIO_DELAY_TICKS, spot: { ...spot } };
+      else m.relay = { due: ctx.tick + CAMERA_REPORT_DELAY_TICKS, spot: { ...spot }, camera: true };
     }
   }
 
   for (const id of living) {
     const e = world.entities[id] as Entity;
     const seen = saw.get(id);
-    const noise = heard.get(id);
+    let noise = heard.get(id);
     let m = world.minds[id];
+    if (!seen && m?.relay?.camera && ctx.tick >= m.relay.due) {
+      // The security office's report arrives: an unaware defender goes to look; an alerted one ignores it.
+      const spot = { ...m.relay.spot };
+      delete m.relay;
+      if (m.mode !== "alerted") noise ??= spot; // an alerted defender has its own eyes on the matter and ignores the report
+    }
 
     if (seen) {
       m = mindOf(world, id);

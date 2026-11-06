@@ -312,7 +312,8 @@ function parseState(text: string, map: MapFile): { world: World; rng: number[] }
       let parsedRelay: Mind["relay"];
       if (relay !== undefined) {
         if (!isRecord(relay) || !isInt(relay["due"]) || relay["due"] < 0) return fail("invalid defender mind relay");
-        parsedRelay = { due: relay["due"], spot: pos(relay["spot"]) };
+        if (relay["camera"] !== undefined && relay["camera"] !== true) return fail("invalid defender mind relay");
+        parsedRelay = { due: relay["due"], spot: pos(relay["spot"]), ...(relay["camera"] === true ? { camera: true as const } : {}) };
       }
       if (mode === "routine" && parsedRelay === undefined) return fail("a routine defender mind needs a pending radio report");
       world.minds[id] = { mode, post: pos(raw["post"]), spot: pos(raw["spot"]), t, ...(waitFrom !== undefined ? { waitFrom } : {}), ...(parsedRelay ? { relay: parsedRelay } : {}) };

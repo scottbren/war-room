@@ -53,7 +53,8 @@ export interface Mind {
   /** Suspicious: the tick it reached the spot (it searches there for a while). */
   waitFrom?: number;
   /** A radio report from another defender, arriving at tick `due`. */
-  relay?: { due: number; spot: EntityPos };
+  /** `camera`: a security-office report of a camera sighting (it sends the defender to look) rather than a radio call from a defender who saw an operator (it makes the defender alert). */
+  relay?: { due: number; spot: EntityPos; camera?: true };
 }
 
 export interface QueuedCommand {

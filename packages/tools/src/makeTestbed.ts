@@ -102,7 +102,8 @@ export function makeTestbedMap(): MapFile {
       marker("m.family.wife", "upper", "poi", 21, 10, ["family:wife"]),
       marker("m.drive.study-desk", "ground", "poi", 15.5, 16.8, ["poi:drive", "drive:study-desk"]),
       marker("m.routine.wife.hall", "ground", "poi", 15.5, 7.5, ["routine:lounge", "member:wife"]),
-      marker("m.smart.camera.hall", "ground", "poi", 23, 7, ["smart:camera", "covers:hall"]),
+      marker("m.smart.camera.hall", "ground", "poi", 23, 7, ["smart:camera", "covers:hall", "sees:t.hall", "feeds:t.office"]),
+      marker("m.smart.hub", "ground", "poi", 10, 15, ["smart:hub", "hub:primary", "in:t.office"]),
     ],
   };
   return MapFile.parse(map);
