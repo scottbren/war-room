@@ -5,6 +5,8 @@ import { canObserve, reachCm } from "./observe";
 import { CONTACT_REFRESH_TICKS, SIGHT_CHECK_EVERY } from "../defaults";
 import { createLos, effectiveRange } from "../los";
 import type { Los } from "../los";
+import type { Loyalty } from "../defaults";
+import { loyaltyTag } from "../loyalty";
 import { fromCm, toCm } from "../quantize";
 import { sortedIds } from "../world";
 import type { Entity } from "../world";
@@ -32,6 +34,8 @@ export interface CoverInfo {
 }
 
 export interface SightEnv {
+  /** A defender's loyalty from its spawn marker (veteran when untagged). */
+  loyalty(entityId: string): Loyalty;
   /** Every heavy or light cover rectangle on the map (static data). */
   cover(): readonly CoverInfo[];
   los(): Los;
@@ -72,6 +76,14 @@ export function createSightEnv(map: MapFile): SightEnv {
     }
     cameras.push({ id: m.id, at: { floor: m.floor, x: m.at.x, y: m.at.y }, rooms });
   }
+  const loyalties = new Map<string, Loyalty>();
+  for (const m of map.markers) {
+    if (m.kind !== "spawn") continue;
+    const id = m.tags.find((t) => t.startsWith("entity:"))?.slice(7);
+    const side = m.tags.find((t) => t.startsWith("side:"))?.slice(5) ?? "";
+    const tag = loyaltyTag(m.tags, m.id, side);
+    if (id !== undefined && tag !== undefined) loyalties.set(id, tag);
+  }
   const covers: CoverInfo[] = [];
   for (const f of map.floors) {
     for (const c of f.cover) {
@@ -82,6 +94,7 @@ export function createSightEnv(map: MapFile): SightEnv {
   return {
     los: get,
     cover: () => covers,
+    loyalty: (id) => loyalties.get(id) ?? "veteran",
     cameras: () => cameras,
     doorPos: (id) => doorAt.get(id),
     doorStart: (id) => doorStarts.get(id),

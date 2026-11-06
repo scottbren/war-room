@@ -1,4 +1,5 @@
 import { PINNED_AT } from "../defaults";
+import { speedPm } from "../wounds";
 import { fromCm } from "../quantize";
 import { angleBetween } from "../trig";
 import { sortedEntities } from "../world";
@@ -22,7 +23,7 @@ export const movementSystem: System = (world, ctx) => {
     const m = e.motion;
     if (!m || e.state === "down") continue; // a downed unit stays where it fell
     // Pinned down (suppression 80+): it does not advance, and holds until it recovers. Going to cover or falling back is not advancing.
-    const retreating = world.opCover[e.id] !== undefined || world.minds[e.id]?.cover !== undefined || world.minds[e.id]?.fallback === true;
+    const retreating = world.opCover[e.id] !== undefined || world.minds[e.id]?.cover !== undefined || world.minds[e.id]?.fallback === true || world.minds[e.id]?.mode === "broken";
     if (!retreating && world.suppression[e.id] !== undefined && (world.suppression[e.id] as number) >= PINNED_AT) continue;
     if (e.state === "firing") continue; // a unit that is shooting stands and shoots; it walks on when the fight is over
 
@@ -37,7 +38,8 @@ export const movementSystem: System = (world, ctx) => {
       );
     }
 
-    const arrives = dist <= m.speedCmPerTick;
+    const speed = Math.max(1, Math.trunc((m.speedCmPerTick * speedPm(e.health)) / 1000)); // wounded units walk slower
+    const arrives = dist <= speed;
     if (arrives) {
       e.pos.xCm = m.toXCm;
       e.pos.yCm = m.toYCm;
@@ -54,8 +56,8 @@ export const movementSystem: System = (world, ctx) => {
         delete e.motion;
       }
     } else {
-      e.pos.xCm += Math.trunc((dx * m.speedCmPerTick) / dist);
-      e.pos.yCm += Math.trunc((dy * m.speedCmPerTick) / dist);
+      e.pos.xCm += Math.trunc((dx * speed) / dist);
+      e.pos.yCm += Math.trunc((dy * speed) / dist);
       e.state = "moving";
     }
 

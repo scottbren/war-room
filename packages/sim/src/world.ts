@@ -46,7 +46,7 @@ export interface Entity {
  * while a radio report is on its way to a defender that is otherwise unaware.
  */
 export interface Mind {
-  mode: "routine" | "suspicious" | "alerted" | "returning";
+  mode: "routine" | "suspicious" | "alerted" | "returning" | "broken";
   /** Where the defender goes back to. */
   post: EntityPos;
   /** What it is interested in: the place it heard something, or the last place an operator was seen. */

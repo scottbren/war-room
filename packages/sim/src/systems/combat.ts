@@ -9,6 +9,7 @@ import type { Entity, World } from "../world";
 import type { System } from "./context";
 import { deliverSounds } from "./hearing";
 import type { Sound } from "./hearing";
+import { aimPm } from "../wounds";
 import { isqrt } from "./movement";
 
 /** Hit chance in per mille at this distance, or 0 beyond the last band. */
@@ -42,6 +43,7 @@ function aimedChance(world: World, ctx: Parameters<System>[1], shooter: Entity, 
   let chance = hitChance(distCm);
   chance = Math.trunc((chance * coverMultiplier(ctx, shooter, target)) / 1000);
   if (target.motion !== undefined && target.state !== "firing" && (world.suppression[target.id] ?? 0) < PINNED_AT) chance = Math.trunc((chance * MOVING_TARGET_PM) / 1000);
+  chance = Math.trunc((chance * aimPm(shooter.health)) / 1000);
   const s = world.suppression[shooter.id] ?? 0;
   for (const [from, pm] of SUPPRESSED_AIM) {
     if (s >= from) {
@@ -156,6 +158,8 @@ function pickTarget(world: World, ids: string[], u: Entity): Entity | undefined 
     const m = world.minds[u.id];
     if (u.side === "defender" && u.motion !== undefined && m?.mode === "alerted" && (m.cover !== undefined || m.fallback) && d2 > POINT_BLANK_CM * POINT_BLANK_CM) continue;
     if (u.side === "operator" && u.motion !== undefined && world.opCover[u.id] !== undefined && d2 > POINT_BLANK_CM * POINT_BLANK_CM) continue; // running for cover
+    // A broken guard has stopped fighting: it never shoots while it runs, and only fires at point-blank when it has nowhere left to run.
+    if (u.side === "defender" && m?.mode === "broken" && (u.motion !== undefined || d2 > POINT_BLANK_CM * POINT_BLANK_CM)) continue;
     const hot = u.side === "defender" ? alerted(u) || d2 <= POINT_BLANK_CM * POINT_BLANK_CM : world.roe === "free" || (world.roe === "return" && alerted(t));
     if (!hot) continue;
     if (hitChance(isqrt(d2)) === 0) continue;

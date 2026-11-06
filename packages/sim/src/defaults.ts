@@ -103,3 +103,18 @@ export const FALLBACK_STOP_CM = 200;
 /** Rules of engagement for operators: "hold" never fires, "return" fires at defenders that are alerted or already firing (the default), "free" fires at any defender it sees. */
 export const ROES = ["hold", "return", "free"] as const;
 export type Roe = (typeof ROES)[number];
+
+/** Wounds, from health alone: at or below WOUNDED_AT a unit walks and aims worse; at or below BADLY_WOUNDED_AT worse still. Per mille. */
+export const WOUNDED_AT = 60;
+export const BADLY_WOUNDED_AT = 30;
+export const WOUND_SPEED_PM = [750, 500] as const; // wounded, badly wounded
+export const WOUND_AIM_PM = [850, 650] as const;
+
+/** Loyalty of a defender, from the `guard:<loyalty>` tag on its spawn marker. No tag means veteran. */
+export const LOYALTIES = ["hired", "veteran", "inner-circle"] as const;
+export type Loyalty = (typeof LOYALTIES)[number];
+/** A hired guard breaks when this suppressed (or badly wounded, or alone under fire). */
+export const BREAK_SUPPRESSION = 60;
+/** A broken guard runs for the reachable point farthest from the threat among these: eight directions (per mille unit vectors) times these distances (cm). */
+export const FLEE_DIRS: readonly (readonly [number, number])[] = [[1000, 0], [707, 707], [0, 1000], [-707, 707], [-1000, 0], [-707, -707], [0, -1000], [707, -707]];
+export const FLEE_CM: readonly number[] = [2500, 1500, 800];

@@ -1,6 +1,7 @@
 import { FloorId, Side } from "@war-room/content";
 import type { MapFile } from "@war-room/content";
 import { DEFAULT_HEALTH, SUPPRESS_MAX } from "./defaults";
+import { loyaltyTag } from "./loyalty";
 import { canonicalize, hashState } from "./hash";
 import { pipeline } from "./pipeline";
 import { fromCm, quantizePos, toCm } from "./quantize";
@@ -106,6 +107,7 @@ function buildWorld(map: MapFile): World {
     if (!id || !side.success || !marker.at) {
       throw new Error(`spawn marker ${marker.id} needs an "entity:<id>" tag, a valid "side:<side>" tag and an "at" position`);
     }
+    loyaltyTag(marker.tags, marker.id, side.data); // (checked here so a bad tag fails when the sim is made)
     addEntity(world, {
       id,
       side: side.data,
@@ -317,7 +319,7 @@ function parseState(text: string, map: MapFile): { world: World; rng: number[] }
       if (Object.keys(raw).some((k) => !["id", "mode", "post", "spot", "t", "waitFrom", "relay", "cover", "fallback"].includes(k))) return fail("a defender mind has unknown fields");
       if (who.state === "down") return fail("a downed defender cannot have a mind");
       const mode = raw["mode"];
-      if (mode !== "routine" && mode !== "suspicious" && mode !== "alerted" && mode !== "returning") return fail("invalid defender mind mode");
+      if (mode !== "routine" && mode !== "suspicious" && mode !== "alerted" && mode !== "returning" && mode !== "broken") return fail("invalid defender mind mode");
       const t = raw["t"];
       if (!isInt(t) || t < 0 || t > tick) return fail("invalid defender mind time");
       const waitFrom = raw["waitFrom"];
@@ -333,6 +335,7 @@ function parseState(text: string, map: MapFile): { world: World; rng: number[] }
       const fallback = raw["fallback"];
       if (fallback !== undefined && fallback !== true) return fail("invalid defender mind fallback");
       if ((coverSpot !== undefined || fallback === true) && mode !== "alerted") return fail("only an alerted defender can have a cover spot or be falling back");
+      if (mode === "broken" && (parsedRelay !== undefined || waitFrom !== undefined || coverSpot !== undefined || fallback === true)) return fail("a broken defender has no pending report, search, cover spot or fallback");
       if (mode === "routine" && parsedRelay === undefined) return fail("a routine defender mind needs a pending radio report");
       world.minds[id] = { mode, post: pos(raw["post"]), spot: pos(raw["spot"]), t, ...(waitFrom !== undefined ? { waitFrom } : {}), ...(parsedRelay ? { relay: parsedRelay } : {}), ...(coverSpot ? { cover: coverSpot } : {}), ...(fallback === true ? { fallback: true as const } : {}) };
     }

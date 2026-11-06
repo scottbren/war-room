@@ -1,4 +1,4 @@
-import { ALERT_CALM_TICKS, ALLY_RADIUS_CM, CAMERA_REPORT_DELAY_TICKS, FALLBACK_STOP_CM, RADIO_DELAY_TICKS, RETARGET_CM, SEARCH_TICKS, SIGHT_CHECK_EVERY } from "../defaults";
+import { ALERT_CALM_TICKS, ALLY_RADIUS_CM, BADLY_WOUNDED_AT, BREAK_SUPPRESSION, FLEE_CM, FLEE_DIRS, CAMERA_REPORT_DELAY_TICKS, FALLBACK_STOP_CM, RADIO_DELAY_TICKS, RETARGET_CM, SEARCH_TICKS, SIGHT_CHECK_EVERY } from "../defaults";
 import { fromCm, toCm } from "../quantize";
 import { angleBetween } from "../trig";
 import { sortedDoorIds, sortedIds } from "../world";
@@ -40,26 +40,30 @@ export function mindSystem(world: World, ctx: Ctx, cameraReports: readonly Entit
   const isLiving = new Set(living);
   pruneNoticed(world, ctx, isLiving);
   if (living.length === 0) return;
+  // A broken guard has stopped fighting: it neither senses for the others, nor is told anything, nor reports.
+  const awakeIds = living.filter((id) => world.minds[id]?.mode !== "broken");
+  const isAwake = new Set(awakeIds);
+  const alertedAtStart = new Set(awakeIds.filter((id) => world.minds[id]?.mode === "alerted"));
 
   // What each defender sensed this tick (the last event wins; events are in a fixed order).
   const saw = new Map<string, EntityPos>();
   const heard = new Map<string, EntityPos>();
   for (const ev of ctx.events) {
-    if (ev.type === "contact" && isLiving.has(ev.observer)) {
+    if (ev.type === "contact" && isAwake.has(ev.observer)) {
       const t = world.entities[ev.target];
       if (t && t.state !== "down") saw.set(ev.observer, { ...t.pos }); // a body is evidence (see noticeEvidence), not a live threat
-    } else if (ev.type === "noise" && isLiving.has(ev.observer)) {
+    } else if (ev.type === "noise" && isAwake.has(ev.observer)) {
       heard.set(ev.observer, { floor: ev.at.floor, xCm: toCm(ev.at.x), yCm: toCm(ev.at.y) });
     }
   }
 
-  noticeEvidence(world, ctx, isLiving, saw, heard);
+  noticeEvidence(world, ctx, isAwake, saw, heard);
 
   // A sighting is radioed to every other living defender. A report already on its way keeps its time but takes the newer spot.
-  for (const id of living) {
+  for (const id of awakeIds) {
     const spot = saw.get(id);
     if (!spot) continue;
-    for (const other of living) {
+    for (const other of awakeIds) {
       if (other === id) continue;
       const m = mindOf(world, other);
       if (m.relay) {
@@ -75,7 +79,7 @@ export function mindSystem(world: World, ctx: Ctx, cameraReports: readonly Entit
 
   // A camera sighting reaches every living defender after a delay. A report already on its way keeps its time but takes the newer spot.
   for (const spot of cameraReports) {
-    for (const other of living) {
+    for (const other of awakeIds) {
       const m = mindOf(world, other);
       if (m.relay) m.relay.spot = { ...spot };
       else m.relay = { due: ctx.tick + CAMERA_REPORT_DELAY_TICKS, spot: { ...spot }, camera: true };
@@ -84,6 +88,11 @@ export function mindSystem(world: World, ctx: Ctx, cameraReports: readonly Entit
 
   for (const id of living) {
     const e = world.entities[id] as Entity;
+    if (world.minds[id]?.mode === "broken") continue; // (it stays broken in this slice)
+    if (shouldBreak(world, ctx, e, alertedAtStart)) {
+      breakDown(world, ctx, e);
+      continue;
+    }
     const seen = saw.get(id);
     let noise = heard.get(id);
     let m = world.minds[id];
@@ -147,6 +156,50 @@ export function mindSystem(world: World, ctx: Ctx, cameraReports: readonly Entit
     // An unaware defender with nothing on its way needs no entry.
     const now = world.minds[id];
     if (now && now.mode === "routine" && !now.relay) delete world.minds[id];
+  }
+}
+
+/**
+ * Only hired guards break (unless the map tags them otherwise; untagged defenders are veterans, who never do). An alerted
+ * hired guard breaks when suppression reaches BREAK_SUPPRESSION, when it is badly wounded, or when it is under fire with no
+ * other alerted defender within ALLY_RADIUS_CM.
+ */
+function shouldBreak(world: World, ctx: Ctx, e: Entity, alerted: ReadonlySet<string>): boolean {
+  if (ctx.sight?.loyalty(e.id) !== "hired" || world.minds[e.id]?.mode !== "alerted") return false;
+  const suppression = world.suppression[e.id] ?? 0;
+  if (suppression >= BREAK_SUPPRESSION || e.health <= BADLY_WOUNDED_AT) return true;
+  if (suppression === 0) return false;
+  const near2 = ALLY_RADIUS_CM * ALLY_RADIUS_CM;
+  // (`alerted` is who was alerted at the start of the tick, so one guard breaking does not make its neighbour look alone.)
+  return ![...alerted].some((id) => {
+    const a = world.entities[id] as Entity;
+    return id !== e.id && a.pos.floor === e.pos.floor && dist2(a.pos, e.pos) <= near2;
+  });
+}
+
+/** The guard gives up the fight and runs for the reachable point farthest from the threat (it stays put if there is none). */
+function breakDown(world: World, ctx: Ctx, e: Entity): void {
+  const m = world.minds[e.id] as Mind;
+  m.mode = "broken";
+  delete m.relay;
+  delete m.cover;
+  delete m.fallback;
+  delete m.waitFrom;
+  stop(e);
+  if (e.state === "firing") e.state = "idle"; // (a firing unit would not move until the next combat pass)
+  const threat = m.spot;
+  const here = dist2(e.pos, threat);
+  const options: { x: number; y: number; d2: number; i: number }[] = [];
+  FLEE_DIRS.forEach(([dx, dy], d) => {
+    FLEE_CM.forEach((cm, k) => {
+      const x = e.pos.xCm + Math.trunc((dx * cm) / 1000), y = e.pos.yCm + Math.trunc((dy * cm) / 1000);
+      const d2 = dist2({ floor: e.pos.floor, xCm: x, yCm: y }, threat);
+      if (threat.floor === e.pos.floor && d2 > here) options.push({ x, y, d2, i: d * FLEE_CM.length + k });
+    });
+  });
+  options.sort((a, b) => b.d2 - a.d2 || a.i - b.i);
+  for (const o of options) {
+    if (startMove(e, { floor: e.pos.floor, x: fromCm(o.x), y: fromCm(o.y) }, ctx) === undefined) return;
   }
 }
 
