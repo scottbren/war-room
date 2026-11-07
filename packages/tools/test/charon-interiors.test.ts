@@ -48,7 +48,7 @@ describe("charon.json: interiors pass", () => {
   });
 
   it("is a new map version, so older recordings are refused", () => {
-    expect(map.version).toBe(13);
+    expect(map.version).toBe(14);
   });
 
   it("keeps cover items unique and facing set", () => {

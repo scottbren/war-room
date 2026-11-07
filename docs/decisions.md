@@ -278,3 +278,9 @@ Fifth step of `docs/combat-spec.md` (the C5 proposal there). Scott approved C5a 
 - Furniture keeps clear of doorways, stairs and fixture markers (the existing tests check doors and markers). Items near routes are slim so routes did not change shape; the foyer-to-son's-room path is the same 9 points but 0.04 m shorter, so that pinned length was re-recorded.
 - Map version 12 -> 13, so the T12 reference replay and its hash list were re-recorded (`record-t12`) and the CHARON navmesh re-baked. Hashes changed because the map did; testbed hashes are untouched.
 - Grand hall left clear (conflict between the layout table and the pass list); asked in `docs/open-decisions.md`.
+
+## CHARON sky gallery (map version 14, Scott: the cantilever should reach toward the southwest bastion / be a covered walkway)
+- First attempt put a covered walkway on the roof level; Scott said that was the wrong level and the cantilever needs to blend into the building. It was set aside (git stash `walkway draft (rejected by user)`), not committed.
+- Built instead on the upper floor: `u.walkway.sw` [40,21]-[54,26], the cantilever's south face continued west along the bar to the bastion's corner. Tagged `exterior` so the rule "bar C is one storey, no interior room above it" still holds. The terrace was split in two to make room.
+- Side effects: the bath's south window is gone (the wall is now inside); one terrace planter moved; map version 13 -> 14, navmesh re-baked, T12 reference replay re-recorded.
+- Interpretation, not confirmed: if Scott meant something else (a different depth, an open colonnade, or a different spot), this is easy to change.

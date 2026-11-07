@@ -1,6 +1,6 @@
 {
   "id": "charon",
-  "version": 13,
+  "version": 14,
   "bounds": { "min": { "x": -40, "y": -40 }, "max": { "x": 140, "y": 94 } },
   "floors": [
     {
@@ -3529,7 +3529,7 @@
         {
           "id": "u.terrace.c",
           "name": "Roof terrace over the living room",
-          "rect": { "min": { "x": 12, "y": 11 }, "max": { "x": 54, "y": 26 } },
+          "rect": { "min": { "x": 12, "y": 11 }, "max": { "x": 40, "y": 26 } },
           "ceiling": 4,
           "tags": ["exterior", "terrace", "light:dim"]
         },
@@ -3567,6 +3567,20 @@
           "rect": { "min": { "x": 49.5, "y": 43 }, "max": { "x": 52, "y": 50 } },
           "ceiling": 4,
           "tags": ["interior", "hall", "gallery", "light:dim"]
+        },
+        {
+          "id": "u.terrace.c.e",
+          "name": "Roof terrace over the living room (east)",
+          "rect": { "min": { "x": 40, "y": 11 }, "max": { "x": 54, "y": 21 } },
+          "ceiling": 4,
+          "tags": ["exterior", "terrace", "light:dim"]
+        },
+        {
+          "id": "u.walkway.sw",
+          "name": "Sky gallery (covered colonnade)",
+          "rect": { "min": { "x": 40, "y": 21 }, "max": { "x": 54, "y": 26 } },
+          "ceiling": 4,
+          "tags": ["exterior", "walkway", "light:dim"]
         }
       ],
       "walls": [
@@ -3658,6 +3672,42 @@
           "thickness": 0.1,
           "height": 1.1,
           "material": "glass",
+          "destructible": true
+        },
+        {
+          "id": "w.upper.x40:11-11.1",
+          "a": { "x": 40, "y": 11 },
+          "b": { "x": 40, "y": 11.1 },
+          "thickness": 0.4,
+          "height": 4,
+          "material": "reinforced",
+          "destructible": true
+        },
+        {
+          "id": "w.upper.x40:20.9-21",
+          "a": { "x": 40, "y": 20.9 },
+          "b": { "x": 40, "y": 21 },
+          "thickness": 0.4,
+          "height": 4,
+          "material": "reinforced",
+          "destructible": true
+        },
+        {
+          "id": "w.upper.x40:21-22",
+          "a": { "x": 40, "y": 21 },
+          "b": { "x": 40, "y": 22 },
+          "thickness": 0.4,
+          "height": 4,
+          "material": "reinforced",
+          "destructible": true
+        },
+        {
+          "id": "w.upper.x40:25-26",
+          "a": { "x": 40, "y": 25 },
+          "b": { "x": 40, "y": 26 },
+          "thickness": 0.4,
+          "height": 4,
+          "material": "reinforced",
           "destructible": true
         },
         {
@@ -3967,8 +4017,17 @@
           "destructible": true
         },
         {
-          "id": "w.upper.y11:12-54",
+          "id": "w.upper.y11:12-40",
           "a": { "x": 12, "y": 11 },
+          "b": { "x": 40, "y": 11 },
+          "thickness": 0.1,
+          "height": 1.1,
+          "material": "glass",
+          "destructible": true
+        },
+        {
+          "id": "w.upper.y11:40-54",
+          "a": { "x": 40, "y": 11 },
           "b": { "x": 54, "y": 11 },
           "thickness": 0.1,
           "height": 1.1,
@@ -3982,6 +4041,33 @@
           "thickness": 0.1,
           "height": 1.1,
           "material": "glass",
+          "destructible": true
+        },
+        {
+          "id": "w.upper.y21:40-42.5",
+          "a": { "x": 40, "y": 21 },
+          "b": { "x": 42.5, "y": 21 },
+          "thickness": 0.4,
+          "height": 4,
+          "material": "reinforced",
+          "destructible": true
+        },
+        {
+          "id": "w.upper.y21:45.5-48.5",
+          "a": { "x": 45.5, "y": 21 },
+          "b": { "x": 48.5, "y": 21 },
+          "thickness": 0.4,
+          "height": 4,
+          "material": "reinforced",
+          "destructible": true
+        },
+        {
+          "id": "w.upper.y21:51.5-54",
+          "a": { "x": 51.5, "y": 21 },
+          "b": { "x": 54, "y": 21 },
+          "thickness": 0.4,
+          "height": 4,
+          "material": "reinforced",
           "destructible": true
         },
         {
@@ -4440,7 +4526,7 @@
           "id": "d.u.core.bc-terrace",
           "at": { "x": 43, "y": 26 },
           "width": 1.5,
-          "between": ["u.core.bc", "u.terrace.c"],
+          "between": ["u.core.bc", "u.walkway.sw"],
           "kind": "standard",
           "state": "closed",
           "breach": ["manual", "shotgun", "explosive"]
@@ -4521,7 +4607,7 @@
           "id": "d.u.lounge-terrace",
           "at": { "x": 54, "y": 23.5 },
           "width": 3,
-          "between": ["u.sky-lounge", "u.terrace.c"],
+          "between": ["u.sky-lounge", "u.walkway.sw"],
           "kind": "glass",
           "state": "closed",
           "breach": ["manual", "shotgun", "explosive"]
@@ -4532,6 +4618,42 @@
           "width": 3.6,
           "between": ["u.void", "u.gallery.n"],
           "kind": "standard",
+          "state": "open",
+          "breach": []
+        },
+        {
+          "id": "d.u.terrace-c-e",
+          "at": { "x": 40, "y": 16 },
+          "width": 9.8,
+          "between": ["u.terrace.c", "u.terrace.c.e"],
+          "kind": "standard",
+          "state": "open",
+          "breach": []
+        },
+        {
+          "id": "d.u.walkway-east.1",
+          "at": { "x": 44, "y": 21 },
+          "width": 3,
+          "between": ["u.walkway.sw", "u.terrace.c.e"],
+          "kind": "glass",
+          "state": "open",
+          "breach": []
+        },
+        {
+          "id": "d.u.walkway-east.2",
+          "at": { "x": 50, "y": 21 },
+          "width": 3,
+          "between": ["u.walkway.sw", "u.terrace.c.e"],
+          "kind": "glass",
+          "state": "open",
+          "breach": []
+        },
+        {
+          "id": "d.u.walkway-west",
+          "at": { "x": 40, "y": 23.5 },
+          "width": 3,
+          "between": ["u.walkway.sw", "u.terrace.c"],
+          "kind": "glass",
           "state": "open",
           "breach": []
         }
@@ -4638,14 +4760,6 @@
           "at": { "x": 63, "y": 21 },
           "width": 1.8,
           "between": ["u.sky-lounge", "outside"],
-          "shutter": true,
-          "blastRated": true
-        },
-        {
-          "id": "win.u.bath.s",
-          "at": { "x": 50, "y": 26 },
-          "width": 1.8,
-          "between": ["u.bath", "outside"],
           "shutter": true,
           "blastRated": true
         },
@@ -4765,7 +4879,7 @@
         },
         {
           "id": "cover.terrace-planter.2",
-          "rect": { "min": { "x": 36, "y": 11.4 }, "max": { "x": 41, "y": 12.4 } },
+          "rect": { "min": { "x": 33, "y": 11.4 }, "max": { "x": 38, "y": 12.4 } },
           "type": "light",
           "height": 0.8,
           "facing": "all",

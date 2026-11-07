@@ -19,7 +19,7 @@ const area = (r: { min: { x: number; y: number }; max: { x: number; y: number } 
 describe("charon.json: basics", () => {
   it("parses against the schema", () => {
     expect(map.id).toBe("charon");
-    expect(map.version).toBe(13);
+    expect(map.version).toBe(14);
     expect(map.floors.map((f) => f.id)).toEqual(["grounds", "ground", "upper", "roof", "lower", "shore", "hill"]);
     expect(map.floors.map((f) => f.elevation)).toEqual([0, 0, 4, 8, -4, -5, 4]);
   });
@@ -27,7 +27,7 @@ describe("charon.json: basics", () => {
   it("has the expected room count per floor", () => {
     expect(floor("grounds").rooms).toHaveLength(10);
     expect(floor("ground").rooms).toHaveLength(22); // 21 plus the garden room
-    expect(floor("upper").rooms).toHaveLength(21); // the void plus three galleries replaced the old void
+    expect(floor("upper").rooms).toHaveLength(23); // the void plus three galleries replaced the old void; the east terrace and the sky gallery (version 14) were cut from the terrace
     expect(floor("roof").rooms).toHaveLength(14);
     expect(floor("lower").rooms).toHaveLength(9);
     expect(floor("shore").rooms).toHaveLength(5);
