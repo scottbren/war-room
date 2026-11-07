@@ -132,7 +132,7 @@ Marker tag namespaces are tied to validators; decorative markers use `fixture:` 
 - `fixture:*`: 19 extinguishers, 7 exit signs, panic room supply locker and medical cabinet, gate intercom, path lights.
 
 ## Cover and concealment
-About 190 cover items. Light cover: sofas, tables, planters, benches, parapets. Heavy cover: kitchen island, desks, armory racks, SUVs, server racks, berms and outcrops (indestructible). Concealment: trees, hedges, roof garden beds. Interior furnishing is thin and is the next map pass (below).
+About 190 cover items. Light cover: sofas, tables, planters, benches, parapets. Heavy cover: kitchen island, desks, armory racks, SUVs, server racks, berms and outcrops (indestructible). Concealment: trees, hedges, roof garden beds. The interiors pass (map version 13) added 51 items to 18 rooms; see below.
 
 ## Default populations (seeded variation later)
 - Outer ring (hired, 6): guardhouse 2, perimeter patrol 2, marina 1, terrace 1.
@@ -143,8 +143,8 @@ About 190 cover items. Light cover: sofas, tables, planters, benches, parapets. 
 
 ## Notes for later passes
 
-### Interiors pass (next on the map)
-Add furniture, cover and concealment to the **19 rooms that have none**: g.cloak, g.foyer, g.grand-hall, g.garage-link, g.core, g.core.bc, g.master-bath, u.gallery, u.core, u.safe, u.guest2, u.core.bc, u.bath, u.gallery.n, u.gallery.w, u.gallery.e, l.staff, l.corridor.a, l.corridor.b.
+### Interiors pass (done, map version 13)
+Done: 51 cover items in 18 of the 19 rooms below, and a `light:bright|dim|dark` tag on all 85 rooms. **The grand hall was left clear**: the layout table says it is clear of furniture and a test enforces it, which contradicts it being in this list, so it waits for a decision (see `docs/open-decisions.md`). Light levels are a first pass by room use (windows and daylight rooms bright, bedrooms, corridors and outdoors dim, the cinema, cellar, boathouse and yacht dark) and are easy to change. Original brief: add furniture, cover and concealment to the **19 rooms that have none**: g.cloak, g.foyer, g.grand-hall, g.garage-link, g.core, g.core.bc, g.master-bath, u.gallery, u.core, u.safe, u.guest2, u.core.bc, u.bath, u.gallery.n, u.gallery.w, u.gallery.e, l.staff, l.corridor.a, l.corridor.b.
 Also in this pass (approved): a **light-level tag on every room**, one of `bright`, `dim`, `dark`, for stealth and night vision. This is a room tag, not a contract change.
 
 ### Knowledge layer: the player's blueprint

@@ -119,12 +119,13 @@ describe("nav: findPath on the CHARON navmesh", () => {
     expect(path.length).not.toBe(2);
   });
 
+  // Re-recorded 2026-11-06 after the interiors pass (map version 13): furniture changed the navmesh, so foyer to son's room is 35.09 m (same 9 points; was 35.13).
   // Re-recorded 2026-11-04 after the central-stair redesign (an 11 m deep hall, one wide flight on the entrance axis, a garden room, doors moved):
   // foyer to study uses the drawing-room door; foyer to son's room goes round the foot of the central flight and up it.
   it("gives the same answers in Node as the Web Worker debug page (client/nav-debug.html) did in Chromium", () => {
     const expected: [Pos, Pos, number, number][] = [
       [centre("ground", "g.foyer"), centre("ground", "g.study"), 5, 23.47],
-      [centre("ground", "g.foyer"), centre("upper", "u.son"), 9, 35.13],
+      [centre("ground", "g.foyer"), centre("upper", "u.son"), 9, 35.09],
       [centre("ground", "g.master"), centre("ground", "g.panic"), 7, 20.34],
       [centre("ground", "g.panic"), centre("shore", "grounds.boathouse"), 4, 42.62],
       [{ floor: "grounds", x: 48, y: 68 }, centre("ground", "g.study"), 7, 38.41],

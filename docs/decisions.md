@@ -272,3 +272,9 @@ Fifth step of `docs/combat-spec.md` (the C5 proposal there). Scott approved C5a 
 ## Hit flag on known shots (approved: "Hit flag")
 - `KnownShot` (the operators' record of a shot they saw) gained `hit: boolean`, copied from the `shot` event. The `shot` event already had `hit`, so no `SimEvent` change and no change to the tick. Tracers are now hot orange-red for a hit and pale yellow for a miss.
 - This supersedes the "not shown: whether a shot hit" note above. A broken guard is still not shown (the snapshot carries no morale).
+
+## CHARON interiors pass (map version 13)
+- 51 cover items (heavy and light) added to 18 rooms that had none, and a `light:bright|dim|dark` tag on all 85 rooms. No contract change: cover and room tags are existing map data.
+- Furniture keeps clear of doorways, stairs and fixture markers (the existing tests check doors and markers). Items near routes are slim so routes did not change shape; the foyer-to-son's-room path is the same 9 points but 0.04 m shorter, so that pinned length was re-recorded.
+- Map version 12 -> 13, so the T12 reference replay and its hash list were re-recorded (`record-t12`) and the CHARON navmesh re-baked. Hashes changed because the map did; testbed hashes are untouched.
+- Grand hall left clear (conflict between the layout table and the pass list); asked in `docs/open-decisions.md`.

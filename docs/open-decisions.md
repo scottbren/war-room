@@ -15,7 +15,7 @@ Things Scott has deferred or that are waiting on an approval. Each item says wha
 - **Exposing the raid clock to the UI.** Needs approval.
 
 ## Map and content
-- **Interiors and cover pass on CHARON.** 19 rooms have no furniture and no room light level (bright, dim or dark). Blocks: cover inside the house, darkness in combat.
+- **Interiors pass: grand hall and light levels.** The pass is done (51 items, light tag on every room) except the grand hall, which stays clear because the layout table and a test say so while the pass list included it. Do you want hall furniture (plinths, benches), or keep it clear? Also review the first-pass light levels. Darkness in combat still waits for a rule (see `docs/combat-spec.md`).
 - **Guard tags on the testbed.** None are added; tests tag a copy of the map in memory.
 
 ## On hold by Scott
