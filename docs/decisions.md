@@ -268,3 +268,7 @@ Fifth step of `docs/combat-spec.md` (the C5 proposal there). Scott approved C5a 
 - **Not shown:** whether a shot hit (`KnownShot` has no hit flag, so the display cannot say), and a broken guard (the snapshot does not carry morale). Either needs a contract decision.
 - **Audio:** silent until the first click or key press (browser rule). Synthesized noise burst; no audio files, no paid service. Volume does not vary with distance yet.
 - **Checked:** unit tests for the helpers, typecheck, lint, 666 tests, smoke on Chromium and Firefox. I could not watch a live fight: the headless browser renders about 1 fps, so only "loads with no console errors" was confirmed by eye.
+
+## Hit flag on known shots (approved: "Hit flag")
+- `KnownShot` (the operators' record of a shot they saw) gained `hit: boolean`, copied from the `shot` event. The `shot` event already had `hit`, so no `SimEvent` change and no change to the tick. Tracers are now hot orange-red for a hit and pale yellow for a miss.
+- This supersedes the "not shown: whether a shot hit" note above. A broken guard is still not shown (the snapshot carries no morale).

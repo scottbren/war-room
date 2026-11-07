@@ -20,7 +20,7 @@ import { DEMO_OPERATOR } from "./scenario";
 import { createUnitLayer } from "./units";
 import { createKnowledge } from "@war-room/sim";
 import type { RenderUnit } from "./bridge";
-import { createGunfire, freshSince, tracerAlpha } from "./combatFx";
+import { createGunfire, freshSince, tracerAlpha, tracerColor } from "./combatFx";
 import type { AudioLike } from "./combatFx";
 import { planLabels } from "./greybox/labels";
 import { FLOOR_KEYS } from "./greybox/plan";
@@ -164,7 +164,7 @@ export async function createViewer(canvas: HTMLCanvasElement, map: MapFile, call
       if (!from) continue;
       const to = new Vector3(s.x, elevations[s.floor] + 1.2, s.y);
       const mesh = CreateLines(`tracer.${s.shooter}.${s.tick}`, { points: [new Vector3(from.x, from.y + 0.4, from.z), to] }, scene);
-      mesh.color = new Color3(1, 0.85, 0.3);
+      mesh.color = new Color3(...tracerColor(s.hit));
       mesh.isPickable = false;
       mesh.setEnabled(greybox.floorVisible(s.floor));
       tracers.push({ mesh, born: now });

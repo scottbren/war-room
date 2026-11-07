@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { TRACER_MS, createGunfire, freshSince, tracerAlpha, woundColor, woundOf } from "../src/combatFx";
+import { TRACER_MS, createGunfire, freshSince, tracerAlpha, tracerColor, woundColor, woundOf } from "../src/combatFx";
 import type { AudioLike } from "../src/combatFx";
 
 describe("combat display helpers", () => {
@@ -28,6 +28,11 @@ describe("combat display helpers", () => {
     expect(some[0]).toBeGreaterThan(0.2);
     expect(most[0]).toBeGreaterThan(some[0]);
     expect(most[2]).toBeLessThan(some[2]);
+  });
+
+  it("a hit and a miss are drawn in different colours", () => {
+    expect(tracerColor(true)).not.toEqual(tracerColor(false));
+    expect(tracerColor(true)[0]).toBeGreaterThan(tracerColor(true)[1]);
   });
 
   it("a tracer fades from 1 to 0 over its life and is gone after", () => {

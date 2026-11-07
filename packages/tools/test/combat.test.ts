@@ -219,6 +219,10 @@ describe("combat", () => {
       defs.update(snapshot, ev);
     }
     expect(ops.shots().length).toBeGreaterThan(0);
+    // Each remembered shot says whether it hit, matching the truth-level event; a fight this long has both kinds.
+    expect(ops.shots().every((s) => typeof s.hit === "boolean")).toBe(true);
+    expect(ops.shots().some((s) => s.hit)).toBe(true);
+    expect(ops.shots().some((s) => !s.hit)).toBe(true);
     for (const e of saved(sim).entities.filter((x) => x.state === "down")) {
       const known = ops.unit(e.id) ?? defs.unit(e.id);
       expect(known?.down).toBe(true);

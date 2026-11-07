@@ -28,6 +28,11 @@ export function woundColor(base: readonly [number, number, number], wound: Wound
   return [base[0] + (red[0] - base[0]) * k, base[1] + (red[1] - base[1]) * k, base[2] + (red[2] - base[2]) * k];
 }
 
+/** Tracer colour: hot orange-red for a hit, pale yellow for a miss. */
+export function tracerColor(hit: boolean): [number, number, number] {
+  return hit ? [1, 0.35, 0.15] : [1, 0.9, 0.5];
+}
+
 /** How long a tracer stays on screen. */
 export const TRACER_MS = 220;
 

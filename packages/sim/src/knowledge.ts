@@ -36,6 +36,8 @@ export interface KnownShot {
   floor: FloorId;
   x: number;
   y: number;
+  /** Whether the shot struck its target (seen by this side, like the shot itself). */
+  hit: boolean;
   tick: number;
 }
 
@@ -113,7 +115,7 @@ export function createKnowledge(map: MapFile, side: Side): Knowledge {
         if (ev.type === "shot") {
           const s = seen.get(ev.shooter);
           if (s && (s.side === side || ev.tick - s.tick <= LIVE_TICKS)) {
-            shots.push({ shooter: ev.shooter, floor: ev.at.floor, x: ev.at.x, y: ev.at.y, tick: ev.tick });
+            shots.push({ shooter: ev.shooter, floor: ev.at.floor, x: ev.at.x, y: ev.at.y, hit: ev.hit, tick: ev.tick });
             if (shots.length > NOISE_MEMORY) shots.shift();
           }
           continue;
