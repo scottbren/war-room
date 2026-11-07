@@ -3,8 +3,10 @@ import { ArcRotateCamera } from "@babylonjs/core/Cameras/arcRotateCamera";
 import type { AbstractEngine } from "@babylonjs/core/Engines/abstractEngine";
 import { DirectionalLight } from "@babylonjs/core/Lights/directionalLight";
 import { HemisphericLight } from "@babylonjs/core/Lights/hemisphericLight";
-import { Color4 } from "@babylonjs/core/Maths/math.color";
+import { Color3, Color4 } from "@babylonjs/core/Maths/math.color";
 import { Matrix, Vector3 } from "@babylonjs/core/Maths/math.vector";
+import { CreateLines } from "@babylonjs/core/Meshes/Builders/linesBuilder";
+import type { LinesMesh } from "@babylonjs/core/Meshes/linesMesh";
 import { Scene } from "@babylonjs/core/scene";
 import type { FloorId, MapFile } from "@war-room/content";
 import { buildGreybox } from "./greybox/build";
@@ -18,6 +20,8 @@ import { DEMO_OPERATOR } from "./scenario";
 import { createUnitLayer } from "./units";
 import { createKnowledge } from "@war-room/sim";
 import type { RenderUnit } from "./bridge";
+import { createGunfire, freshSince, tracerAlpha } from "./combatFx";
+import type { AudioLike } from "./combatFx";
 import { planLabels } from "./greybox/labels";
 import { FLOOR_KEYS } from "./greybox/plan";
 import type { FloorVisibility } from "./greybox/plan";
@@ -147,9 +151,43 @@ export async function createViewer(canvas: HTMLCanvasElement, map: MapFile, call
     }
     return out;
   };
+  // Gunfire: a tracer from each shooter the operators saw to its target, and a bang for each tick with gunfire they heard.
+  // (Both come from the knowledge layer, so a shot nobody saw is not drawn.)
+  const gunfire = createGunfire(() => (typeof AudioContext === "undefined" ? undefined : (new AudioContext() as unknown as AudioLike)));
+  const tracers: { mesh: LinesMesh; born: number }[] = [];
+  let shotsAfter = -1;
+  let noisesAfter = -1;
+  const fireFx = (now: number): void => {
+    for (const s of freshSince(knowledge.shots(), shotsAfter)) {
+      shotsAfter = Math.max(shotsAfter, s.tick);
+      const from = unitLayer.position(s.shooter);
+      if (!from) continue;
+      const to = new Vector3(s.x, elevations[s.floor] + 1.2, s.y);
+      const mesh = CreateLines(`tracer.${s.shooter}.${s.tick}`, { points: [new Vector3(from.x, from.y + 0.4, from.z), to] }, scene);
+      mesh.color = new Color3(1, 0.85, 0.3);
+      mesh.isPickable = false;
+      mesh.setEnabled(greybox.floorVisible(s.floor));
+      tracers.push({ mesh, born: now });
+    }
+    for (let i = tracers.length - 1; i >= 0; i--) {
+      const t = tracers[i] as (typeof tracers)[number];
+      const alpha = tracerAlpha(now - t.born);
+      if (alpha === 0) {
+        t.mesh.dispose();
+        tracers.splice(i, 1);
+      } else t.mesh.alpha = alpha;
+    }
+    const heard = freshSince(knowledge.noises(), noisesAfter).filter((n) => n.kind === "shot");
+    for (const n of knowledge.noises()) noisesAfter = Math.max(noisesAfter, n.tick);
+    if (heard.length > 0) gunfire.shot();
+  };
+  const unlockAudio = (): void => gunfire.unlock();
+  window.addEventListener("pointerdown", unlockAudio);
+  window.addEventListener("keydown", unlockAudio);
   let lastTick = -1;
   scene.onBeforeRenderObservable.add(() => {
     unitLayer.update(knownUnits(bridge.units(performance.now())));
+    fireFx(performance.now());
     if (bridge.tick !== lastTick) {
       lastTick = bridge.tick;
       callbacks.onTick(lastTick);
@@ -196,6 +234,9 @@ export async function createViewer(canvas: HTMLCanvasElement, map: MapFile, call
       unitLayer.dispose();
       window.clearInterval(fpsTimer);
       window.removeEventListener("keydown", onKey);
+      window.removeEventListener("pointerdown", unlockAudio);
+      window.removeEventListener("keydown", unlockAudio);
+      for (const t of tracers) t.mesh.dispose();
       window.removeEventListener("resize", onResize);
       greybox.dispose();
       scene.dispose();

@@ -5,6 +5,8 @@ import type { Mesh } from "@babylonjs/core/Meshes/mesh";
 import type { Scene } from "@babylonjs/core/scene";
 import type { FloorId, MapFile } from "@war-room/content";
 import type { RenderUnit } from "./bridge";
+import { woundColor, woundOf } from "./combatFx";
+import type { Wound } from "./combatFx";
 import { stairLift } from "./stairs";
 
 const SIDE_COLORS: Record<string, [number, number, number]> = {
@@ -26,13 +28,14 @@ export function createUnitLayer(
 ) {
   const meshes = new Map<string, Mesh>();
   const materials = new Map<string, StandardMaterial>();
-  const material = (side: string): StandardMaterial => {
-    let m = materials.get(side);
+  const material = (side: string, wound: Wound): StandardMaterial => {
+    const key = `${side}.${wound}`;
+    let m = materials.get(key);
     if (!m) {
-      m = new StandardMaterial(`unit.${side}`, scene);
-      m.diffuseColor = new Color3(...(SIDE_COLORS[side] ?? [0.7, 0.7, 0.7]));
+      m = new StandardMaterial(`unit.${key}`, scene);
+      m.diffuseColor = new Color3(...woundColor(SIDE_COLORS[side] ?? [0.7, 0.7, 0.7], wound));
       m.emissiveColor = m.diffuseColor.scale(0.35);
-      materials.set(side, m);
+      materials.set(key, m);
     }
     return m;
   };
@@ -44,13 +47,13 @@ export function createUnitLayer(
         let mesh = meshes.get(u.id);
         if (!mesh) {
           mesh = CreateCapsule(`unit.${u.id}`, { height: HEIGHT, radius: 0.3 }, scene);
-          mesh.material = material(u.side);
           mesh.isPickable = false;
           meshes.set(u.id, mesh);
         }
         // Map (x, y) -> Babylon (x, z); capsule origin is its centre.
         // A downed unit lies on the floor.
         const down = u.state === "down";
+        mesh.material = material(u.side, u.ghost ? "healthy" : woundOf(u.health, down));
         mesh.rotation.x = down ? Math.PI / 2 : 0;
         mesh.position.set(u.x, elevations[u.floor] + stairLift(links, elevations, u.floor, u.x, u.y) + (down ? 0.3 : HEIGHT / 2), u.y);
         mesh.visibility = u.ghost ? 0.35 : 1;
@@ -63,9 +66,9 @@ export function createUnitLayer(
         }
       }
     },
-    position(id: string): { x: number; z: number } | undefined {
+    position(id: string): { x: number; y: number; z: number } | undefined {
       const m = meshes.get(id);
-      return m && { x: m.position.x, z: m.position.z };
+      return m && { x: m.position.x, y: m.position.y, z: m.position.z };
     },
     dispose(): void {
       for (const m of meshes.values()) m.dispose();
