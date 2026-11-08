@@ -18,7 +18,12 @@ import { floorCandidates } from "./picking";
 import { peacefulFromSearch } from "./maps";
 import { DEMO_OPERATOR } from "./scenario";
 import { createUnitLayer } from "./units";
+import { CreateBox } from "@babylonjs/core/Meshes/Builders/boxBuilder";
+import { StandardMaterial } from "@babylonjs/core/Materials/standardMaterial";
+import type { Mesh } from "@babylonjs/core/Meshes/mesh";
 import { createKnowledge } from "@war-room/sim";
+import type { KnownCamera } from "@war-room/sim";
+import { cameraMarkerColor, camerasSignature } from "./cameraFx";
 import type { RenderUnit } from "./bridge";
 import { createGunfire, freshSince, tracerAlpha, tracerColor } from "./combatFx";
 import type { AudioLike } from "./combatFx";
@@ -38,10 +43,14 @@ export interface Viewer {
   toggleLabels(): boolean;
   /** Debug: draw every unit from simulation truth instead of the operators' knowledge (key T). Returns the new setting. */
   toggleTruth(): boolean;
+  /** The cyber hack: from now on the operators see the security cameras' feeds (see Knowledge.tapCameras). */
+  tapCameras(): void;
   dispose(): void;
 }
 
 export interface ViewerCallbacks {
+  /** The camera feed list, whenever what it shows changes (empty until the network is tapped). */
+  onCameras?(cameras: KnownCamera[]): void;
   onFloors(visibility: FloorVisibility): void;
   onFps(fps: number): void;
   onTick(tick: number): void;
@@ -181,6 +190,42 @@ export async function createViewer(canvas: HTMLCanvasElement, map: MapFile, call
     for (const n of knowledge.noises()) noisesAfter = Math.max(noisesAfter, n.tick);
     if (heard.length > 0) gunfire.shot();
   };
+  // Camera feeds: a small marker at each camera once the network is tapped (green live, amber with someone in view,
+  // grey dark), and the list for the panel whenever it changes. All from the knowledge layer.
+  const cameraMarkers = new Map<string, Mesh>();
+  const cameraMaterials = new Map<string, StandardMaterial>();
+  let camerasShown = "";
+  const cameraMaterial = (cam: KnownCamera): StandardMaterial => {
+    const [r, g, b] = cameraMarkerColor(cam);
+    const key = `${r},${g},${b}`;
+    let m = cameraMaterials.get(key);
+    if (!m) {
+      m = new StandardMaterial(`camera.${key}`, scene);
+      m.diffuseColor = new Color3(r, g, b);
+      m.emissiveColor = m.diffuseColor.scale(0.6);
+      cameraMaterials.set(key, m);
+    }
+    return m;
+  };
+  const cameraFx = (): void => {
+    const cams = knowledge.cameras();
+    for (const cam of cams) {
+      let mesh = cameraMarkers.get(cam.id);
+      if (!mesh) {
+        mesh = CreateBox(`camera.${cam.id}`, { size: 0.5 }, scene);
+        mesh.isPickable = false;
+        mesh.position.set(cam.x, elevations[cam.floor] + 2.6, cam.y);
+        cameraMarkers.set(cam.id, mesh);
+      }
+      mesh.material = cameraMaterial(cam);
+      mesh.setEnabled(greybox.floorVisible(cam.floor));
+    }
+    const signature = camerasSignature(cams);
+    if (signature !== camerasShown) {
+      camerasShown = signature;
+      callbacks.onCameras?.(cams);
+    }
+  };
   const unlockAudio = (): void => gunfire.unlock();
   window.addEventListener("pointerdown", unlockAudio);
   window.addEventListener("keydown", unlockAudio);
@@ -188,6 +233,7 @@ export async function createViewer(canvas: HTMLCanvasElement, map: MapFile, call
   scene.onBeforeRenderObservable.add(() => {
     unitLayer.update(knownUnits(bridge.units(performance.now())));
     fireFx(performance.now());
+    cameraFx();
     if (bridge.tick !== lastTick) {
       lastTick = bridge.tick;
       callbacks.onTick(lastTick);
@@ -226,8 +272,11 @@ export async function createViewer(canvas: HTMLCanvasElement, map: MapFile, call
     toggleFloor,
     toggleLabels,
     toggleTruth,
+    tapCameras: () => knowledge.tapCameras(),
     dispose() {
       labelLayer.remove();
+      for (const m of cameraMarkers.values()) m.dispose();
+      for (const m of cameraMaterials.values()) m.dispose();
       canvas.removeEventListener("pointerdown", onDown);
       canvas.removeEventListener("pointerup", onUp);
       bridge.dispose();

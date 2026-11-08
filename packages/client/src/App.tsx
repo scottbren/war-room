@@ -6,6 +6,8 @@ import { FLOOR_KEYS, allFloorsVisible } from "./greybox/plan";
 import type { FloorVisibility } from "./greybox/plan";
 import { createViewer } from "./viewer";
 import type { Viewer } from "./viewer";
+import { cameraLabel, cameraStatus } from "./cameraFx";
+import type { KnownCamera } from "@war-room/sim";
 
 const mapName = mapNameFromSearch(window.location.search);
 const map = MapFile.parse(MAPS[mapName].json);
@@ -38,13 +40,15 @@ export function App() {
   const [tick, setTick] = useState(0);
   const [backend, setBackend] = useState("starting");
   const [error, setError] = useState("");
+  const [tapped, setTapped] = useState(false);
+  const [cameras, setCameras] = useState<KnownCamera[]>([]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     let disposed = false;
     let created: Viewer | null = null;
-    createViewer(canvas, map, { onFloors: setFloors, onFps: setFps, onTick: setTick, onError: setError })
+    createViewer(canvas, map, { onFloors: setFloors, onFps: setFps, onTick: setTick, onError: setError, onCameras: setCameras })
       .then((viewer) => {
         if (disposed) return viewer.dispose();
         created = viewer;
@@ -85,6 +89,28 @@ export function App() {
           Drag: orbit · Right-drag / Ctrl-drag: pan · Wheel: zoom · L: room labels · T: truth view (debug) · Click: move operator
         </div>
       </div>
+        <div style={cctvPanel} data-testid="cctv">
+          <div style={{ fontWeight: 700, letterSpacing: 1, marginBottom: 4 }}>CCTV</div>
+          {!tapped ? (
+            <button
+              type="button"
+              style={button}
+              title="Hack into the estate's camera network"
+              onClick={() => {
+                viewerRef.current?.tapCameras();
+                setTapped(true);
+              }}
+            >
+              Tap camera network
+            </button>
+          ) : (
+            cameras.map((cam) => (
+              <div key={cam.id} style={{ fontSize: 12, margin: "2px 0", color: cam.live ? (cam.sees.length > 0 ? "#ffc23a" : "#5fe08a") : "#7a8594" }}>
+                <b>{cameraLabel(cam.id)}</b> {cameraStatus(cam)}
+              </div>
+            ))
+          )}
+        </div>
     </div>
   );
 }
@@ -100,6 +126,16 @@ const panel: React.CSSProperties = {
   font: "13px/1.3 system-ui, sans-serif",
   userSelect: "none",
   minWidth: 190,
+};
+
+const cctvPanel: React.CSSProperties = {
+  ...panel,
+  left: undefined,
+  right: 12,
+  maxHeight: "70vh",
+  overflowY: "auto",
+  maxWidth: 300,
+  wordBreak: "break-word",
 };
 
 const button: React.CSSProperties = {
