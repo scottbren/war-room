@@ -81,6 +81,9 @@ export type SimEvent =
   | (SimEventBase & { type: "noise"; observer: EntityId; at: Pos; kind: "steps" | "door" | "shot" })
   // `shooter` fired at the unit standing at `at`; `hit` says whether it struck. Truth-level, like `moved`.
   | (SimEventBase & { type: "shot"; shooter: EntityId; at: Pos; hit: boolean })
+  // A working camera (device `device`) has `target`, a unit that is not one of the operators, in view. Repeats every few ticks while seen.
+  // Truth-level, like `moved`: knowledge only uses it once the side has tapped the camera network.
+  | (SimEventBase & { type: "camera"; device: string; target: EntityId })
   | (SimEventBase & { type: "down"; entity: EntityId })
   // Emitted when a command targets a tick that has already passed (see T3).
   | (SimEventBase & { type: "commandRejected"; command: Command["kind"]; reason: string });

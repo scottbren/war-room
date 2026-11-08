@@ -19,8 +19,12 @@ export function cameraSystem(world: World, ctx: Ctx): EntityPos[] {
   if (!env) return [];
   const cameras = env.cameras();
   if (cameras.length === 0 || !hubOnline(world)) return [];
+  // Nothing to do while no camera works (off or looped): skip the sight setup, as before the feeds existed.
+  if (!cameras.some((c) => world.devices[c.id]?.kind === "camera" && world.devices[c.id]?.state === "on")) return [];
   const ids = sortedIds(world);
-  const targets = ids.map((id) => world.entities[id] as Entity).filter((e) => e.side === "operator" && e.state !== "down");
+  // Operators (standing) are what the defenders are told about; everyone else (even a body) is what a tapped feed shows the President.
+  const all = ids.map((id) => world.entities[id] as Entity);
+  const targets = all.filter((e) => e.side === "operator" ? e.state !== "down" : true);
   if (targets.length === 0) return [];
   env.syncWorld(world.doors, world.shutters);
   const los = env.los();
@@ -35,7 +39,9 @@ export function cameraSystem(world: World, ctx: Ctx): EntityPos[] {
       if (!sight.visible) continue;
       const dx = t.pos.xCm - Math.round(cam.at.x * 100), dy = t.pos.yCm - Math.round(cam.at.y * 100);
       const range = effectiveRange(CAMERA_RANGE_CM, sight.concealed);
-      if (dx * dx + dy * dy <= range * range) seen.push({ ...t.pos });
+      if (dx * dx + dy * dy > range * range) continue;
+      if (t.side === "operator") seen.push({ ...t.pos });
+      else ctx.emit({ type: "camera", device: cam.id, target: t.id });
     }
   });
   return seen;

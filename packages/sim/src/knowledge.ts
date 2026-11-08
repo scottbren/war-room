@@ -50,10 +50,28 @@ export interface KnownNoise {
   tick: number;
 }
 
+/** A security camera on a side's feed list (only once the side has tapped the camera network). */
+export interface KnownCamera {
+  /** The camera's device id (its marker id). */
+  id: string;
+  floor: FloorId;
+  x: number;
+  y: number;
+  /** Carrying a feed right now: the device is on and a hub is online. Off, looped or hubless cameras show as dark. */
+  live: boolean;
+  /** Ids of the units it has had in view within the last LIVE_TICKS, sorted. Empty while it is not live. */
+  sees: string[];
+}
+
 /** A side remembers this many sounds, newest last. */
 export const NOISE_MEMORY = 32;
 
 export interface Knowledge {
+  /** Tap the camera network (the cyber hack). From then on, camera sightings count as contacts and `cameras()` lists the feeds. Cannot be undone. */
+  tapCameras(): void;
+  cameraTapped(): boolean;
+  /** Every camera on the map with what it sees, sorted by id; empty until the network is tapped. */
+  cameras(): KnownCamera[];
   /** Feed one tick's snapshot and events, in tick order. */
   update(snapshot: Snapshot, events: readonly SimEvent[]): void;
   /** Every unit this side knows about, sorted by id. Anyone never seen is absent. */
@@ -89,11 +107,39 @@ export function createKnowledge(map: MapFile, side: Side): Knowledge {
   const seen = new Map<string, Seen>();
   const noises: KnownNoise[] = [];
   const shots: KnownShot[] = [];
+  // Static camera data: the markers tagged smart:camera (a camera's device id is its marker id).
+  const cameraMarks = map.markers
+    .filter((m) => m.at !== undefined && m.tags.includes("smart:camera"))
+    .map((m) => ({ id: m.id, floor: m.floor, x: (m.at as { x: number }).x, y: (m.at as { y: number }).y }))
+    .sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0));
+  const cameraSeen = new Map<string, Map<string, number>>(); // device -> target -> tick last in view
+  let tapped = false;
+  let devices: Snapshot["devices"] = [];
+  let hubOnline = false;
   let now = 0;
 
   return {
+    tapCameras() {
+      tapped = true;
+    },
+
+    cameraTapped() {
+      return tapped;
+    },
+
+    cameras() {
+      if (!tapped) return [];
+      return cameraMarks.map((c) => {
+        const live = hubOnline && devices.some((d) => d.id === c.id && d.kind === "camera" && d.state === "on");
+        const sees = live ? [...(cameraSeen.get(c.id) ?? new Map<string, number>())].filter(([, tick]) => now - tick <= LIVE_TICKS).map(([id]) => id).sort() : [];
+        return { id: c.id, floor: c.floor, x: c.x, y: c.y, live, sees };
+      });
+    },
+
     update(snapshot, events) {
       now = snapshot.tick;
+      devices = snapshot.devices;
+      hubOnline = snapshot.hubOnline;
       const byId = new Map(snapshot.entities.map((e) => [e.id, e]));
       const sideOf = (id: string): Side | undefined => byId.get(id)?.side ?? seen.get(id)?.side;
       for (const e of snapshot.entities) {
@@ -107,6 +153,16 @@ export function createKnowledge(map: MapFile, side: Side): Knowledge {
           continue;
         }
  
+        if (ev.type === "camera") {
+          // Nothing is learned until the network is tapped; a unit on the side itself is already known.
+          const target = byId.get(ev.target);
+          if (!tapped || !target || target.side === side) continue;
+          let per = cameraSeen.get(ev.device);
+          if (!per) cameraSeen.set(ev.device, (per = new Map()));
+          per.set(target.id, ev.tick);
+          seen.set(target.id, { side: target.side, floor: target.pos.floor, x: target.pos.x, y: target.pos.y, tick: ev.tick, down: target.state === "down" });
+          continue;
+        }
         if (ev.type === "down") {
           const s = seen.get(ev.entity);
           if (s && (s.side === side || now - s.tick <= LIVE_TICKS)) s.down = true;
