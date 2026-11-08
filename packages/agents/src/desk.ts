@@ -65,7 +65,7 @@ export function createAdvisorDesk(options: DeskOptions) {
     tick(now: number): void {
       for (const h of watcher.poll(now)) {
         for (const id of policy.offer(h, now)) {
-          const prompt = buildPrompt({ advisor: advisor(id), dossier, summary: summarizeKnowledge(map, knowledge, now), trigger: { kind: "event", description: h.description } });
+          const prompt = buildPrompt({ advisor: advisor(id), dossier, summary: summarizeKnowledge(map, knowledge, now, advisor(id).scope), trigger: { kind: "event", description: h.description } });
           // Offline, the reaction is the fact the operators learned, then the advisor's stock line.
           const fallback = `${h.description} ${cannedLine(id, "react", now)}`;
           void ask(completer, prompt, { fallback, timeoutMs: options.timeoutMs }).then((reply) => push({ tick: now, from: id, kind: "reaction", text: reply.text, source: reply.source }));
@@ -79,7 +79,7 @@ export function createAdvisorDesk(options: DeskOptions) {
       if (question === "") return;
       push({ tick: now, from: "president", kind: "question", text: question });
       push({ tick: now, from: id, kind: "ack", text: cannedLine(id, "ack", now), source: "canned" });
-      const prompt = buildPrompt({ advisor: advisor(id), dossier, summary: summarizeKnowledge(map, knowledge, now), trigger: { kind: "question", text: question } });
+      const prompt = buildPrompt({ advisor: advisor(id), dossier, summary: summarizeKnowledge(map, knowledge, now, advisor(id).scope), trigger: { kind: "question", text: question } });
       void ask(completer, prompt, { fallback: cannedLine(id, "question", now), timeoutMs: options.timeoutMs }).then((reply) =>
         push({ tick: now, from: id, kind: "answer", text: reply.text, source: reply.source }),
       );

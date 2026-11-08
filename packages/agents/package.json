@@ -7,6 +7,7 @@
   "scripts": { "typecheck": "tsc --noEmit", "test": "vitest run" },
   "dependencies": {
     "@war-room/content": "workspace:*",
-    "@war-room/sim": "workspace:*"
+    "@war-room/sim": "workspace:*",
+    "zod": "^4.6.7"
   }
 }

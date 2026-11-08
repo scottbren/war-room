@@ -13,3 +13,7 @@ export { DEFAULT_POLICY, createPolicy } from "./policy";
 export type { PolicyConfig } from "./policy";
 export { createAdvisorDesk } from "./desk";
 export type { AdvisorDesk, DeskOptions, Message } from "./desk";
+export { ACTIONS, PlanShape, ROE_LEVELS, extractJson, planContext, validatePlan } from "./plan";
+export type { Action, PlanContext, PlanResult, Roe } from "./plan";
+export { MAX_REPLY_PLAN, buildPlanPrompt, requestPlan } from "./planRequest";
+export type { PlanOutcome } from "./planRequest";

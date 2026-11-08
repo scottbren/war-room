@@ -3,7 +3,8 @@ import { MapFile } from "@war-room/content";
 import { createKnowledge } from "@war-room/sim";
 import type { Knowledge, SimEvent, Snapshot } from "@war-room/sim";
 import testbed from "../../content/maps/testbed.json";
-import { summarizeKnowledge } from "../src/summary";
+import { ADVISORS, advisor } from "../src/advisors";
+import { FULL_SCOPE, summarizeKnowledge } from "../src/summary";
 
 const map = MapFile.parse(testbed);
 // Rooms on the testbed's ground floor: Hall x 14-24, y 6-12; Lobby x 6-14, y 6-12; Study x 14-19, y 12-18.
@@ -111,3 +112,71 @@ describe("summarizeKnowledge", () => {
     expect(summarizeKnowledge(map, fight(), 5)).toBe(summarizeKnowledge(map, fight(), 5));
   });
 });
+
+describe("summarizeKnowledge: each advisor's own picture", () => {
+  const text = (id: Parameters<typeof advisor>[0], k = fight(), now = 5) => summarizeKnowledge(map, k, now, advisor(id).scope);
+
+  it("is the full picture when no scope is given, the same as FULL_SCOPE", () => {
+    expect(summarizeKnowledge(map, fight(), 5)).toBe(summarizeKnowledge(map, fight(), 5, FULL_SCOPE));
+  });
+
+  it("gives the ground commander what his teams see and hear, but not the camera network", () => {
+    const t = text("reyes");
+    expect(t).toContain("Our units: op.alpha.1");
+    expect(t).toContain("In view now: def.test.1");
+    expect(t).toContain("Gunfire seen");
+    expect(t).not.toContain("Security cameras");
+  });
+
+  it("gives the national security advisor the noise and the casualty count, but no unit, no position of ours or theirs", () => {
+    const k = fight();
+    k.update(snap(6, [{ id: "op.alpha.1", side: "operator", at: HALL, state: "down" }, guardAt(LOBBY)]), []);
+    const t = text("navarro", k, 6);
+    expect(t).toContain("Casualties: 1 of ours known to be down.");
+    expect(t).toContain("Heard: gunfire near Study");
+    expect(t).not.toContain("op.alpha.1");
+    expect(t).not.toContain("def.test.1");
+    expect(t).not.toContain("In view now");
+    expect(t).not.toContain("Gunfire seen");
+  });
+
+  it("gives the analyst the contacts and the cameras, not our units or the gunfire", () => {
+    const k = fight();
+    k.tapCameras();
+    const t = text("cho", k);
+    expect(t).toContain("In view now: def.test.1");
+    expect(t).toContain("Security cameras: tapped");
+    expect(t).not.toContain("op.alpha.1");
+    expect(t).not.toContain("Casualties");
+    expect(t).not.toContain("Heard");
+  });
+
+  it("gives the lawyer the contacts and the gunfire and casualties, but not where our units are", () => {
+    const t = text("adler");
+    expect(t).toContain("In view now");
+    expect(t).toContain("Gunfire seen");
+    expect(t).toContain("Casualties: none of ours known to be down.");
+    expect(t).not.toContain("Our units");
+  });
+
+  it("never gives any advisor more than the operators know, and no two advisors the same picture", () => {
+    const k = fight();
+    k.tapCameras();
+    const full = summarizeKnowledge(map, k, 5);
+    const pictures = ADVISORS.map((a) => summarizeKnowledge(map, k, 5, a.scope));
+    expect(new Set(pictures).size).toBe(ADVISORS.length);
+    for (const picture of pictures) {
+      for (const line of picture.split(NEWLINE)) {
+        // every line is either a casualty count (derived from knowledge) or a line the full picture has too
+        expect(full.split(NEWLINE).includes(line) || line.startsWith("Casualties:"), line).toBe(true);
+      }
+    }
+    expect(pictures.join(NEWLINE)).not.toContain("def.test.2"); // never seen: nobody knows
+  });
+});
+
+const NEWLINE = String.fromCharCode(10);
+
+function guardAt(at: { x: number; y: number }): Ent {
+  return { id: "def.test.1", side: "defender", at };
+}
