@@ -24,6 +24,10 @@ import type { Mesh } from "@babylonjs/core/Meshes/mesh";
 import { createKnowledge } from "@war-room/sim";
 import type { KnownCamera } from "@war-room/sim";
 import { cameraMarkerColor, camerasSignature } from "./cameraFx";
+import { createAdvisorDesk } from "@war-room/agents";
+import type { AdvisorId, Message } from "@war-room/agents";
+import { DOSSIER } from "./dossier";
+import { isTypingTarget } from "./typing";
 import type { RenderUnit } from "./bridge";
 import { createGunfire, freshSince, tracerAlpha, tracerColor } from "./combatFx";
 import type { AudioLike } from "./combatFx";
@@ -45,10 +49,16 @@ export interface Viewer {
   toggleTruth(): boolean;
   /** The cyber hack: from now on the operators see the security cameras' feeds (see Knowledge.tapCameras). */
   tapCameras(): void;
+  /** The President asks an advisor something (see agents/desk). */
+  askAdvisor(id: AdvisorId, text: string): void;
+  /** "offline": every advisor reply is a canned line (no LLM attached). */
+  advisorMode(): "live" | "offline";
   dispose(): void;
 }
 
 export interface ViewerCallbacks {
+  /** The advisors' messages, whenever one is added. */
+  onMessages?(messages: readonly Message[]): void;
   /** The camera feed list, whenever what it shows changes (empty until the network is tapped). */
   onCameras?(cameras: KnownCamera[]): void;
   onFloors(visibility: FloorVisibility): void;
@@ -126,6 +136,8 @@ export async function createViewer(canvas: HTMLCanvasElement, map: MapFile, call
 
   const onKey = (event: KeyboardEvent): void => {
     if (event.ctrlKey || event.metaKey || event.altKey) return;
+    // Typing in a text box (the advisor chat) must not trigger hotkeys.
+    if (isTypingTarget(event.target)) return;
     if (event.key === "l" || event.key === "L") toggleLabels();
     if (event.key === "t" || event.key === "T") toggleTruth();
     const floor = (FLOOR_KEYS as Record<string, FloorId | undefined>)[event.key];
@@ -146,6 +158,8 @@ export async function createViewer(canvas: HTMLCanvasElement, map: MapFile, call
     const snapshot = bridge.snapshot;
     if (snapshot) knowledge.update(snapshot, events);
   };
+  // The advisors react to what the operators learn and answer the President. No LLM is attached yet, so replies are canned.
+  const desk = createAdvisorDesk({ map, knowledge, dossier: DOSSIER, onMessage: () => callbacks.onMessages?.(desk.messages()) });
   let truthView = false;
   const toggleTruth = (): boolean => (truthView = !truthView);
   const knownUnits = (units: RenderUnit[]): RenderUnit[] => {
@@ -236,6 +250,7 @@ export async function createViewer(canvas: HTMLCanvasElement, map: MapFile, call
     cameraFx();
     if (bridge.tick !== lastTick) {
       lastTick = bridge.tick;
+      desk.tick(lastTick);
       callbacks.onTick(lastTick);
     }
   });
@@ -273,6 +288,8 @@ export async function createViewer(canvas: HTMLCanvasElement, map: MapFile, call
     toggleLabels,
     toggleTruth,
     tapCameras: () => knowledge.tapCameras(),
+    askAdvisor: (id, text) => desk.ask(id, text, bridge.tick),
+    advisorMode: () => desk.mode(),
     dispose() {
       labelLayer.remove();
       for (const m of cameraMarkers.values()) m.dispose();

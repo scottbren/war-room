@@ -13,6 +13,7 @@
   "dependencies": {
     "@babylonjs/core": "^9.33.1",
     "@vitejs/plugin-react": "^6.1.2",
+    "@war-room/agents": "workspace:*",
     "@war-room/content": "workspace:*",
     "@war-room/sim": "workspace:*",
     "react": "^19.3.1",

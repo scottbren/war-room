@@ -8,6 +8,8 @@ import { createViewer } from "./viewer";
 import type { Viewer } from "./viewer";
 import { cameraLabel, cameraStatus } from "./cameraFx";
 import type { KnownCamera } from "@war-room/sim";
+import { ADVISORS, MAX_PLAYER_TEXT, advisor } from "@war-room/agents";
+import type { AdvisorId, Message } from "@war-room/agents";
 
 const mapName = mapNameFromSearch(window.location.search);
 const map = MapFile.parse(MAPS[mapName].json);
@@ -42,13 +44,21 @@ export function App() {
   const [error, setError] = useState("");
   const [tapped, setTapped] = useState(false);
   const [cameras, setCameras] = useState<KnownCamera[]>([]);
+  const [messages, setMessages] = useState<readonly Message[]>([]);
+  const [to, setTo] = useState<AdvisorId>("hale");
+  const [draft, setDraft] = useState("");
+  const logRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    logRef.current?.scrollTo({ top: logRef.current.scrollHeight });
+  }, [messages]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     let disposed = false;
     let created: Viewer | null = null;
-    createViewer(canvas, map, { onFloors: setFloors, onFps: setFps, onTick: setTick, onError: setError, onCameras: setCameras })
+    createViewer(canvas, map, { onFloors: setFloors, onFps: setFps, onTick: setTick, onError: setError, onCameras: setCameras, onMessages: setMessages })
       .then((viewer) => {
         if (disposed) return viewer.dispose();
         created = viewer;
@@ -111,6 +121,40 @@ export function App() {
             ))
           )}
         </div>
+      <form
+        style={advisorPanel}
+        data-testid="advisors"
+        onSubmit={(e) => {
+          e.preventDefault();
+          if (draft.trim() === "") return;
+          viewerRef.current?.askAdvisor(to, draft);
+          setDraft("");
+        }}
+      >
+        <div style={{ fontWeight: 700, letterSpacing: 1 }}>ADVISORS</div>
+        <div style={{ opacity: 0.6, fontSize: 11, marginBottom: 6 }}>offline: canned replies, no LLM attached yet</div>
+        <div ref={logRef} style={{ maxHeight: 200, overflowY: "auto", marginBottom: 6 }}>
+          {messages.length === 0 && <div style={{ opacity: 0.5, fontSize: 12 }}>Advisors speak up as the operators see and hear things. Or ask one below.</div>}
+          {messages.map((m) => (
+            <div key={m.id} style={{ fontSize: 12, margin: "3px 0", opacity: m.kind === "ack" ? 0.6 : 1, fontStyle: m.kind === "ack" ? "italic" : "normal", color: m.from === "president" ? "#9ec5ff" : "inherit" }}>
+              <b>{m.from === "president" ? "You" : advisor(m.from).name}</b> {m.text}
+            </div>
+          ))}
+        </div>
+        <div style={{ display: "flex", gap: 4 }}>
+          <select value={to} onChange={(e) => setTo(e.target.value as AdvisorId)} style={field} aria-label="Ask which advisor">
+            {ADVISORS.map((a) => (
+              <option key={a.id} value={a.id}>
+                {a.name}
+              </option>
+            ))}
+          </select>
+          <input value={draft} onChange={(e) => setDraft(e.target.value)} maxLength={MAX_PLAYER_TEXT} placeholder="Ask…" style={{ ...field, flex: 1, minWidth: 0 }} aria-label="Your question" />
+          <button type="submit" style={{ ...button, width: "auto", margin: 0 }}>
+            Send
+          </button>
+        </div>
+      </form>
     </div>
   );
 }
@@ -132,10 +176,28 @@ const cctvPanel: React.CSSProperties = {
   ...panel,
   left: undefined,
   right: 12,
-  maxHeight: "70vh",
+  maxHeight: "calc(100vh - 400px)",
   overflowY: "auto",
   maxWidth: 300,
   wordBreak: "break-word",
+};
+
+const advisorPanel: React.CSSProperties = {
+  ...panel,
+  top: undefined,
+  left: undefined,
+  bottom: 12,
+  right: 12,
+  width: 340,
+};
+
+const field: React.CSSProperties = {
+  padding: "4px 6px",
+  borderRadius: 5,
+  border: "1px solid #2a3644",
+  background: "#0d141c",
+  color: "inherit",
+  font: "inherit",
 };
 
 const button: React.CSSProperties = {
