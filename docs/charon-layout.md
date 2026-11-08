@@ -81,7 +81,7 @@ The upper floor over the hall is a U of galleries round a void [32.5,43]–[49.5
 | u.guest2 | Second guest suite | [76,26]–[82,41] | |
 | u.core.bc / u.bath | Stair core, bathroom | [40,26]–[46,33], [46,26]–[54,33] | |
 | u.sky-lounge | Sky lounge | [54,21]–[66,33] | Cantilevers 5 m south past the bar's south wall; no columns |
-| u.walkway.sw | Sky gallery (covered walkway) | [40,21]–[54,26] | Tag `exterior`, `walkway`. Continues the cantilever's south face west along the bar to the southwest bastion's corner (x 40), standing on the low bar's roof (no cantilever needed). Glass door to the lounge at (54,23.5), door to the stair core at (43,26), wide glass doors to the terrace at (44,21), (50,21) and (40,23.5). The terrace is now two rooms (`u.terrace.c`, `u.terrace.c.e`) joined by a 9.8 m opening at (40,16). The bath lost its south window |
+| u.walkway.sw | Sky gallery (open colonnade) | [40,21]–[54,26] | Tag `arcade`, `walkway` (roofed, ceiling 4, no `interior` tag so bar C stays one storey). Continues the cantilever's south face west along the bar to the southwest bastion's corner (x 40), standing on the low bar's roof (no cantilever needed). Glass door to the lounge at (54,23.5), door to the stair core at (43,26), its north and west sides are OPEN to the terrace (no wall, no door; derive-walls leaves an arcade edge shared with an exterior room bare), so it reads as a colonnade. The terrace is now two rooms (`u.terrace.c`, `u.terrace.c.e`) joined by a 9.8 m opening at (40,16). The bath lost its south window |
 | u.terrace.c | Upper terrace | [12,11]–[54,26] | Exterior, the roof of bar C |
 | u.balcony.e | Fast-rope balcony | [66,20]–[76,26] | Exterior; marker at (71,23) |
 

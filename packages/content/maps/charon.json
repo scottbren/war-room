@@ -1,6 +1,6 @@
 {
   "id": "charon",
-  "version": 14,
+  "version": 15,
   "bounds": { "min": { "x": -40, "y": -40 }, "max": { "x": 140, "y": 94 } },
   "floors": [
     {
@@ -3577,10 +3577,10 @@
         },
         {
           "id": "u.walkway.sw",
-          "name": "Sky gallery (covered colonnade)",
+          "name": "Sky gallery (open colonnade)",
           "rect": { "min": { "x": 40, "y": 21 }, "max": { "x": 54, "y": 26 } },
           "ceiling": 4,
-          "tags": ["exterior", "walkway", "light:dim"]
+          "tags": ["arcade", "walkway", "light:dim"]
         }
       ],
       "walls": [
@@ -3687,24 +3687,6 @@
           "id": "w.upper.x40:20.9-21",
           "a": { "x": 40, "y": 20.9 },
           "b": { "x": 40, "y": 21 },
-          "thickness": 0.4,
-          "height": 4,
-          "material": "reinforced",
-          "destructible": true
-        },
-        {
-          "id": "w.upper.x40:21-22",
-          "a": { "x": 40, "y": 21 },
-          "b": { "x": 40, "y": 22 },
-          "thickness": 0.4,
-          "height": 4,
-          "material": "reinforced",
-          "destructible": true
-        },
-        {
-          "id": "w.upper.x40:25-26",
-          "a": { "x": 40, "y": 25 },
-          "b": { "x": 40, "y": 26 },
           "thickness": 0.4,
           "height": 4,
           "material": "reinforced",
@@ -3840,18 +3822,18 @@
           "id": "w.upper.x54:21-22",
           "a": { "x": 54, "y": 21 },
           "b": { "x": 54, "y": 22 },
-          "thickness": 0.4,
+          "thickness": 0.3,
           "height": 4,
-          "material": "reinforced",
+          "material": "stone",
           "destructible": true
         },
         {
           "id": "w.upper.x54:25-26",
           "a": { "x": 54, "y": 25 },
           "b": { "x": 54, "y": 26 },
-          "thickness": 0.4,
+          "thickness": 0.3,
           "height": 4,
-          "material": "reinforced",
+          "material": "stone",
           "destructible": true
         },
         {
@@ -4044,33 +4026,6 @@
           "destructible": true
         },
         {
-          "id": "w.upper.y21:40-42.5",
-          "a": { "x": 40, "y": 21 },
-          "b": { "x": 42.5, "y": 21 },
-          "thickness": 0.4,
-          "height": 4,
-          "material": "reinforced",
-          "destructible": true
-        },
-        {
-          "id": "w.upper.y21:45.5-48.5",
-          "a": { "x": 45.5, "y": 21 },
-          "b": { "x": 48.5, "y": 21 },
-          "thickness": 0.4,
-          "height": 4,
-          "material": "reinforced",
-          "destructible": true
-        },
-        {
-          "id": "w.upper.y21:51.5-54",
-          "a": { "x": 51.5, "y": 21 },
-          "b": { "x": 54, "y": 21 },
-          "thickness": 0.4,
-          "height": 4,
-          "material": "reinforced",
-          "destructible": true
-        },
-        {
           "id": "w.upper.y21:54-66",
           "a": { "x": 54, "y": 21 },
           "b": { "x": 66, "y": 21 },
@@ -4092,27 +4047,27 @@
           "id": "w.upper.y26:40-42.25",
           "a": { "x": 40, "y": 26 },
           "b": { "x": 42.25, "y": 26 },
-          "thickness": 0.4,
+          "thickness": 0.3,
           "height": 4,
-          "material": "reinforced",
+          "material": "stone",
           "destructible": true
         },
         {
           "id": "w.upper.y26:43.75-46",
           "a": { "x": 43.75, "y": 26 },
           "b": { "x": 46, "y": 26 },
-          "thickness": 0.4,
+          "thickness": 0.3,
           "height": 4,
-          "material": "reinforced",
+          "material": "stone",
           "destructible": true
         },
         {
           "id": "w.upper.y26:46-54",
           "a": { "x": 46, "y": 26 },
           "b": { "x": 54, "y": 26 },
-          "thickness": 0.4,
+          "thickness": 0.3,
           "height": 4,
-          "material": "reinforced",
+          "material": "stone",
           "destructible": true
         },
         {
@@ -4627,33 +4582,6 @@
           "width": 9.8,
           "between": ["u.terrace.c", "u.terrace.c.e"],
           "kind": "standard",
-          "state": "open",
-          "breach": []
-        },
-        {
-          "id": "d.u.walkway-east.1",
-          "at": { "x": 44, "y": 21 },
-          "width": 3,
-          "between": ["u.walkway.sw", "u.terrace.c.e"],
-          "kind": "glass",
-          "state": "open",
-          "breach": []
-        },
-        {
-          "id": "d.u.walkway-east.2",
-          "at": { "x": 50, "y": 21 },
-          "width": 3,
-          "between": ["u.walkway.sw", "u.terrace.c.e"],
-          "kind": "glass",
-          "state": "open",
-          "breach": []
-        },
-        {
-          "id": "d.u.walkway-west",
-          "at": { "x": 40, "y": 23.5 },
-          "width": 3,
-          "between": ["u.walkway.sw", "u.terrace.c"],
-          "kind": "glass",
           "state": "open",
           "breach": []
         }

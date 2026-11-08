@@ -2,7 +2,7 @@
   "version": 1,
   "seed": 12,
   "mapId": "charon",
-  "mapVersion": 14,
+  "mapVersion": 15,
   "ticks": 1200,
   "commands": [
     {

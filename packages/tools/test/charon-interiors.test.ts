@@ -47,8 +47,27 @@ describe("charon.json: interiors pass", () => {
     expect(inside).toEqual([]);
   });
 
+  it("sky gallery: roofed, open on its terrace sides (no wall or door there), walled and doored on the house sides", () => {
+    const up = floorOf("upper");
+    const g = up.rooms.find((r) => r.id === "u.walkway.sw")!;
+    expect(g.tags).toContain("arcade");
+    expect(g.tags).not.toContain("interior"); // bar C stays one storey
+    expect(g.ceiling).toBeGreaterThan(0);
+    const { min, max } = g.rect;
+    const along = (w: { a: { x: number; y: number }; b: { x: number; y: number } }, axis: "x" | "y", line: number) =>
+      w.a[axis] === line && w.b[axis] === line;
+    const inside = (v: number, lo: number, hi: number) => v >= lo && v <= hi;
+    const onEdge = (axis: "x" | "y", line: number) =>
+      up.walls.filter((w) => along(w, axis, line) && inside(axis === "x" ? w.a.y : w.a.x, axis === "x" ? min.y : min.x, axis === "x" ? max.y : max.x) && inside(axis === "x" ? w.b.y : w.b.x, axis === "x" ? min.y : min.x, axis === "x" ? max.y : max.x));
+    expect(onEdge("y", min.y)).toEqual([]); // north: open to the terrace
+    expect(onEdge("x", min.x)).toEqual([]); // west: open to the terrace
+    expect(onEdge("y", max.y).length).toBeGreaterThan(0); // south: the house wall
+    expect(onEdge("x", max.x).length).toBeGreaterThan(0); // east: the lounge wall
+    for (const d of up.doors) expect(d.between.includes("u.walkway.sw") && d.between.some((s) => s.startsWith("u.terrace")), d.id).toBe(false);
+  });
+
   it("is a new map version, so older recordings are refused", () => {
-    expect(map.version).toBe(14);
+    expect(map.version).toBe(15);
   });
 
   it("keeps cover items unique and facing set", () => {

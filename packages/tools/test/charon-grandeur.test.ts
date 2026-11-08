@@ -81,7 +81,11 @@ describe("charon.json v6: stacking and heights", () => {
 
   it("makes bar C one storey: its roof is the upper-level terrace, with no interior room above it", () => {
     for (const r of floor("upper").rooms) {
-      if (overlaps(r.rect, BAR_C) && !overlaps(r.rect, BAR_B)) expect(r.tags, r.id).toContain("exterior");
+      // Open to the sky (exterior) or an open colonnade (arcade, e.g. the sky gallery); never an interior room.
+      if (overlaps(r.rect, BAR_C) && !overlaps(r.rect, BAR_B)) {
+        expect(r.tags, r.id).not.toContain("interior");
+        expect(r.tags.includes("exterior") || r.tags.includes("arcade"), r.id).toBe(true);
+      }
     }
     expect(room("upper", "u.terrace.c").tags).toEqual(expect.arrayContaining(["exterior", "terrace"]));
   });

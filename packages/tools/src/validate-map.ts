@@ -204,6 +204,17 @@ function checkReachability(map: MapFile, out: Issue[]): void {
       }
     }
   }
+  // An open colonnade ("arcade") has no wall on the edge it shares with an exterior room (derive-walls), so they connect without a door.
+  for (const floor of map.floors) {
+    for (const a of floor.rooms.filter((r) => r.tags.includes("arcade"))) {
+      for (const b of floor.rooms.filter((r) => r.tags.includes("exterior"))) {
+        if (a.id !== b.id && sharesEdge(a.rect, b.rect)) {
+          link(a.id, b.id);
+          link(b.id, a.id);
+        }
+      }
+    }
+  }
   for (const l of map.verticalLinks) {
     const from = roomAt(map, l.from.floor, l.from.at);
     const to = roomAt(map, l.to.floor, l.to.at);

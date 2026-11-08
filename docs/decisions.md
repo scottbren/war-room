@@ -284,3 +284,9 @@ Fifth step of `docs/combat-spec.md` (the C5 proposal there). Scott approved C5a 
 - Built instead on the upper floor: `u.walkway.sw` [40,21]-[54,26], the cantilever's south face continued west along the bar to the bastion's corner. Tagged `exterior` so the rule "bar C is one storey, no interior room above it" still holds. The terrace was split in two to make room.
 - Side effects: the bath's south window is gone (the wall is now inside); one terrace planter moved; map version 13 -> 14, navmesh re-baked, T12 reference replay re-recorded.
 - Interpretation, not confirmed: if Scott meant something else (a different depth, an open colonnade, or a different spot), this is easy to change.
+
+## Sky gallery made an open colonnade (map version 15, Scott: enclosed on top, open sides)
+
+- Scott confirmed the gallery is the right place and wanted it roofed but open on the sides. `u.walkway.sw` is now tagged `arcade` instead of `exterior`; derive-walls already leaves no wall on an arcade edge shared with an exterior room, so its north and west edges (to the terrace) are bare. The three glass doors there were removed (a door must sit on a wall). The house-side edges (south to the stair core and bath, east to the lounge) stay walled with their doors.
+- validate-map now counts an arcade room as connected to an exterior room it shares an edge with (same rule as derive-walls), like the existing joined-galleries rule.
+- Renamed "Sky gallery (open colonnade)". Navmesh re-baked, T12 re-recorded (final hash ca6136af). Scott noted there will be many more small map details to fix later.
