@@ -2,18 +2,18 @@
 
 A cinematic covert-raid simulator: the player is the President in the Situation Room, deciding through AI advisors and live feeds. Current target: the CHARON vertical slice.
 
-- New session? Start with `AGENT-BOOTSTRAP.md` if the environment isn't set up yet.
+- New session? Start with `docs/process/AGENT-BOOTSTRAP.md` if the environment isn't set up yet.
 - Design spec: `docs/design-spec.md` · Technical design: `docs/technical-design.md` (downloaded copies; claude.ai links are not reachable from here)
 - Concrete specs: `docs/contracts-draft.md`, `docs/charon-layout.md`
 - Decisions log: `docs/decisions.md` (check before deviating; record approved changes)
-- Current tasks: `TASKS-week1.md`
+- Current tasks: `docs/process/TASKS-week1.md`
 
 ## Repo map
 - `packages/sim` — deterministic simulation, pure TypeScript, runs in a Web Worker and Node
 - `packages/content` — data files and Zod schemas (maps, units, equipment, missions, cards)
 - `packages/agents` — advisor orchestration: triggers, prompts, plan validation
 - `packages/client` — Babylon.js renderer, React UI, audio, worker bridge
-- `packages/gateway` — Cloudflare Worker LLM proxy
+- `packages/gateway` — planned Cloudflare Worker LLM proxy (empty stub for now)
 - `packages/tools` — headless runner, greybox generator, map validator, LLM evals
 
 ## Commands

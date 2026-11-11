@@ -2,8 +2,8 @@
 
 | File | What | Source |
 | --- | --- | --- |
-| `design-spec.md` | Full game design | Download from Claude (see SETUP.md step 0) |
-| `technical-design.md` | Architecture | Download from Claude (see SETUP.md step 0) |
+| `design-spec.md` | Full game design | In repo (source: design doc) |
+| `technical-design.md` | Architecture | In repo (source: design doc) |
 | `contracts-draft.md` | Starting shapes for T1 | In repo |
 | `charon-layout.md` | Map dimensions for T5 | In repo |
 | `decisions.md` | Decisions log | In repo, kept current by agents |
